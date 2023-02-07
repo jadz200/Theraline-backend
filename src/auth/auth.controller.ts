@@ -1,4 +1,3 @@
-import { Get } from '@nestjs/common';
 import {
   Body,
   Controller,
@@ -7,7 +6,6 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { resolveSoa } from 'dns';
 import mongoose from 'mongoose';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
