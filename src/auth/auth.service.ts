@@ -16,7 +16,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private config: ConfigService,
+    private configService: ConfigService,
   ) {}
   async signupLocal(dto: CreateUserDto): Promise<Tokens> {
     const temp = await this.findByEmail(dto.email);
@@ -61,7 +61,7 @@ export class AuthService {
   }
 
   async logout(userId: mongoose.Types.ObjectId): Promise<any> {
-    const resp = await this.userModel.findOneAndUpdate(
+    await this.userModel.findOneAndUpdate(
       {
         _id: userId,
       },
@@ -97,7 +97,6 @@ export class AuthService {
     rt: string,
   ): Promise<void> {
     const hash = await argon.hash(rt);
-    console.log(await this.userModel.find({ _id: userId }));
 
     await this.userModel.findOneAndUpdate(
       {
