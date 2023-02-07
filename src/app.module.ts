@@ -15,7 +15,7 @@ import { AtGuard } from './common/guards';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
-        uri: config.get<string>('MONGODB_URI'),
+        uri: 'mongodb+srv://theraline-admin:Y9incPeXT3lHtP9R@cluster0.nngyemf.mongodb.net/?retryWrites=true&w=majority',
       }),
     }),
     AuthModule,
