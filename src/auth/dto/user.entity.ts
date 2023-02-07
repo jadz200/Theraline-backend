@@ -1,4 +1,3 @@
-import mongoose, { ObjectId } from 'mongoose';
 import { UserRole } from '../schema/user.schema';
 
 export class User {

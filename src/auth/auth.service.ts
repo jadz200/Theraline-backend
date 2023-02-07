@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon from 'argon2';
-import { Http2ServerResponse } from 'http2';
 import mongoose, { Model } from 'mongoose';
 import { User, UserDocument, UserRole } from 'src/auth/schema/user.schema';
 
