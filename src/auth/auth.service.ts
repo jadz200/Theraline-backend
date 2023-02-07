@@ -36,7 +36,7 @@ export class AuthService {
       hashedRt: 'test',
     });
 
-    const tokens = await this.getTokens(user._id, user.email);
+    const tokens = await this.getTokens(user._id, user.email, user.role);
     await this.updateRtHash(user._id, tokens.refresh_token);
 
     return tokens;
@@ -54,7 +54,7 @@ export class AuthService {
 
     if (!passwordMatches) throw new ForbiddenException('Incorrect password');
 
-    const tokens = await this.getTokens(user._id, user.email);
+    const tokens = await this.getTokens(user._id, user.email, user.role);
     await this.updateRtHash(user._id, tokens.refresh_token);
 
     return tokens;
@@ -86,7 +86,7 @@ export class AuthService {
     const rtMatches = await argon.verify(user.hashedRt, rt);
     if (!rtMatches) throw new ForbiddenException('Incorrect Refresh token');
 
-    const tokens = await this.getTokens(user.id, user.email);
+    const tokens = await this.getTokens(user.id, user.email, user.role);
     await this.updateRtHash(user._id, tokens.refresh_token);
 
     return tokens;
@@ -112,10 +112,12 @@ export class AuthService {
   async getTokens(
     userId: mongoose.Types.ObjectId,
     email: string,
+    role: UserRole,
   ): Promise<Tokens> {
     const jwtPayload: JwtPayload = {
       sub: userId,
       email: email,
+      role: role,
     };
 
     const [at, rt] = await Promise.all([
@@ -136,5 +138,8 @@ export class AuthService {
   }
   async findByEmail(email: string): Promise<User | undefined> {
     return await this.userModel.findOne({ email: email });
+  }
+  async findById(id: string): Promise<User | undefined> {
+    return await this.userModel.findOne({ _id: id });
   }
 }

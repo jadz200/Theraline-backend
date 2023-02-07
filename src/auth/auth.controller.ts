@@ -1,3 +1,4 @@
+import { Get } from '@nestjs/common';
 import {
   Body,
   Controller,
@@ -6,12 +7,15 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { resolveSoa } from 'dns';
 import mongoose from 'mongoose';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 import { Public, GetCurrentUserId, GetCurrentUser } from '../common/decorators';
 import { RtGuard } from '../common/guards';
 import { AuthService } from './auth.service';
 import { AuthDto, CreateUserDto } from './dto';
+import { UserRole } from './schema/user.schema';
 import { Tokens } from './types';
 
 @Controller('auth')
