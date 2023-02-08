@@ -4,7 +4,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Type,
   UseGuards,
 } from '@nestjs/common';
 import mongoose from 'mongoose';
