@@ -4,25 +4,49 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Type,
   UseGuards,
 } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { Public, GetCurrentUserId, GetCurrentUser } from '../common/decorators';
 import { RtGuard } from '../common/guards';
 import { AuthService } from './auth.service';
-import { AuthDto, CreateUserDto } from './dto';
+import { AuthDto, CreateUserDto, Token } from './dto';
 import { UserRole } from './schema/user.schema';
 import { Tokens } from './types';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
   @Post('signup')
-  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({
+    description: 'Successful Response',
+    type: Token,
+  })
+  @ApiBadRequestResponse({
+    description: 'Validation error',
+    schema: {
+      example: {
+        statusCode: 400,
+        message: ['string'],
+        error: 'Bad Request',
+      },
+    },
+  })
+  @ApiOperation({ summary: 'Create patient user' })
   signupLocal(@Body() dto: CreateUserDto): Promise<Tokens> {
     return this.authService.signupLocal(dto);
   }
@@ -30,12 +54,25 @@ export class AuthController {
   @Public()
   @Post('signin')
   @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: 'Successful Response',
+    type: Token,
+  })
+  @ApiOperation({ summary: 'Sign in and get access and refresh tokens' })
   signinLocal(@Body() dto: AuthDto): Promise<Tokens> {
     return this.authService.signinLocal(dto);
   }
 
   @Post('logout')
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'Successful Response',
+    schema: {
+      example: { msg: 'logged out' },
+    },
+  })
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Use Access token to log out' })
   logout(@GetCurrentUserId() userId: mongoose.Types.ObjectId): Promise<any> {
     return this.authService.logout(userId);
   }
@@ -43,7 +80,13 @@ export class AuthController {
   @Public()
   @UseGuards(RtGuard)
   @Post('refresh')
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'Successful Response',
+    type: Token,
+  })
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Use Refresh token' })
   refreshTokens(
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
     @GetCurrentUser('refreshToken') refreshToken: string,

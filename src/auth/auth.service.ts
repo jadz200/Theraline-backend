@@ -1,4 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common/exceptions';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -20,10 +21,10 @@ export class AuthService {
   async signupLocal(dto: CreateUserDto): Promise<Tokens> {
     const temp = await this.findByEmail(dto.email);
     if (temp) {
-      throw new ForbiddenException('Email already in use');
+      throw new BadRequestException('Email already in use');
     }
     if (dto.confirmPassword != dto.password) {
-      throw new ForbiddenException('Passwords do not match');
+      throw new BadRequestException('Passwords do not match');
     }
     const hash = await argon.hash(dto.password);
     const user: User = await this.userModel.create({
@@ -47,11 +48,11 @@ export class AuthService {
     });
 
     if (!user)
-      throw new ForbiddenException('No user with current email adress');
+      throw new BadRequestException('No user with current email adress');
 
     const passwordMatches = await argon.verify(user.password, dto.password);
 
-    if (!passwordMatches) throw new ForbiddenException('Incorrect password');
+    if (!passwordMatches) throw new BadRequestException('Incorrect password');
 
     const tokens = await this.getTokens(user._id, user.email, user.role);
     await this.updateRtHash(user._id, tokens.refresh_token);
