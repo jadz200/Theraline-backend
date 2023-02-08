@@ -9,6 +9,7 @@ import { User, UserDocument, UserRole } from 'src/auth/schema/user.schema';
 
 import { AuthDto } from './dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { RetrieveUserDTO } from './dto/retrieve-user.dto';
 import { JwtPayload, Tokens } from './types';
 
 @Injectable()
@@ -135,9 +136,23 @@ export class AuthService {
       refresh_token: rt,
     };
   }
+
+  async retrieveUserInfo(
+    id: mongoose.Types.ObjectId,
+  ): Promise<RetrieveUserDTO> {
+    const user = await this.findById(id.toString());
+    const userInfo: RetrieveUserDTO = {
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
+    return userInfo;
+  }
+
   async findByEmail(email: string): Promise<User | undefined> {
     return await this.userModel.findOne({ email: email });
   }
+
   async findById(id: string): Promise<User | undefined> {
     return await this.userModel.findOne({ _id: id });
   }

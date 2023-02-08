@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -20,9 +21,10 @@ import {
 import { Public, GetCurrentUserId, GetCurrentUser } from '../common/decorators';
 import { RtGuard } from '../common/guards';
 import { AuthService } from './auth.service';
-import { AuthDto, CreateUserDto, Token } from './dto';
+import { AuthDto, CreateUserDto, Token, User } from './dto';
 import { UserRole } from './schema/user.schema';
 import { Tokens } from './types';
+import { RetrieveUserDTO } from './dto/retrieve-user.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -91,5 +93,25 @@ export class AuthController {
     @GetCurrentUser('refreshToken') refreshToken: string,
   ): Promise<Tokens> {
     return this.authService.refreshTokens(userId, refreshToken);
+  }
+
+  @Get('me')
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'Successful Response',
+    schema: {
+      example: {
+        email: 'string',
+        firstName: 'string',
+        lastName: 'string',
+      },
+    },
+  })
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Use Access token get user info' })
+  retrieveUserInfo(
+    @GetCurrentUserId() userId: mongoose.Types.ObjectId,
+  ): Promise<RetrieveUserDTO> {
+    return this.authService.retrieveUserInfo(userId);
   }
 }
