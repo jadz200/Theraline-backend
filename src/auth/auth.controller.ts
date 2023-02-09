@@ -21,7 +21,7 @@ import {
 import { Public, GetCurrentUserId, GetCurrentUser } from '../common/decorators';
 import { RtGuard } from '../common/guards';
 import { AuthService } from './auth.service';
-import { AuthDto, CreateUserDto, Token, User } from './dto';
+import { AuthDto, CreateUserDto, Token } from './dto';
 import { UserRole } from './schema/user.schema';
 import { Tokens } from './types';
 import { RetrieveUserDTO } from './dto/retrieve-user.dto';
