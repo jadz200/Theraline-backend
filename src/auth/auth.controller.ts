@@ -18,13 +18,19 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { Public, GetCurrentUserId, GetCurrentUser } from '../common/decorators';
-import { RtGuard } from '../common/guards';
 import { AuthService } from './auth.service';
-import { AuthDto, CreateUserDto, Token } from './dto';
 import { UserRole } from './schema/user.schema';
-import { Tokens } from './types';
 import { RetrieveUserDTO } from './dto/retrieve-user.dto';
+import { MsgDto } from 'src/common/dto/msg.dto';
+import { AuthResponse } from './dto/auth-response.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { AuthDto } from './dto/auth.dto';
+import { Token } from './dto/token.entity';
+import { Tokens } from './types/tokens.type';
+import { GetCurrentUserId } from 'src/common/decorators/get-current-user-id.decorator';
+import { GetCurrentUser } from 'src/common/decorators/get-current-user.decorator';
+import { Public } from 'src/common/decorators/public.decorator';
+import { RtGuard } from 'src/common/guards/rt.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -35,7 +41,9 @@ export class AuthController {
   @Post('signup')
   @ApiCreatedResponse({
     description: 'Successful Response',
-    type: Token,
+    schema: {
+      example: { msg: 'Created account' },
+    },
   })
   @ApiBadRequestResponse({
     description: 'Validation error',
@@ -48,7 +56,7 @@ export class AuthController {
     },
   })
   @ApiOperation({ summary: 'Create patient user' })
-  signupLocal(@Body() dto: CreateUserDto): Promise<Tokens> {
+  signupLocal(@Body() dto: CreateUserDto): Promise<MsgDto> {
     return this.authService.signupLocal(dto);
   }
 
@@ -60,22 +68,8 @@ export class AuthController {
     type: Token,
   })
   @ApiOperation({ summary: 'Sign in and get access and refresh tokens' })
-  signinLocal(@Body() dto: AuthDto): Promise<Tokens> {
+  signinLocal(@Body() dto: AuthDto): Promise<AuthResponse> {
     return this.authService.signinLocal(dto);
-  }
-
-  @Post('logout')
-  @ApiBearerAuth()
-  @ApiOkResponse({
-    description: 'Successful Response',
-    schema: {
-      example: { msg: 'logged out' },
-    },
-  })
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Use Access token to log out' })
-  logout(@GetCurrentUserId() userId: mongoose.Types.ObjectId): Promise<any> {
-    return this.authService.logout(userId);
   }
 
   @Public()
