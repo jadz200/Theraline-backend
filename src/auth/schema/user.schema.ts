@@ -3,11 +3,7 @@ import mongoose, { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
 
-export enum UserRole {
-  'PATIENT',
-  'MODERATOR',
-  'DOCTOR',
-}
+export type UserRole = ['PATIENT', 'MODERATOR', 'DOCTOR'];
 
 @Schema()
 export class User {

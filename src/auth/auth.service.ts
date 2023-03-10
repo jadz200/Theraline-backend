@@ -31,7 +31,7 @@ export class AuthService {
     await this.userModel.create({
       email: dto.email,
       password: hash,
-      role: UserRole.PATIENT,
+      role: 'PATIENT',
       firstName: dto.firstName,
       lastName: dto.lastName,
     });
