@@ -20,6 +20,8 @@ export class User {
   role: UserRole;
   @Prop()
   hashedRt: string;
+  @Prop()
+  Groups: mongoose.Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

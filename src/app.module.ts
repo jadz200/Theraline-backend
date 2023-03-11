@@ -4,6 +4,8 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards/at.guard';
+import { GroupsModule } from './groups/groups.module';
+import { MessagingModule } from './messaging/messaging.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { AtGuard } from './common/guards/at.guard';
       }),
     }),
     AuthModule,
+    GroupsModule,
+    MessagingModule,
   ],
   providers: [
     {
