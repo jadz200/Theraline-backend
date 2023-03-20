@@ -5,6 +5,7 @@ import * as jwt from 'jsonwebtoken';
 import { InjectModel } from '@nestjs/mongoose';
 import { Message, MessageDocument } from './schema/message.schema';
 import { Model } from 'mongoose';
+import { WsException } from '@nestjs/websockets';
 
 @Injectable()
 export class MessagesService {
@@ -28,21 +29,26 @@ export class MessagesService {
     return sentMessage;
   }
   async getUserFromSocket(socket: Socket) {
-    const auth_token = socket.handshake.headers.authorization;
-    if (!auth_token) {
-      throw new Error('Missing authorization header');
-    }
-    const token = auth_token.replace('Bearer ', '');
-    if (!token) {
-      throw new Error('Missing bearer token');
-    }
-    let decoded;
     try {
-      decoded = jwt.verify(token, 'AT_SECRET');
-    } catch (error) {
-      throw new Error('Invalid token');
-    }
+      const auth_token = socket.handshake.headers.authorization;
+      if (!auth_token) {
+        throw new WsException('Missing authorization header');
+      }
+      const token = auth_token.replace('Bearer ', '');
+      if (!token) {
+        throw new WsException('Missing bearer token');
+      }
+      let decoded;
+      try {
+        decoded = jwt.verify(token, 'AT_SECRET');
+      } catch (error) {
+        throw new WsException('Payload is missing!');
+      }
 
-    return decoded;
+      return decoded;
+    } catch (error) {
+      socket.disconnect();
+      return;
+    }
   }
 }

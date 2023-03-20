@@ -15,7 +15,7 @@ export class Appointment {
   @Prop({ required: true })
   doctor_id: string;
   @Prop({ required: true })
-  time: string;
+  date: Date;
   @Prop({ required: true })
   status: AppointmentStatus;
   @Prop({
@@ -31,7 +31,7 @@ export class Appointment {
     amount: number;
     status: PaymentStatus;
     method: PaymentMethod;
-    date: string;
+    date: Date;
   };
 }
 

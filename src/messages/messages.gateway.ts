@@ -26,6 +26,10 @@ export class MessagesGateway implements OnGatewayConnection {
 
   async handleConnection(client: Socket) {
     const info = await this.messagesService.getUserFromSocket(client);
+    if (!info) {
+      this.logger.log('Issue with auth token');
+      return;
+    }
     const groupId = client.handshake.query.groupId as string;
     const inGroup = await this.groupService.check_user_group(
       info['sub'],
@@ -36,9 +40,9 @@ export class MessagesGateway implements OnGatewayConnection {
       client.disconnect();
     }
     client.join(groupId);
-    this.server.to(groupId).emit('userJoined', info['email']);
+    // this.server.to(groupId).emit('userJoined', info['email']);
     const messages = await this.messagesService.findAll(groupId);
-    this.server.to(groupId).emit('messages', { messages });
+    this.server.to(groupId).emit('previousMessages', { messages });
     this.logger.log(
       `Email ${info['email']} connected into client ${client.id} joined ${groupId}`,
     );
@@ -48,7 +52,7 @@ export class MessagesGateway implements OnGatewayConnection {
   }
   @WebSocketServer() server: Server;
 
-  @SubscribeMessage('message')
+  @SubscribeMessage('sendMessage')
   async handleMessage(client: Socket, message: SendMessageDto) {
     const info = await this.messagesService.getUserFromSocket(client);
     const groupId = client.handshake.query.groupId as string;
@@ -61,5 +65,6 @@ export class MessagesGateway implements OnGatewayConnection {
     this.server.to(groupId).emit('newMessage', {
       message: createdMessage,
     });
+    this.logger.log(`user ${info['sub']} Sent message`);
   }
 }

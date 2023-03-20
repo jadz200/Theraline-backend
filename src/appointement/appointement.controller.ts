@@ -23,8 +23,7 @@ export class AppointementController {
       example1: {
         value: {
           patient_id: '1234',
-          doctor_id: '5678',
-          time: '2023-03-19T09:30:00.000Z',
+          time: '2023-11-07T12:30:00',
           status: 'Confirmed',
           paymentInfo: {
             amount: 100,
@@ -46,7 +45,7 @@ export class AppointementController {
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('PATIENT')
-  @Put(':id/create_appointement')
+  @Put(':id/confirm_appointement')
   confirm_appointment(
     @Param('id') appointment_id: string,
     @GetCurrentUserId() patient_id: mongoose.Types.ObjectId,

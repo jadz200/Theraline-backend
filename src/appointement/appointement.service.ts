@@ -22,7 +22,7 @@ export class AppointmentService {
     }
     await this.appointmentModel.create({
       patient_id: dto.patient_id,
-      time: dto.time,
+      date: dto.time,
       doctor_id: doctor_id,
       appointmentStatus: 'CREATED',
       paymentInfo: dto.paymentInfo,
@@ -35,7 +35,7 @@ export class AppointmentService {
       patient_id: patient_id,
     });
     if (!appointmentFound) {
-      throw new BadRequestException('No appointment for this user');
+      throw new BadRequestException('No appointment for this patient');
     }
     await this.appointmentModel.findByIdAndUpdate(
       { _id: appointment_id },
