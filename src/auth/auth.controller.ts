@@ -123,6 +123,7 @@ export class AuthController {
   }
 
   @Roles('ADMIN')
+  @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Post('/create_doctor')
   create_doctor(@Body() dto: CreateUserDto) {

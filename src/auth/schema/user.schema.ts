@@ -21,7 +21,7 @@ export class User {
   @Prop()
   hashedRt: string;
   @Prop()
-  Groups: mongoose.Types.ObjectId[];
+  groups: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -12,6 +12,11 @@ export class GroupsService {
     @InjectModel(Group.name) private groupModel: Model<GroupDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
+
+  async get_all_chats(user_id) {
+    const user = await this.userModel.findOne({ _id: user_id });
+    return user.groups;
+  }
   async create_convo(dto: CreateConvoDto) {
     const time = Date.now();
     const resp = this.check_users(dto.users_id);
@@ -37,11 +42,15 @@ export class GroupsService {
         "You can't create a conversation with yourself ",
       );
     }
-    await this.groupModel.create({
+    const newGroup = await this.groupModel.create({
       users: dto.users_id,
       groupType: 'PRIVATE',
       created_at: time,
     });
+    for (const user_id of dto.users_id) {
+      const user: User = await this.userModel.findOne({ _id: user_id });
+      await this.userModel.updateOne(user, { $push: { groups: newGroup.id } });
+    }
 
     return { msg: 'Created convo' };
   }
@@ -52,13 +61,16 @@ export class GroupsService {
     if ((await resp) === false) {
       throw new BadRequestException('User does not exists');
     }
-    await this.groupModel.create({
+    const newGroup = await this.groupModel.create({
       users: dto.users_id,
       groupType: 'PUBLIC',
       created_at: time,
       name: dto.name,
     });
-
+    for (const user_id of dto.users_id) {
+      const user: User = await this.userModel.findOne({ _id: user_id });
+      await this.userModel.updateOne(user, { $push: { groups: newGroup.id } });
+    }
     return { msg: 'Created Group' };
   }
   async check_users(users_id): Promise<boolean> {

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import mongoose from 'mongoose';
 import { GetCurrentUserId } from 'src/common/decorators/get-current-user-id.decorator';
@@ -29,5 +29,11 @@ export class GroupsController {
   ) {
     dto.users_id.push(userId.toString());
     return this.groupService.create_group(dto);
+  }
+  @ApiBearerAuth()
+  @Get('get_chats')
+  @ApiOperation({ summary: 'Create group' })
+  get_all_chats(@GetCurrentUserId() userId: mongoose.Types.ObjectId) {
+    return this.groupService.get_all_chats(userId);
   }
 }

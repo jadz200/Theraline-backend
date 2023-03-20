@@ -1,5 +1,5 @@
-import { ForbiddenException, HttpStatus, Injectable } from '@nestjs/common';
-import { BadRequestException, HttpException } from '@nestjs/common/exceptions';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common/exceptions';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -59,6 +59,7 @@ export class AuthService {
       role: 'DOCTOR',
       firstName: dto.firstName,
       lastName: dto.lastName,
+      groups: [],
     });
     // this.patientService.create_patient({
     //   user_id: user.id.toString(),
