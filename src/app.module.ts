@@ -5,7 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards/at.guard';
 import { GroupsModule } from './groups/groups.module';
-import { MessagingModule } from './messaging/messaging.module';
+import { MessagesModule } from './messages/messages.module';
+import { AppointementModule } from './appointement/appointement.module';
+import { PatientModule } from './patient/patient.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -16,13 +19,15 @@ import { MessagingModule } from './messaging/messaging.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (config: ConfigService) => ({
+      useFactory: async () => ({
         uri: 'mongodb+srv://theraline-admin:Y9incPeXT3lHtP9R@cluster0.aojjvwq.mongodb.net/?retryWrites=true&w=majority',
       }),
     }),
     AuthModule,
     GroupsModule,
-    MessagingModule,
+    MessagesModule,
+    AppointementModule,
+    PatientModule,
   ],
   providers: [
     {
@@ -30,5 +35,6 @@ import { MessagingModule } from './messaging/messaging.module';
       useClass: AtGuard,
     },
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

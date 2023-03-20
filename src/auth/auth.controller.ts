@@ -12,6 +12,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -19,9 +20,7 @@ import {
 } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
-import { UserRole } from './schema/user.schema';
 import { RetrieveUserDTO } from './dto/retrieve-user.dto';
-import { MsgDto } from 'src/common/dto/msg.dto';
 import { AuthResponse } from './dto/auth-response.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthDto } from './dto/auth.dto';
@@ -31,6 +30,7 @@ import { GetCurrentUserId } from 'src/common/decorators/get-current-user-id.deco
 import { GetCurrentUser } from 'src/common/decorators/get-current-user.decorator';
 import { Public } from 'src/common/decorators/public.decorator';
 import { RtGuard } from 'src/common/guards/rt.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -56,7 +56,7 @@ export class AuthController {
     },
   })
   @ApiOperation({ summary: 'Create patient user' })
-  signupLocal(@Body() dto: CreateUserDto): Promise<MsgDto> {
+  signupLocal(@Body() dto: CreateUserDto) {
     return this.authService.signupLocal(dto);
   }
 
@@ -66,6 +66,19 @@ export class AuthController {
   @ApiOkResponse({
     description: 'Successful Response',
     type: Token,
+  })
+  @ApiBody({
+    type: AuthDto,
+    examples: {
+      patient: {
+        value: { email: 'new@gmail.com', password: 'string' },
+        summary: 'Patient login',
+      },
+      doctor: {
+        value: { email: 'doctor@gmail.com', password: 'string' },
+        summary: 'Doctor login',
+      },
+    },
   })
   @ApiOperation({ summary: 'Sign in and get access and refresh tokens' })
   signinLocal(@Body() dto: AuthDto): Promise<AuthResponse> {
@@ -107,5 +120,12 @@ export class AuthController {
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ): Promise<RetrieveUserDTO> {
     return this.authService.retrieveUserInfo(userId);
+  }
+
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
+  @Post('/create_doctor')
+  create_doctor(@Body() dto: CreateUserDto) {
+    return this.authService.createDoctor(dto);
   }
 }

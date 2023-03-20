@@ -6,13 +6,17 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AtStrategy } from './strategies/at.strategy';
 import { RtStrategy } from './strategies/rt.strategy';
+import { PatientModule } from 'src/patient/patient.module';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
 @Module({
   imports: [
     JwtModule.register({}),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    PatientModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, AtStrategy, RtStrategy],
+  providers: [AuthService, AtStrategy, RtStrategy, RolesGuard],
+  exports: [AuthService],
 })
 export class AuthModule {}
