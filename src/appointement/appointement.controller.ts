@@ -7,7 +7,6 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { AppointmentService } from './appointement.service';
 import { CreateAppointmentDto } from './dto/createAppointement.dto';
-import { AppointmentStatus } from './schema/appointement.schema';
 @ApiTags('Appointement')
 @Controller('appointement')
 export class AppointementController {

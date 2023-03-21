@@ -5,6 +5,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { GroupsModule } from 'src/groups/groups.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Message, MessageSchema } from './schema/message.schema';
+import { SwaggerModule } from '@nestjs/swagger';
 
 @Module({
   imports: [

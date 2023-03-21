@@ -3,6 +3,7 @@ import {
   SubscribeMessage,
   WebSocketServer,
   OnGatewayConnection,
+  WsException,
 } from '@nestjs/websockets';
 import { MessagesService } from './messages.service';
 import { Server, Socket } from 'socket.io';
@@ -10,11 +11,13 @@ import { SendMessageDto } from './dto/sendMessage.dto';
 
 import { Logger } from '@nestjs/common';
 import { GroupsService } from 'src/groups/groups.service';
+import { ApiOperation, ApiBody } from '@nestjs/swagger';
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
+  namespace: '/chat',
 })
 export class MessagesGateway implements OnGatewayConnection {
   private readonly logger = new Logger(MessagesGateway.name);
@@ -31,10 +34,15 @@ export class MessagesGateway implements OnGatewayConnection {
       return;
     }
     const groupId = client.handshake.query.groupId as string;
-    const inGroup = await this.groupService.check_user_group(
-      info['sub'],
-      groupId,
-    );
+    let inGroup;
+    try {
+      inGroup = await this.groupService.check_user_group_socket(
+        info['sub'],
+        groupId,
+      );
+    } catch (error) {
+      throw new WsException('Payload is missing!');
+    }
     if (!inGroup) {
       this.logger.log(`User ${info['sub']} is not in group ${groupId}`);
       client.disconnect();
@@ -53,6 +61,8 @@ export class MessagesGateway implements OnGatewayConnection {
   @WebSocketServer() server: Server;
 
   @SubscribeMessage('sendMessage')
+  @ApiOperation({ summary: 'Receive a message via WebSocket' })
+  @ApiBody({ description: 'The message payload', type: String })
   async handleMessage(client: Socket, message: SendMessageDto) {
     const info = await this.messagesService.getUserFromSocket(client);
     const groupId = client.handshake.query.groupId as string;

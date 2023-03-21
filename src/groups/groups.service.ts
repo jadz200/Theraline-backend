@@ -83,8 +83,11 @@ export class GroupsService {
     }
     return true;
   }
-  async check_user_group(user_id: string, group_id: string) {
+  async check_user_group_socket(user_id: string, group_id: string) {
     const group = await this.groupModel.find({ _id: group_id });
+    if (group.length == 0) {
+      return;
+    }
     return group[0].users.includes(user_id);
   }
 }
