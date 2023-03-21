@@ -7,6 +7,13 @@ export type AppointmentStatus = ['CREATED', 'CONFIRMED', 'CANCELED', 'DONE'];
 export type PaymentStatus = ['N/A', 'PENDING', 'AWAITING', 'PAID'];
 export type PaymentMethod = ['N/A', 'CASH', 'CHECK', 'CREDIT CARD'];
 
+export class paymentInfo {
+  amount: number;
+  status: PaymentStatus;
+  method: PaymentMethod;
+  date: Date;
+}
+
 @Schema()
 export class Appointment {
   _id: mongoose.Types.ObjectId;
@@ -24,15 +31,10 @@ export class Appointment {
       amount: Number,
       status: String,
       method: String,
-      date: String,
+      date: Date,
     },
   })
-  paymentInfo: {
-    amount: number;
-    status: PaymentStatus;
-    method: PaymentMethod;
-    date: Date;
-  };
+  paymentInfo: paymentInfo;
 }
 
 export const AppointementSchema = SchemaFactory.createForClass(Appointment);

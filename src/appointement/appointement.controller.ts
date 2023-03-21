@@ -29,7 +29,7 @@ export class AppointementController {
             amount: 100,
             status: 'Paid',
             method: 'Credit Card',
-            date: '2023-03-18T16:00:00.000Z',
+            date: '2023-03-18T16:00:00',
           },
         },
         summary: 'An example appointment request',

@@ -22,7 +22,7 @@ export class AppointmentService {
     }
     await this.appointmentModel.create({
       patient_id: dto.patient_id,
-      date: dto.time,
+      date: dto.date,
       doctor_id: doctor_id,
       appointmentStatus: 'CREATED',
       paymentInfo: dto.paymentInfo,

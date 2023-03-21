@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, Matches } from 'class-validator';
 import { PaymentMethod, PaymentStatus } from '../schema/appointement.schema';
 
-export class paymentInfo {
+export class paymentInfoDto {
   @ApiProperty()
   @IsNotEmpty()
   amount: number;
@@ -26,11 +26,12 @@ export class CreateAppointmentDto {
   @IsString()
   @IsNotEmpty()
   patient_id: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @Matches(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/)
-  time: string;
+  date: string;
 
-  @ApiProperty({})
-  paymentInfo: paymentInfo;
+  @ApiProperty({ required: true })
+  paymentInfo: paymentInfoDto;
 }
