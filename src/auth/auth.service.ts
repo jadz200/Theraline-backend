@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common/exceptions';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -17,17 +17,21 @@ import { Tokens } from './types/tokens.type';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private jwtService: JwtService,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private configService: ConfigService,
     private readonly patientService: PatientService,
   ) {}
+
   async signupLocal(dto: CreateUserDto) {
     const temp = await this.findByEmail(dto.email);
     if (temp) {
       throw new BadRequestException('Email already in use');
     }
+
     const hash = await argon.hash(dto.password);
     const user = await this.userModel.create({
       email: dto.email,
@@ -36,6 +40,8 @@ export class AuthService {
       firstName: dto.firstName,
       lastName: dto.lastName,
     });
+    this.logger.log(`Created new user ${user.id} as a ${user.role}`);
+
     this.patientService.create_patient({
       user_id: user.id.toString(),
       email: dto.email,
@@ -44,6 +50,7 @@ export class AuthService {
       firstName: dto.firstName,
       lastName: dto.lastName,
     });
+
     return { msg: 'Created Patient Account' };
   }
 
@@ -61,6 +68,8 @@ export class AuthService {
       lastName: dto.lastName,
       groups: [],
     });
+    this.logger.log(`Created new user ${user.id} as a ${user.role}`);
+
     // this.patientService.create_patient({
     //   user_id: user.id.toString(),
     //   email: dto.email,
@@ -86,6 +95,8 @@ export class AuthService {
 
     const tokens = await this.getTokens(user._id, user.email, user.role);
     await this.updateRtHash(user._id, tokens.refresh_token);
+
+    this.logger.log(`User ${user.id} logged in`);
 
     return {
       access_token: tokens.access_token,
@@ -168,6 +179,8 @@ export class AuthService {
       firstName: user.firstName,
       lastName: user.lastName,
     };
+    this.logger.log(`retrieved user ${user._id} information`);
+
     return userInfo;
   }
 
