@@ -22,7 +22,7 @@ export class AppointementController {
       example1: {
         value: {
           patient_id: '1234',
-          time: '2023-11-07T12:30:00',
+          date: '2023-11-07T12:30:00',
           status: 'Confirmed',
           paymentInfo: {
             amount: 100,

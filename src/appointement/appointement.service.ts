@@ -24,7 +24,7 @@ export class AppointmentService {
       patient_id: dto.patient_id,
       date: dto.date,
       doctor_id: doctor_id,
-      appointmentStatus: 'CREATED',
+      status: 'CREATED',
       paymentInfo: dto.paymentInfo,
     });
     return { msg: 'Created Appointment' };

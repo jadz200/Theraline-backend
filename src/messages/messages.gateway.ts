@@ -41,7 +41,7 @@ export class MessagesGateway implements OnGatewayConnection {
         groupId,
       );
     } catch (error) {
-      throw new WsException('Payload is missing!');
+      throw new WsException('User does not belong in group');
     }
     if (!inGroup) {
       this.logger.log(`User ${info['sub']} is not in group ${groupId}`);
