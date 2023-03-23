@@ -14,9 +14,11 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
@@ -85,13 +87,21 @@ export class AuthController {
     return this.authService.signinLocal(dto);
   }
 
-  @Public()
   @UseGuards(RtGuard)
   @Post('refresh')
   @ApiBearerAuth()
   @ApiOkResponse({
     description: 'Successful Response',
     type: Token,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    schema: {
+      example: {
+        statusCode: 401,
+        message: 'Unauthorized',
+      },
+    },
   })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Use Refresh token' })
@@ -108,9 +118,18 @@ export class AuthController {
     description: 'Successful Response',
     schema: {
       example: {
-        email: 'string',
+        email: 'string@email.com',
         firstName: 'string',
         lastName: 'string',
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    schema: {
+      example: {
+        statusCode: 401,
+        message: 'Unauthorized',
       },
     },
   })
@@ -125,7 +144,35 @@ export class AuthController {
   @Roles('ADMIN')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
+  @ApiOperation({ summary: 'Creates a doctor' })
   @Post('/create_doctor')
+  @ApiOkResponse({
+    description: 'Successful Response',
+    schema: {
+      example: {
+        msg: 'Created Doctor Account',
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    schema: {
+      example: {
+        statusCode: 401,
+        message: 'Unauthorized',
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden Acees',
+    schema: {
+      example: {
+        statusCode: 403,
+        message: 'Forbidden resource',
+        error: 'Forbidden',
+      },
+    },
+  })
   create_doctor(@Body() dto: CreateUserDto) {
     return this.authService.createDoctor(dto);
   }
