@@ -16,6 +16,11 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `${process.cwd()}/.env`,
+      load: [
+        () => ({
+          DATABASE_URL: process.env.DATABASE_URL,
+        }),
+      ],
     }),
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
