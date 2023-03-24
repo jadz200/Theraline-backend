@@ -15,7 +15,6 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `${process.cwd()}/.env`,
       load: [
         () => ({
           DATABASE_URL: process.env.DATABASE_URL,
