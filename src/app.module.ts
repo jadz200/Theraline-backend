@@ -9,6 +9,7 @@ import { MessagesModule } from './messages/messages.module';
 import { AppointementModule } from './appointement/appointement.module';
 import { PatientModule } from './patient/patient.module';
 import { AppController } from './app.controller';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -17,17 +18,20 @@ import { AppController } from './app.controller';
       envFilePath: `${process.cwd()}/.env`,
     }),
     MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async () => ({
-        uri: 'mongodb+srv://theraline-admin:Y9incPeXT3lHtP9R@cluster0.aojjvwq.mongodb.net/?retryWrites=true&w=majority',
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('DATABASE_URL'),
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
       }),
+      inject: [ConfigService],
     }),
+
     AuthModule,
     GroupsModule,
     MessagesModule,
     AppointementModule,
     PatientModule,
+    CloudinaryModule,
   ],
   providers: [
     {

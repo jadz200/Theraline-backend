@@ -75,9 +75,9 @@ export class MessagesGateway implements OnGatewayConnection {
     this.server.to(groupId).emit('newMessage', {
       message: createdMessage,
     });
-    // this.server.to('groups').emit('newMessage', {
-    //   message: groupId,
-    // });
+    this.server.emit('IncomingMessage', {
+      message: groupId,
+    });
     this.logger.log(`user ${info['sub']} Sent message`);
   }
 }
