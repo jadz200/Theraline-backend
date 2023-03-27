@@ -2,27 +2,26 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AuthService } from 'src/auth/auth.service';
-import { PatientService } from 'src/patient/patient.service';
-import { CreateAppointmentDto } from './dto/createAppointement.dto';
-import { Appointment, AppointmentDocument } from './schema/appointement.schema';
-
+import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { Appointment, AppointmentDocument } from './schema/appointment.schema';
+import { UserRole } from 'src/auth/schema/user.schema';
 @Injectable()
 export class AppointmentService {
   constructor(
     @InjectModel(Appointment.name)
     private appointmentModel: Model<AppointmentDocument>,
     private readonly authService: AuthService,
-    private readonly patientService: PatientService,
   ) {}
   async create_appointment(dto: CreateAppointmentDto, doctor_id) {
-    const userFound = await this.patientService.findById(dto.patient_id);
-    console.log(userFound);
-    if (!userFound) {
-      throw new BadRequestException('No user with this id');
+    const userFound = await this.authService.findById(dto.patient_id);
+
+    if (!userFound || userFound.role.toString() !== 'PATIENT') {
+      throw new BadRequestException('No patient with this id');
     }
     await this.appointmentModel.create({
       patient_id: dto.patient_id,
-      date: dto.date,
+      start_date: dto.start_date,
+      end_date: dto.start_date,
       doctor_id: doctor_id,
       status: 'CREATED',
       paymentInfo: dto.paymentInfo,
@@ -64,5 +63,10 @@ export class AppointmentService {
       { appointmentStatus: 'CANCELED' },
     );
     return { msg: 'Appointment canceled' };
+  }
+  async get_doctor_appointment(doctor_id) {
+    const resp = await this.appointmentModel.find({ doctor_id: doctor_id });
+
+    return resp;
   }
 }

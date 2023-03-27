@@ -6,8 +6,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards/at.guard';
 import { GroupsModule } from './groups/groups.module';
 import { MessagesModule } from './messages/messages.module';
-import { AppointementModule } from './appointement/appointement.module';
-import { PatientModule } from './patient/patient.module';
+import { AppointmentModule } from './appointment/appointment.module';
 import { AppController } from './app.controller';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
@@ -29,8 +28,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     AuthModule,
     GroupsModule,
     MessagesModule,
-    AppointementModule,
-    PatientModule,
+    AppointmentModule,
     CloudinaryModule,
   ],
   providers: [

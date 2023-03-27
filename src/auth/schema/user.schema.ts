@@ -30,6 +30,10 @@ export class User {
   groups: string[];
   @Prop()
   clinicInfo: ClinicInfo;
+  @Prop()
+  phone: string;
+  @Prop()
+  birthday: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

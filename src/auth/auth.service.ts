@@ -6,7 +6,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as argon from 'argon2';
 import mongoose, { Model } from 'mongoose';
 import { User, UserDocument, UserRole } from 'src/auth/schema/user.schema';
-import { PatientService } from 'src/patient/patient.service';
 
 import { AuthResponse } from './dto/auth-response.dto';
 import { AuthDto } from './dto/auth.dto';
@@ -24,7 +23,6 @@ export class AuthService {
     private jwtService: JwtService,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private configService: ConfigService,
-    private readonly patientService: PatientService,
   ) {}
 
   async signupLocal(dto: CreateUserDto) {
@@ -40,17 +38,10 @@ export class AuthService {
       role: 'PATIENT',
       firstName: dto.firstName,
       lastName: dto.lastName,
-    });
-    this.logger.log(`Created new user ${user.id} as a ${user.role}`);
-
-    this.patientService.create_patient({
-      user_id: user.id.toString(),
-      email: dto.email,
       phone: 'blank',
       birthday: 'blank',
-      firstName: dto.firstName,
-      lastName: dto.lastName,
     });
+    this.logger.log(`Created new user ${user.id} as a ${user.role}`);
 
     return { msg: 'Created Patient Account' };
   }

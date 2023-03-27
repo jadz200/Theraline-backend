@@ -22,7 +22,9 @@ export class Appointment {
   @Prop({ required: true })
   doctor_id: string;
   @Prop({ required: true })
-  date: Date;
+  start_date: Date;
+  @Prop({ required: true })
+  end_date: Date;
   @Prop({ required: true })
   status: AppointmentStatus;
   @Prop({

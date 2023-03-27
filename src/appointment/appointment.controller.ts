@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { Param, Put, UseGuards } from '@nestjs/common/decorators';
+import { Get, Param, Put, UseGuards } from '@nestjs/common/decorators';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -12,17 +12,17 @@ import mongoose from 'mongoose';
 import { GetCurrentUserId } from 'src/common/decorators/get-current-user-id.decorator';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guard';
-import { AppointmentService } from './appointement.service';
-import { CreateAppointmentDto } from './dto/createAppointement.dto';
-@ApiTags('Appointement')
-@Controller('appointement')
+import { AppointmentService } from './appointment.service';
+import { CreateAppointmentDto } from './dto/create-appointment.dto';
+@ApiTags('Appointment')
+@Controller('appointment')
 export class AppointementController {
   constructor(private appointmentService: AppointmentService) {}
 
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
-  @Post('/create_appointement')
+  @Post('/create_appointment')
   @ApiOperation({ summary: 'Doctor creates appointment' })
   @ApiBody({
     type: CreateAppointmentDto,
@@ -30,7 +30,8 @@ export class AppointementController {
       example1: {
         value: {
           patient_id: '1234',
-          date: '2023-11-07T12:30:00',
+          start_date: '2023-11-07T12:30:00',
+          end_date: '2023-11-07T13:30:00',
           status: 'Confirmed',
           paymentInfo: {
             amount: 100,
@@ -72,7 +73,7 @@ export class AppointementController {
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('PATIENT')
-  @Put(':id/confirm_appointement')
+  @Put(':id/confirm_appointment')
   @ApiOperation({ summary: 'Patient confirm appoinment' })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
@@ -106,7 +107,7 @@ export class AppointementController {
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('PATIENT', 'DOCTOR')
-  @Put(':id/cancel_appointement')
+  @Put(':id/cancel_appointment')
   @ApiOperation({ summary: 'Patient/Doctor cancel the appoinment' })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
@@ -132,5 +133,10 @@ export class AppointementController {
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ) {
     return this.appointmentService.cancel_appointment(appointment_id, userId);
+  }
+  @ApiBearerAuth()
+  @Get('doctor/appointment')
+  get_doctor_appointment(@GetCurrentUserId() doctor_id) {
+    return this.appointmentService.get_doctor_appointment(doctor_id);
   }
 }
