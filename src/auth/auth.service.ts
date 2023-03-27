@@ -10,6 +10,7 @@ import { PatientService } from 'src/patient/patient.service';
 
 import { AuthResponse } from './dto/auth-response.dto';
 import { AuthDto } from './dto/auth.dto';
+import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { RetrieveUserDTO } from './dto/retrieve-user.dto';
 import { JwtPayload } from './types/jwtPayload.type';
@@ -54,7 +55,7 @@ export class AuthService {
     return { msg: 'Created Patient Account' };
   }
 
-  async createDoctor(dto: CreateUserDto) {
+  async createDoctor(dto: CreateDoctorDto) {
     const temp = await this.findByEmail(dto.email);
     if (temp) {
       throw new BadRequestException('Email already in use');
@@ -67,17 +68,10 @@ export class AuthService {
       firstName: dto.firstName,
       lastName: dto.lastName,
       groups: [],
+      clinicInfo: dto.clinicInfo,
     });
     this.logger.log(`Created new user ${user.id} as a ${user.role}`);
 
-    // this.patientService.create_patient({
-    //   user_id: user.id.toString(),
-    //   email: dto.email,
-    //   phone: 'blank',
-    //   birthday: 'blank',
-    //   firstName: dto.firstName,
-    //   lastName: dto.lastName,
-    // });
     return { msg: 'Created Doctor Account' };
   }
 

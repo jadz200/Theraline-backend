@@ -33,6 +33,7 @@ import { GetCurrentUser } from 'src/common/decorators/get-current-user.decorator
 import { Public } from 'src/common/decorators/public.decorator';
 import { RtGuard } from 'src/common/guards/rt.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { CreateDoctorDto } from './dto/create-doctor.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -146,7 +147,7 @@ export class AuthController {
   @UseGuards(RolesGuard)
   @ApiOperation({ summary: 'Creates a doctor' })
   @Post('/create_doctor')
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'Successful Response',
     schema: {
       example: {
@@ -173,7 +174,7 @@ export class AuthController {
       },
     },
   })
-  create_doctor(@Body() dto: CreateUserDto) {
+  create_doctor(@Body() dto: CreateDoctorDto) {
     return this.authService.createDoctor(dto);
   }
 }

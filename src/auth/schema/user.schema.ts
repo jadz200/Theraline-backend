@@ -5,6 +5,12 @@ export type UserDocument = User & Document;
 
 export type UserRole = ['PATIENT', 'MODERATOR', 'DOCTOR', 'ADMIN'];
 
+export class ClinicInfo {
+  @Prop()
+  phone: string;
+  @Prop()
+  location: string;
+}
 @Schema()
 export class User {
   _id: mongoose.Types.ObjectId;
@@ -22,6 +28,8 @@ export class User {
   hashedRt: string;
   @Prop()
   groups: string[];
+  @Prop()
+  clinicInfo: ClinicInfo;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
