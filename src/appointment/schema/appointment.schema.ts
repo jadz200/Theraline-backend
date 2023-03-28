@@ -20,6 +20,8 @@ export class Appointment {
   @Prop({ required: true })
   patient_id: string;
   @Prop({ required: true })
+  title: string;
+  @Prop({ required: true })
   doctor_id: string;
   @Prop({ required: true })
   start_date: Date;

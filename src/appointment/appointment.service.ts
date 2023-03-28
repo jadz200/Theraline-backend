@@ -4,7 +4,6 @@ import { Model } from 'mongoose';
 import { AuthService } from 'src/auth/auth.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { Appointment, AppointmentDocument } from './schema/appointment.schema';
-import { UserRole } from 'src/auth/schema/user.schema';
 @Injectable()
 export class AppointmentService {
   constructor(
@@ -20,6 +19,7 @@ export class AppointmentService {
     }
     await this.appointmentModel.create({
       patient_id: dto.patient_id,
+      title: dto.title,
       start_date: dto.start_date,
       end_date: dto.start_date,
       doctor_id: doctor_id,

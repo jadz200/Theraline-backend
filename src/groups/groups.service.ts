@@ -4,6 +4,7 @@ import mongoose, { Model } from 'mongoose';
 import { User, UserDocument } from 'src/auth/schema/user.schema';
 import { CreateConvoDto } from './dto/create_convo.dto';
 import { CreateGroupDto } from './dto/create_group.dto';
+import { Chat, getChatsDto } from './dto/get_chats.dto';
 import { Group, GroupDocument } from './schema/group.schema';
 
 @Injectable()
@@ -15,9 +16,29 @@ export class GroupsService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async get_all_chats(user_id) {
+  async get_all_chats(user_id): Promise<getChatsDto> {
     const user = await this.userModel.findOne({ _id: user_id });
-    return user.groups;
+
+    const user_groups = user.groups;
+    const resp: Chat[] = [];
+    for (const group of user_groups) {
+      const temp = await this.groupModel.findOne({ _id: group });
+      let fullName = temp.name;
+      if (temp.groupType.toString() === 'PRIVATE') {
+        const otherId = temp.users.find((id) => id !== user_id);
+        const temp2 = await this.userModel
+          .findOne({ _id: otherId })
+          .select('firstName  lastName');
+        fullName = temp2.firstName + ' ' + temp2.lastName;
+      }
+      const chat: Chat = {
+        _id: temp._id,
+        name: fullName,
+        groupType: temp.groupType,
+      };
+      resp.push(chat);
+    }
+    return { chats: resp };
   }
 
   async create_convo(dto: CreateConvoDto) {
@@ -102,10 +123,10 @@ export class GroupsService {
   }
 
   async check_user_group_socket(user_id: string, group_id: string) {
-    const group = await this.groupModel.find({ _id: group_id });
-    if (group.length == 0) {
+    const group = await this.groupModel.findOne({ _id: group_id });
+    if (group.users.length == 0) {
       return;
     }
-    return group[0].users.includes(user_id);
+    return group.users.includes(user_id);
   }
 }

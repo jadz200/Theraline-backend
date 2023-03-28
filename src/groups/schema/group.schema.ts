@@ -8,7 +8,7 @@ export type GroupType = ['PRIVATE', 'PUBLIC'];
 @Schema()
 export class Group {
   _id: mongoose.Types.ObjectId;
-  @Prop({ required: true })
+  @Prop({})
   name: string;
   @Prop({ required: true })
   created_at: Date;

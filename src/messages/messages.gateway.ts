@@ -33,31 +33,36 @@ export class MessagesGateway implements OnGatewayConnection {
       this.logger.log('Issue with auth token');
       return;
     }
+    client.join(info['sub']);
+    this.logger.log(`Email ${info['email']} connected`);
     const groupId = client.handshake.query.groupId as string;
-    let inGroup;
-    try {
-      inGroup = await this.groupService.check_user_group_socket(
-        info['sub'],
-        groupId,
-      );
-    } catch (error) {
-      throw new WsException('User does not belong in group');
+    if (groupId) {
+      let inGroup;
+      try {
+        inGroup = await this.groupService.check_user_group_socket(
+          info['sub'],
+          groupId,
+        );
+      } catch (error) {
+        throw new WsException('User does not belong in group');
+      }
+      if (!inGroup) {
+        this.logger.log(`User ${info['sub']} is not in group ${groupId}`);
+        client.disconnect();
+      }
+      client.join(groupId);
+
+      const messages = await this.messagesService.findAll(groupId);
+      this.server.to(groupId).emit('previousMessages', { messages });
+      this.logger.log(`client ${client.id} joined ${groupId}`);
     }
-    if (!inGroup) {
-      this.logger.log(`User ${info['sub']} is not in group ${groupId}`);
-      client.disconnect();
-    }
-    client.join(groupId);
-    // this.server.to(groupId).emit('userJoined', info['email']);
-    const messages = await this.messagesService.findAll(groupId);
-    this.server.to(groupId).emit('previousMessages', { messages });
-    this.logger.log(
-      `Email ${info['email']} connected into client ${client.id} joined ${groupId}`,
-    );
+    this.logger.log(`client ${client.id} listening to messages`);
   }
+
   async handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
   }
+
   @WebSocketServer() server: Server;
 
   @SubscribeMessage('sendMessage')
@@ -75,9 +80,9 @@ export class MessagesGateway implements OnGatewayConnection {
     this.server.to(groupId).emit('newMessage', {
       message: createdMessage,
     });
-    this.server.emit('IncomingMessage', {
-      message: groupId,
-    });
+    // this.server.to(info['sub']).emit('IncomingMessage', {
+    // message: { groupId },
+    // });
     this.logger.log(`user ${info['sub']} Sent message`);
   }
 }

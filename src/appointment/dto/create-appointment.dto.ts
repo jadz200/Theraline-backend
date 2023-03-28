@@ -29,6 +29,11 @@ export class CreateAppointmentDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
+  title: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
   @Matches(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/)
   start_date: string;
 
