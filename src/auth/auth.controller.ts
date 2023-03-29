@@ -8,7 +8,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import mongoose from 'mongoose';
-import { Roles } from 'src/common/decorators/roles.decorator';
+import {
+  Roles,
+  Public,
+  GetCurrentUserId,
+  GetCurrentUser,
+} from '../common/decorators/index';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -22,18 +27,16 @@ import {
 } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
-import { RetrieveUserDTO } from './dto/retrieve-user.dto';
-import { AuthResponse } from './dto/auth-response.dto';
-import { CreateUserDto } from './dto/create-user.dto';
-import { AuthDto } from './dto/auth.dto';
-import { Token } from './dto/token.entity';
-import { Tokens } from './types/tokens.type';
-import { GetCurrentUserId } from 'src/common/decorators/get-current-user-id.decorator';
-import { GetCurrentUser } from 'src/common/decorators/get-current-user.decorator';
-import { Public } from 'src/common/decorators/public.decorator';
-import { RtGuard } from 'src/common/guards/rt.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
-import { CreateDoctorDto } from './dto/create-doctor.dto';
+import {
+  AuthResponse,
+  RetrieveUserDTO,
+  CreateUserDto,
+  AuthDto,
+  TokenDto,
+  CreateDoctorDto,
+} from './dto/index';
+import { Tokens } from './types/index';
+import { RtGuard, RolesGuard } from '../common/guards/index';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -68,7 +71,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     description: 'Successful Response',
-    type: Token,
+    type: TokenDto,
   })
   @ApiBody({
     type: AuthDto,
@@ -93,7 +96,7 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOkResponse({
     description: 'Successful Response',
-    type: Token,
+    type: TokenDto,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',

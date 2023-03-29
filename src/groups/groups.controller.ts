@@ -7,9 +7,8 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
-import { GetCurrentUserId } from 'src/common/decorators/get-current-user-id.decorator';
-import { CreateConvoDto } from './dto/create_convo.dto';
-import { CreateGroupDto } from './dto/create_group.dto';
+import { GetCurrentUserId } from '../common/decorators/index';
+import { CreateConvoDto, CreateGroupDto, getChatsDto } from './dto/index';
 import { GroupsService } from './groups.service';
 
 @ApiTags('Groups')
@@ -84,7 +83,9 @@ export class GroupsController {
       },
     },
   })
-  get_all_chats(@GetCurrentUserId() userId: mongoose.Types.ObjectId) {
+  get_all_chats(
+    @GetCurrentUserId() userId: mongoose.Types.ObjectId,
+  ): Promise<getChatsDto> {
     return this.groupService.get_all_chats(userId);
   }
 }

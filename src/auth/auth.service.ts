@@ -1,19 +1,18 @@
 import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common/exceptions';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon from 'argon2';
 import mongoose, { Model } from 'mongoose';
-import { User, UserDocument, UserRole } from 'src/auth/schema/user.schema';
-
-import { AuthResponse } from './dto/auth-response.dto';
-import { AuthDto } from './dto/auth.dto';
-import { CreateDoctorDto } from './dto/create-doctor.dto';
-import { CreateUserDto } from './dto/create-user.dto';
-import { RetrieveUserDTO } from './dto/retrieve-user.dto';
-import { JwtPayload } from './types/jwtPayload.type';
-import { Tokens } from './types/tokens.type';
+import { User, UserDocument, UserRole } from '../auth/schema/user.schema';
+import {
+  AuthResponse,
+  AuthDto,
+  CreateDoctorDto,
+  CreateUserDto,
+  RetrieveUserDTO,
+} from './dto/index';
+import { JwtPayload, Tokens } from './types/index';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +21,6 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private configService: ConfigService,
   ) {}
 
   async signupLocal(dto: CreateUserDto) {

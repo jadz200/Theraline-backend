@@ -11,7 +11,7 @@ import {
   ApiOperation,
   ApiProduces,
 } from '@nestjs/swagger';
-import { Public } from 'src/common/decorators/public.decorator';
+import { Public } from '../common/decorators/index';
 import { CloudinaryService } from './cloudinary.service';
 
 @Controller('upload')

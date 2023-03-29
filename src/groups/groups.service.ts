@@ -1,10 +1,9 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { User, UserDocument } from 'src/auth/schema/user.schema';
-import { CreateConvoDto } from './dto/create_convo.dto';
-import { CreateGroupDto } from './dto/create_group.dto';
-import { Chat, getChatsDto } from './dto/get_chats.dto';
+import { User, UserDocument } from '../auth/schema/user.schema';
+
+import { Chat, getChatsDto, CreateConvoDto, CreateGroupDto } from './dto/index';
 import { Group, GroupDocument } from './schema/group.schema';
 
 @Injectable()

@@ -10,7 +10,7 @@ import { Server, Socket } from 'socket.io';
 import { SendMessageDto } from './dto/sendMessage.dto';
 
 import { Logger } from '@nestjs/common';
-import { GroupsService } from 'src/groups/groups.service';
+import { GroupsService } from '../groups/groups.service';
 import { ApiOperation, ApiBody } from '@nestjs/swagger';
 
 @WebSocketGateway({

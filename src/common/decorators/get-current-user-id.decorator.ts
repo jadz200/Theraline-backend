@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import mongoose from 'mongoose';
-import { JwtPayload } from 'src/auth/types/jwtPayload.type';
+import { JwtPayload } from 'src/auth/types/index';
 
 export const GetCurrentUserId = createParamDecorator(
   (_: undefined, context: ExecutionContext): mongoose.Types.ObjectId => {

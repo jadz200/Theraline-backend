@@ -4,9 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schema/user.schema';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { AtStrategy } from './strategies/at.strategy';
-import { RtStrategy } from './strategies/rt.strategy';
-import { RolesGuard } from 'src/common/guards/roles.guard';
+import { AtStrategy, RtStrategy } from './strategies/index';
+import { RolesGuard } from '../common/guards/index';
 
 @Module({
   imports: [

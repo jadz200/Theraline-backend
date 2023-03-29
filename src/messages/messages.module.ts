@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { MessagesGateway } from './messages.gateway';
-import { AuthModule } from 'src/auth/auth.module';
-import { GroupsModule } from 'src/groups/groups.module';
+import { AuthModule } from '../auth/auth.module';
+import { GroupsModule } from '../groups/groups.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Message, MessageSchema } from './schema/message.schema';
 

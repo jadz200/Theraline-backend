@@ -9,11 +9,12 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
-import { GetCurrentUserId } from 'src/common/decorators/get-current-user-id.decorator';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { RolesGuard } from 'src/common/guards/roles.guard';
+import { GetCurrentUserId } from '../common/decorators/get-current-user-id.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { AppointmentService } from './appointment.service';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { CreateAppointmentDto } from './dto/index';
+
 @ApiTags('Appointment')
 @Controller('appointment')
 export class AppointementController {

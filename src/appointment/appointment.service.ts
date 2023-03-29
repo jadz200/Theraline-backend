@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AuthService } from 'src/auth/auth.service';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { Appointment, AppointmentDocument } from './schema/appointment.schema';
+import { AuthService } from '../auth/auth.service';
+import { CreateAppointmentDto } from './dto/index';
+import { Appointment, AppointmentDocument } from './schema/index';
 @Injectable()
 export class AppointmentService {
   constructor(

@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from 'src/auth/auth.module';
-import { AppointementController } from './appointment.controller';
-import { AppointmentService } from './appointment.service';
-import { Appointment, AppointementSchema } from './schema/appointment.schema';
+import { AuthModule } from '../auth/auth.module';
+import { AppointementController, AppointmentService } from './index';
+import { Appointment, AppointementSchema } from './schema/index';
 
 @Module({
   imports: [
