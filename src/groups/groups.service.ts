@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
+import { Message, MessageDocument } from 'src/messages/schema/message.schema';
 import { User, UserDocument } from '../auth/schema/user.schema';
 
 import { Chat, getChatsDto, CreateConvoDto, CreateGroupDto } from './dto/index';
@@ -13,6 +14,7 @@ export class GroupsService {
   constructor(
     @InjectModel(Group.name) private groupModel: Model<GroupDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Message.name) private messageModel: Model<MessageDocument>,
   ) {}
 
   async get_all_chats(user_id): Promise<getChatsDto> {
@@ -30,11 +32,31 @@ export class GroupsService {
           .select('firstName  lastName');
         fullName = temp2.firstName + ' ' + temp2.lastName;
       }
-      const chat: Chat = {
-        _id: temp._id,
-        name: fullName,
-        groupType: temp.groupType,
-      };
+      const latestMessage = await this.messageModel.findOne(
+        { group_id: temp._id },
+        {},
+        { created_at: -1 },
+      );
+      let chat;
+      if (latestMessage) {
+        chat = {
+          _id: temp._id,
+          name: fullName,
+          groupType: temp.groupType,
+          latestMessage: {
+            _id: latestMessage._id,
+            send_at: latestMessage.send_at,
+            user_id: latestMessage.user_id,
+            text: latestMessage.text,
+          },
+        };
+      } else {
+        chat = {
+          _id: temp._id,
+          name: fullName,
+          groupType: temp.groupType,
+        };
+      }
       resp.push(chat);
     }
     return { chats: resp };
@@ -94,7 +116,7 @@ export class GroupsService {
 
     const newGroup = await this.groupModel.create({
       users: dto.users_id,
-      groupType: 'PUBLIC',
+      groupType: 'GROUP',
       created_at: time,
       name: dto.name,
     });

@@ -3,7 +3,7 @@ import mongoose, { Document } from 'mongoose';
 
 export type GroupDocument = Group & Document;
 
-export type GroupType = ['PRIVATE', 'PUBLIC'];
+export type GroupType = ['PRIVATE', 'GROUP'];
 
 @Schema()
 export class Group {

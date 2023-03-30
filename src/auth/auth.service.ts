@@ -25,6 +25,7 @@ export class AuthService {
 
   async signupLocal(dto: CreateUserDto) {
     const temp = await this.findByEmail(dto.email);
+    console.log(dto.image);
     if (temp) {
       throw new BadRequestException('Email already in use');
     }
@@ -38,6 +39,7 @@ export class AuthService {
       lastName: dto.lastName,
       phone: 'blank',
       birthday: 'blank',
+      image: dto.image,
     });
     this.logger.log(`Created new user ${user.id} as a ${user.role}`);
 

@@ -34,6 +34,8 @@ export class User {
   phone: string;
   @Prop()
   birthday: string;
+  @Prop({ required: true })
+  image: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -33,6 +33,8 @@ export class CreateDoctorDto {
   @IsString()
   password: string;
 
+  image: string;
+
   @ApiProperty()
   @IsNotEmpty()
   clinicInfo: ClinicInfoDto;

@@ -5,7 +5,9 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import mongoose from 'mongoose';
 import {
@@ -18,10 +20,12 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiProduces,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -37,11 +41,16 @@ import {
 } from './dto/index';
 import { Tokens } from './types/index';
 import { RtGuard, RolesGuard } from '../common/guards/index';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private cloudinaryService: CloudinaryService,
+  ) {}
 
   @Public()
   @Post('signup')
@@ -61,8 +70,39 @@ export class AuthController {
       },
     },
   })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        firstName: {
+          type: 'string',
+        },
+        lastName: {
+          type: 'string',
+        },
+        email: {
+          type: 'string',
+        },
+        password: {
+          type: 'string',
+        },
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiProduces('application/json')
   @ApiOperation({ summary: 'Create patient user' })
-  signupLocal(@Body() dto: CreateUserDto) {
+  @UseInterceptors(FileInterceptor('file', { dest: './uploads' }))
+  async signupLocal(
+    @Body() dto: CreateUserDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    dto.image = (await this.cloudinaryService.upload(image)).url;
+
     return this.authService.signupLocal(dto);
   }
 
@@ -87,7 +127,7 @@ export class AuthController {
     },
   })
   @ApiOperation({ summary: 'Sign in and get access and refresh tokens' })
-  signinLocal(@Body() dto: AuthDto): Promise<AuthResponse> {
+  async signinLocal(@Body() dto: AuthDto): Promise<AuthResponse> {
     return this.authService.signinLocal(dto);
   }
 
@@ -139,7 +179,7 @@ export class AuthController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Use Access token get user info' })
-  retrieveUserInfo(
+  async retrieveUserInfo(
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ): Promise<RetrieveUserDTO> {
     return this.authService.retrieveUserInfo(userId);
@@ -177,7 +217,37 @@ export class AuthController {
       },
     },
   })
-  create_doctor(@Body() dto: CreateDoctorDto) {
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        firstName: {
+          type: 'string',
+        },
+        lastName: {
+          type: 'string',
+        },
+        email: {
+          type: 'string',
+        },
+        password: {
+          type: 'string',
+        },
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiProduces('application/json')
+  @UseInterceptors(FileInterceptor('file', { dest: './uploads' }))
+  async create_doctor(
+    @Body() dto: CreateDoctorDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    dto.image = (await this.cloudinaryService.upload(image)).url;
     return this.authService.createDoctor(dto);
   }
 }
