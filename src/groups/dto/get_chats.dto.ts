@@ -7,6 +7,7 @@ export class Chat {
   _id: mongoose.Types.ObjectId;
   name: string;
   groupType: GroupType;
+  groupImage: string;
   @IsOptional()
   latestMessage: receiveMessage;
 }

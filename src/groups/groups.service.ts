@@ -25,12 +25,14 @@ export class GroupsService {
     for (const group of user_groups) {
       const temp = await this.groupModel.findOne({ _id: group });
       let fullName = temp.name;
+      let image = temp.image;
       if (temp.groupType.toString() === 'PRIVATE') {
         const otherId = temp.users.find((id) => id !== user_id);
         const temp2 = await this.userModel
           .findOne({ _id: otherId })
-          .select('firstName  lastName');
+          .select('firstName  lastName image');
         fullName = temp2.firstName + ' ' + temp2.lastName;
+        image = temp2.image;
       }
       const latestMessage = await this.messageModel.findOne(
         { group_id: temp._id },
@@ -43,6 +45,7 @@ export class GroupsService {
           _id: temp._id,
           name: fullName,
           groupType: temp.groupType,
+          groupImage: image,
           latestMessage: {
             _id: latestMessage._id,
             send_at: latestMessage.send_at,
@@ -54,6 +57,7 @@ export class GroupsService {
         chat = {
           _id: temp._id,
           name: fullName,
+          groupImage: image,
           groupType: temp.groupType,
         };
       }
@@ -109,11 +113,11 @@ export class GroupsService {
   async create_group(dto: CreateGroupDto) {
     const time = Date.now();
     const resp = this.check_users(dto.users_id);
+    console.log('test');
 
     if ((await resp) === false) {
       throw new BadRequestException('User does not exists');
     }
-
     const newGroup = await this.groupModel.create({
       users: dto.users_id,
       groupType: 'GROUP',

@@ -25,7 +25,6 @@ export class AuthService {
 
   async signupLocal(dto: CreateUserDto) {
     const temp = await this.findByEmail(dto.email);
-    console.log(dto.image);
     if (temp) {
       throw new BadRequestException('Email already in use');
     }

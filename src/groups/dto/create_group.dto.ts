@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateGroupDto {
   @ApiProperty()
@@ -9,6 +9,6 @@ export class CreateGroupDto {
   @IsNotEmpty()
   @IsString()
   name: string;
-
+  @ApiProperty({ type: 'string', format: 'binary' })
   image: string;
 }

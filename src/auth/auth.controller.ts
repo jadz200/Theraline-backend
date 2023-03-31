@@ -96,7 +96,7 @@ export class AuthController {
   @ApiConsumes('multipart/form-data')
   @ApiProduces('application/json')
   @ApiOperation({ summary: 'Create patient user' })
-  @UseInterceptors(FileInterceptor('file', { dest: './uploads' }))
+  @UseInterceptors(FileInterceptor('image', { dest: './uploads' }))
   async signupLocal(
     @Body() dto: CreateUserDto,
     @UploadedFile() image: Express.Multer.File,

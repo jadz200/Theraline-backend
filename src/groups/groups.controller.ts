@@ -9,6 +9,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiConsumes,
   ApiCreatedResponse,
   ApiOperation,
@@ -77,16 +78,22 @@ export class GroupsController {
       },
     },
   })
-  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: CreateGroupDto,
+    schema: {},
+  })
+  @ApiConsumes('multipart/form-data', 'application/json')
   @ApiProduces('application/json')
-  @UseInterceptors(FileInterceptor('file', { dest: './uploads' }))
+  @UseInterceptors(FileInterceptor('image', { dest: './uploads' }))
   async create_group(
-    @Body() dto: CreateGroupDto,
+    @Body() dto,
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
     @UploadedFile() image: Express.Multer.File,
   ) {
+    dto.users_id = dto.users_id.split(',');
     dto.image = (await this.cloudinaryService.upload(image)).url;
     dto.users_id.push(userId.toString());
+
     return this.groupService.create_group(dto);
   }
 
