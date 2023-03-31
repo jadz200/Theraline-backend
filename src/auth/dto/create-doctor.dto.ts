@@ -32,10 +32,10 @@ export class CreateDoctorDto {
   @IsNotEmpty()
   @IsString()
   password: string;
-
+  @ApiProperty({ type: 'string', format: 'binary' })
   image: string;
 
-  @ApiProperty()
   @IsNotEmpty()
+  @ApiProperty({ type: ClinicInfoDto })
   clinicInfo: ClinicInfoDto;
 }

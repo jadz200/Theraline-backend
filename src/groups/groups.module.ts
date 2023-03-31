@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { Message, MessageSchema } from 'src/messages/schema/message.schema';
 import { User, UserSchema } from '../auth/schema/user.schema';
 import { GroupsController } from './groups.controller';
@@ -13,6 +14,7 @@ import { Group, GroupSchema } from './schema/group.schema';
       { name: User.name, schema: UserSchema },
       { name: Message.name, schema: MessageSchema },
     ]),
+    CloudinaryModule,
   ],
   controllers: [GroupsController],
   providers: [GroupsService],

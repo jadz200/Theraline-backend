@@ -60,6 +60,7 @@ export class AuthService {
       lastName: dto.lastName,
       groups: [],
       clinicInfo: dto.clinicInfo,
+      image: dto.image,
     });
     this.logger.log(`Created new user ${user.id} as a ${user.role}`);
 

@@ -16,6 +16,8 @@ export class Group {
   groupType: GroupType;
   @Prop({ required: true })
   users: string[];
+  @Prop()
+  image: string;
 }
 
 export const GroupSchema = SchemaFactory.createForClass(Group);

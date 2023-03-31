@@ -218,35 +218,36 @@ export class AuthController {
     },
   })
   @ApiBody({
+    description: 'Data required to create a new doctor',
+    type: CreateDoctorDto,
+    required: true,
     schema: {
       type: 'object',
       properties: {
-        firstName: {
-          type: 'string',
-        },
-        lastName: {
-          type: 'string',
-        },
-        email: {
-          type: 'string',
-        },
-        password: {
-          type: 'string',
-        },
-        image: {
-          type: 'string',
-          format: 'binary',
+        firstName: { type: 'string' },
+        lastName: { type: 'string' },
+        email: { type: 'string', format: 'email' },
+        password: { type: 'string' },
+        image: { type: 'string', format: 'binary' },
+        clinicInfo: {
+          type: 'object',
+          properties: {
+            phone: { type: 'string' },
+            location: { type: 'string' },
+          },
+          required: ['phone', 'location'],
         },
       },
     },
   })
   @ApiConsumes('multipart/form-data')
   @ApiProduces('application/json')
-  @UseInterceptors(FileInterceptor('file', { dest: './uploads' }))
+  @UseInterceptors(FileInterceptor('image', { dest: './uploads' }))
   async create_doctor(
-    @Body() dto: CreateDoctorDto,
+    @Body() dto: any,
     @UploadedFile() image: Express.Multer.File,
   ) {
+    dto.clinicInfo = JSON.parse(dto.clinicInfo);
     dto.image = (await this.cloudinaryService.upload(image)).url;
     return this.authService.createDoctor(dto);
   }

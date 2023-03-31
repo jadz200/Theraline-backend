@@ -119,6 +119,7 @@ export class GroupsService {
       groupType: 'GROUP',
       created_at: time,
       name: dto.name,
+      image: dto.image,
     });
     this.logger.log(`Created group ${newGroup.id}`);
 

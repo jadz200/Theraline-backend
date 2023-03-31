@@ -9,4 +9,6 @@ export class CreateGroupDto {
   @IsNotEmpty()
   @IsString()
   name: string;
+
+  image: string;
 }
