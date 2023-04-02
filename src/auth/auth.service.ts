@@ -3,7 +3,6 @@ import { BadRequestException } from '@nestjs/common/exceptions';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon from 'argon2';
-import { Console } from 'console';
 import mongoose, { Model } from 'mongoose';
 import { User, UserDocument, UserRole } from '../auth/schema/user.schema';
 import {
@@ -36,8 +35,9 @@ export class AuthService {
       role: 'PATIENT',
       firstName: dto.firstName,
       lastName: dto.lastName,
-      phone: 'blank',
-      birthday: 'blank',
+      phone: dto.phone,
+      birthday: dto.birthday,
+      gender: dto.gender,
       image: dto.image,
     });
     this.logger.log(`Created new user ${user.id} as a ${user.role}`);

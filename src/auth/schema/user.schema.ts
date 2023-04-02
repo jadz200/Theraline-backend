@@ -10,6 +10,8 @@ export class ClinicInfo {
   phone: string;
   @Prop()
   location: string;
+  @Prop()
+  name: string;
 }
 @Schema()
 export class User {
@@ -22,6 +24,12 @@ export class User {
   firstName: string;
   @Prop({ required: true })
   lastName: string;
+  @Prop()
+  phone: string;
+  @Prop()
+  birthday: Date;
+  @Prop()
+  gender: string;
   @Prop({ required: true })
   role: UserRole;
   @Prop()
@@ -31,11 +39,9 @@ export class User {
   @Prop()
   clinicInfo: ClinicInfo;
   @Prop()
-  phone: string;
-  @Prop()
-  birthday: string;
-  @Prop()
   image: string;
+  @Prop()
+  expoToken: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

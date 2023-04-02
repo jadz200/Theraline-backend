@@ -232,6 +232,7 @@ export class AuthController {
         clinicInfo: {
           type: 'object',
           properties: {
+            name: { type: 'string' },
             phone: { type: 'string' },
             location: { type: 'string' },
           },
@@ -243,11 +244,14 @@ export class AuthController {
   @ApiProduces('application/json')
   @UseInterceptors(FileInterceptor('image', { dest: './uploads' }))
   async create_doctor(
-    @Body() dto: any,
+    @Body() dto: CreateDoctorDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
     if (typeof dto.clinicInfo === 'string') {
       dto.clinicInfo = JSON.parse(dto.clinicInfo);
+    }
+    if (dto.image == '') {
+      dto.image = undefined;
     }
     if (dto.image) {
       dto.image = (await this.cloudinaryService.upload(image)).url;

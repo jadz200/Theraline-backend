@@ -10,6 +10,11 @@ export class ClinicInfoDto {
   @IsNotEmpty()
   @IsString()
   location: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  name: string;
 }
 
 export class CreateDoctorDto {
