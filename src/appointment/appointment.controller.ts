@@ -1,5 +1,12 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { Get, Param, Put, UseGuards } from '@nestjs/common/decorators';
+import {
+  Get,
+  Param,
+  Patch,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common/decorators';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -9,6 +16,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
+import { PaginationParams } from '../common/dto/paginationParams.dto';
 import { GetCurrentUserId } from '../common/decorators/get-current-user-id.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -30,10 +38,10 @@ export class AppointementController {
     examples: {
       example1: {
         value: {
+          title: 'Cool appointment',
           patient_id: '1234',
           start_date: '2023-11-07T12:30:00',
           end_date: '2023-11-07T13:30:00',
-          status: 'Confirmed',
           paymentInfo: {
             amount: 100,
             status: 'Paid',
@@ -74,7 +82,7 @@ export class AppointementController {
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('PATIENT')
-  @Put(':id/confirm_appointment')
+  @Patch(':id/confirm_appointment')
   @ApiOperation({ summary: 'Patient confirm appoinment' })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
@@ -108,7 +116,7 @@ export class AppointementController {
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('PATIENT', 'DOCTOR')
-  @Put(':id/cancel_appointment')
+  @Patch(':id/cancel_appointment')
   @ApiOperation({ summary: 'Patient/Doctor cancel the appoinment' })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
@@ -137,7 +145,10 @@ export class AppointementController {
   }
   @ApiBearerAuth()
   @Get('doctor/appointment')
-  get_doctor_appointment(@GetCurrentUserId() doctor_id) {
-    return this.appointmentService.get_doctor_appointment(doctor_id);
+  get_doctor_appointment(
+    @GetCurrentUserId() doctor_id,
+    @Query() { page }: PaginationParams,
+  ) {
+    return this.appointmentService.get_doctor_appointment(doctor_id, page);
   }
 }

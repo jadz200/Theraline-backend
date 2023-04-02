@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import * as mongoosePaginate from 'mongoose-paginate-v2';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const aggregatePaginate = require('mongoose-paginate-v2');
 export type AppointmentDocument = Appointment & Document;
 
 export type AppointmentStatus = ['CREATED', 'CONFIRMED', 'CANCELED', 'DONE'];
@@ -41,4 +44,5 @@ export class Appointment {
   paymentInfo: paymentInfo;
 }
 
-export const AppointementSchema = SchemaFactory.createForClass(Appointment);
+export const AppointmentSchema =
+  SchemaFactory.createForClass(Appointment).plugin(aggregatePaginate);

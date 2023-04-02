@@ -1,5 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import * as mongoosePaginate from 'mongoose-paginate-v2';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const aggregatePaginate = require('mongoose-paginate-v2');
 
 export type MessageDocument = Message & Document;
 
@@ -16,4 +19,5 @@ export class Message {
   send_at: Date;
 }
 
-export const MessageSchema = SchemaFactory.createForClass(Message);
+export const MessageSchema =
+  SchemaFactory.createForClass(Message).plugin(aggregatePaginate);

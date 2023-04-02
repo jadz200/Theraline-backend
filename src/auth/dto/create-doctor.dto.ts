@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ClinicInfoDto {
@@ -32,6 +32,8 @@ export class CreateDoctorDto {
   @IsNotEmpty()
   @IsString()
   password: string;
+
+  @IsOptional()
   @ApiProperty({ type: 'string', format: 'binary' })
   image: string;
 

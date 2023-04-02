@@ -4,19 +4,35 @@ import { SendMessageDto } from './dto/sendMessage.dto';
 import * as jwt from 'jsonwebtoken';
 import { InjectModel } from '@nestjs/mongoose';
 import { Message, MessageDocument } from './schema/message.schema';
-import { Model } from 'mongoose';
+import { PaginateModel } from 'mongoose';
 import { WsException } from '@nestjs/websockets';
+import { GroupsService } from 'src/groups/groups.service';
+import { BadRequestException } from '@nestjs/common/exceptions';
 
 @Injectable()
 export class MessagesService {
   private readonly logger = new Logger(MessagesService.name);
+
   constructor(
-    @InjectModel(Message.name) private messageModel: Model<MessageDocument>,
+    @InjectModel(Message.name)
+    private messageModel: PaginateModel<MessageDocument>,
+    private readonly groupService: GroupsService,
   ) {}
+
   async findAll(group_id: string) {
     const messages = await this.messageModel.find({ group_id: group_id });
     return messages;
   }
+  async get_chat(user_id, group_id: string, page: number) {
+    const options = {
+      page: page,
+      limit: 10,
+      sort: { createdAt: -1 },
+    };
+    const resp = this.messageModel.paginate({ group_id: group_id }, options);
+    return resp;
+  }
+
   async create(user_id: string, group_id: string, message: SendMessageDto) {
     const time = Date.now();
 

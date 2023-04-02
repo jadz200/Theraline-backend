@@ -3,6 +3,7 @@ import { BadRequestException } from '@nestjs/common/exceptions';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon from 'argon2';
+import { Console } from 'console';
 import mongoose, { Model } from 'mongoose';
 import { User, UserDocument, UserRole } from '../auth/schema/user.schema';
 import {
@@ -28,7 +29,6 @@ export class AuthService {
     if (temp) {
       throw new BadRequestException('Email already in use');
     }
-
     const hash = await argon.hash(dto.password);
     const user = await this.userModel.create({
       email: dto.email,

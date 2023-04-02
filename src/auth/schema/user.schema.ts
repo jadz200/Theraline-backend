@@ -34,7 +34,7 @@ export class User {
   phone: string;
   @Prop()
   birthday: string;
-  @Prop({ required: true })
+  @Prop()
   image: string;
 }
 

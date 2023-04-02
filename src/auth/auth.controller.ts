@@ -101,8 +101,10 @@ export class AuthController {
     @Body() dto: CreateUserDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    dto.image = (await this.cloudinaryService.upload(image)).url;
-
+    console.log(image);
+    if (typeof image !== 'undefined') {
+      dto.image = (await this.cloudinaryService.upload(image)).url;
+    }
     return this.authService.signupLocal(dto);
   }
 
@@ -219,8 +221,6 @@ export class AuthController {
   })
   @ApiBody({
     description: 'Data required to create a new doctor',
-    type: CreateDoctorDto,
-    required: true,
     schema: {
       type: 'object',
       properties: {
@@ -235,7 +235,6 @@ export class AuthController {
             phone: { type: 'string' },
             location: { type: 'string' },
           },
-          required: ['phone', 'location'],
         },
       },
     },
@@ -247,8 +246,12 @@ export class AuthController {
     @Body() dto: any,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    dto.clinicInfo = JSON.parse(dto.clinicInfo);
-    dto.image = (await this.cloudinaryService.upload(image)).url;
+    if (typeof dto.clinicInfo === 'string') {
+      dto.clinicInfo = JSON.parse(dto.clinicInfo);
+    }
+    if (dto.image) {
+      dto.image = (await this.cloudinaryService.upload(image)).url;
+    }
     return this.authService.createDoctor(dto);
   }
 }

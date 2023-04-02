@@ -1,14 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { PaginateModel } from 'mongoose';
 import { AuthService } from '../auth/auth.service';
 import { CreateAppointmentDto } from './dto/index';
 import { Appointment, AppointmentDocument } from './schema/index';
+
 @Injectable()
 export class AppointmentService {
   constructor(
     @InjectModel(Appointment.name)
-    private appointmentModel: Model<AppointmentDocument>,
+    private appointmentModel: PaginateModel<AppointmentDocument>,
     private readonly authService: AuthService,
   ) {}
   async create_appointment(dto: CreateAppointmentDto, doctor_id) {
@@ -64,9 +65,17 @@ export class AppointmentService {
     );
     return { msg: 'Appointment canceled' };
   }
-  async get_doctor_appointment(doctor_id) {
-    const resp = await this.appointmentModel.find({ doctor_id: doctor_id });
 
+  async get_doctor_appointment(doctor_id, page) {
+    const options = {
+      page: page,
+      limit: 25,
+      sort: { createdAt: -1 },
+    };
+    const resp = this.appointmentModel.paginate(
+      { doctor_id: doctor_id },
+      options,
+    );
     return resp;
   }
 }
