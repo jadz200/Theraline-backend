@@ -18,7 +18,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { GetCurrentUserId } from '../common/decorators/index';
 import { CreateConvoDto, CreateGroupDto, getChatsDto } from './dto/index';
 import { GroupsService } from './groups.service';

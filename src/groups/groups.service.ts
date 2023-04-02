@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { Message, MessageDocument } from 'src/messages/schema/message.schema';
+import { Message, MessageDocument } from '../messages/schema/message.schema';
 import { User, UserDocument } from '../auth/schema/user.schema';
 
 import { Chat, getChatsDto, CreateConvoDto, CreateGroupDto } from './dto/index';

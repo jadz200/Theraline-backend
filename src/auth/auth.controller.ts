@@ -42,7 +42,7 @@ import {
 import { Tokens } from './types/index';
 import { RtGuard, RolesGuard } from '../common/guards/index';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @ApiTags('Auth')
 @Controller('auth')

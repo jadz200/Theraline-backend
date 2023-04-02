@@ -6,8 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Message, MessageDocument } from './schema/message.schema';
 import { PaginateModel } from 'mongoose';
 import { WsException } from '@nestjs/websockets';
-import { GroupsService } from 'src/groups/groups.service';
-import { BadRequestException } from '@nestjs/common/exceptions';
+import { GroupsService } from '../groups/groups.service';
 
 @Injectable()
 export class MessagesService {

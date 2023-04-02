@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
-import { Message, MessageSchema } from 'src/messages/schema/message.schema';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import { Message, MessageSchema } from '../messages/schema/message.schema';
 import { User, UserSchema } from '../auth/schema/user.schema';
 import { GroupsController } from './groups.controller';
 import { GroupsService } from './groups.service';

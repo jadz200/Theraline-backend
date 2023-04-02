@@ -16,10 +16,13 @@ describe('AuthController (e2e)', () => {
     await app.init();
   });
 
-  it('/sign in (GET)', () => {
+  it('/sign-in (GET)', () => {
     return request(app.getHttpServer())
       .post('/auth/signin')
-      .send({ email: 'johndoe@gmail.com', password: 'string' })
+      .send({
+        email: process.env.PATIENT_EMAIL,
+        password: process.env.USER_PASSWORD,
+      })
       .expect(200);
   });
 });

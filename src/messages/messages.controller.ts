@@ -1,8 +1,7 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { PaginationParameters } from 'mongoose-paginate-v2';
-import { GetCurrentUserId, Public } from 'src/common/decorators';
-import { PaginationParams } from 'src/common/dto/paginationParams.dto';
+import { GetCurrentUserId } from '../common/decorators';
+import { PaginationParams } from '../common/dto/paginationParams.dto';
 import { MessagesService } from './messages.service';
 
 @ApiTags('message')
