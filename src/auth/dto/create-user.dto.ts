@@ -26,11 +26,9 @@ export class CreateUserDto {
   image: string;
 
   @ApiProperty()
-  @IsString()
   phone: string;
 
   @ApiProperty()
-  @IsString()
   gender: string;
 
   @ApiProperty()

@@ -176,4 +176,11 @@ export class AuthService {
   async findById(id: string): Promise<User | undefined> {
     return await this.userModel.findOne({ _id: id });
   }
+  async getClinicInfo(id: string) {
+    const doctor = await this.userModel
+      .findOne({ _id: id })
+      .select('clinicInfo');
+
+    return doctor;
+  }
 }

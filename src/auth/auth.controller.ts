@@ -258,4 +258,12 @@ export class AuthController {
     }
     return this.authService.createDoctor(dto);
   }
+
+  @Get('/clinicInfo')
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @Roles('DOCTOR')
+  async get_clinicInfo(@GetCurrentUserId() id: mongoose.Types.ObjectId) {
+    return await this.authService.getClinicInfo(id.toString());
+  }
 }
