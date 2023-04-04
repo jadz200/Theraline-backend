@@ -5,9 +5,7 @@ import {
   OnGatewayConnection,
   WsException,
 } from '@nestjs/websockets';
-import { MessagesService } from '../messages/messages.service';
 import { Server, Socket } from 'socket.io';
-import { SendMessageDto } from '../messages/dto/sendMessage.dto';
 
 import { Logger } from '@nestjs/common';
 import { GroupsService } from '../groups/groups.service';
