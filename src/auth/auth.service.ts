@@ -3,7 +3,8 @@ import { BadRequestException } from '@nestjs/common/exceptions';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon from 'argon2';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, PaginateModel } from 'mongoose';
+import { Appointment, AppointmentDocument } from '../appointment/schema';
 import { User, UserDocument, UserRole } from '../auth/schema/user.schema';
 import {
   AuthResponse,
@@ -19,8 +20,10 @@ export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
   constructor(
-    private jwtService: JwtService,
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private readonly jwtService: JwtService,
+    @InjectModel(Appointment.name)
+    private appointmentModel: PaginateModel<AppointmentDocument>,
+    @InjectModel(User.name) private userModel: PaginateModel<UserDocument>,
   ) {}
 
   async signupLocal(dto: CreateUserDto) {
@@ -182,5 +185,9 @@ export class AuthService {
       .select('clinicInfo');
 
     return doctor;
+  }
+  async getPatientList(id: string) {
+    const resp = await this.appointmentModel.find({ doctor_id: id });
+    return resp;
   }
 }

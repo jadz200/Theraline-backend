@@ -9,6 +9,7 @@ import { MessagesModule } from './messages/messages.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { AppController } from './app.controller';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     MessagesModule,
     AppointmentModule,
     CloudinaryModule,
+    SocketModule,
   ],
   providers: [
     {

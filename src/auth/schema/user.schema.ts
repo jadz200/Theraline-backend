@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-
+import * as mongoosePaginate from 'mongoose-paginate-v2';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const aggregatePaginate = require('mongoose-paginate-v2');
 export type UserDocument = User & Document;
 
 export type UserRole = ['PATIENT', 'MODERATOR', 'DOCTOR', 'ADMIN'];
@@ -45,3 +47,4 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+UserSchema.plugin(aggregatePaginate);

@@ -17,6 +17,10 @@ export class GroupsService {
     @InjectModel(Message.name) private messageModel: Model<MessageDocument>,
   ) {}
 
+  async get_groups_id(user_id): Promise<string[]> {
+    const user = await this.userModel.findOne({ _id: user_id });
+    return user.groups;
+  }
   async get_all_chats(user_id): Promise<getChatsDto> {
     const user = await this.userModel.findOne({ _id: user_id });
 

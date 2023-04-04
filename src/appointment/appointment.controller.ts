@@ -1,12 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import {
-  Get,
-  Param,
-  Patch,
-  Put,
-  Query,
-  UseGuards,
-} from '@nestjs/common/decorators';
+import { Get, Param, Patch, Query, UseGuards } from '@nestjs/common/decorators';
 import {
   ApiBearerAuth,
   ApiBody,

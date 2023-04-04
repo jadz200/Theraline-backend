@@ -1,12 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { SendMessageDto } from './dto/sendMessage.dto';
-import * as jwt from 'jsonwebtoken';
 import { InjectModel } from '@nestjs/mongoose';
 import { Message, MessageDocument } from './schema/message.schema';
 import { PaginateModel } from 'mongoose';
-import { WsException } from '@nestjs/websockets';
 import { GroupsService } from '../groups/groups.service';
+import { SocketGateway } from '../socket/socket.gateway';
 
 @Injectable()
 export class MessagesService {
@@ -16,6 +15,7 @@ export class MessagesService {
     @InjectModel(Message.name)
     private messageModel: PaginateModel<MessageDocument>,
     private readonly groupService: GroupsService,
+    private readonly messageGateway: SocketGateway,
   ) {}
 
   async findAll(group_id: string) {
@@ -32,7 +32,11 @@ export class MessagesService {
     return resp;
   }
 
-  async create(user_id: string, group_id: string, message: SendMessageDto) {
+  async sendMessage(
+    user_id: string,
+    group_id: string,
+    message: SendMessageDto,
+  ) {
     const time = Date.now();
 
     const sentMessage = await this.messageModel.create({
@@ -41,29 +45,11 @@ export class MessagesService {
       text: message.text,
       send_at: time,
     });
+    const server = this.messageGateway.server;
+    // console.log(this.messageGateway);
+    server.to(group_id).emit('newMessage', {
+      message: sentMessage,
+    });
     return sentMessage;
-  }
-  async getUserFromSocket(socket: Socket) {
-    try {
-      const auth_token = socket.handshake.headers.authorization;
-      if (!auth_token) {
-        throw new WsException('Missing authorization header');
-      }
-      const token = auth_token.replace('Bearer ', '');
-      if (!token) {
-        throw new WsException('Missing bearer token');
-      }
-      let decoded;
-      try {
-        decoded = jwt.verify(token, 'AT_SECRET');
-      } catch (error) {
-        throw new WsException('Payload is missing!');
-      }
-
-      return decoded;
-    } catch (error) {
-      socket.disconnect();
-      return;
-    }
   }
 }

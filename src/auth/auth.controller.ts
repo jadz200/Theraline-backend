@@ -259,11 +259,20 @@ export class AuthController {
     return this.authService.createDoctor(dto);
   }
 
+  //CHANGE MODULE FOR THESE ENDPOINTS
   @Get('/clinicInfo')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
   async get_clinicInfo(@GetCurrentUserId() id: mongoose.Types.ObjectId) {
     return await this.authService.getClinicInfo(id.toString());
+  }
+
+  @Get('/patient-list')
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @Roles('DOCTOR')
+  async getPatientList(@GetCurrentUserId() id: mongoose.Types.ObjectId) {
+    return await this.authService.getPatientList(id.toString());
   }
 }
