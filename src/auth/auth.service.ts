@@ -56,8 +56,7 @@ export class AuthService {
     const passwordMatches = await argon.verify(user.password, dto.password);
 
     if (!passwordMatches) throw new BadRequestException('Incorrect password');
-
-    if (!user.expoToken || user.expoToken != dto.expoToken) {
+    if (!user.expoToken || user.expoToken !== dto.expoToken) {
       await this.userModel.updateOne(user, {
         $set: { expoToken: dto.expoToken },
       });

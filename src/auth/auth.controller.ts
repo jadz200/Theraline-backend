@@ -135,6 +135,14 @@ export class AuthController {
         value: { email: 'doctor@gmail.com', password: 'string' },
         summary: 'Doctor login',
       },
+      expotoken: {
+        value: {
+          email: 'doctor@gmail.com',
+          password: 'string',
+          expoToken: 'string',
+        },
+        summary: 'Login expo Token example',
+      },
     },
   })
   @ApiOperation({ summary: 'Sign in and get access and refresh tokens' })
