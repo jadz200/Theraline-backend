@@ -39,6 +39,10 @@ export class UserService {
     return { msg: 'Created Doctor Account' };
   }
 
+  async deleteUser(user_id: string) {
+    this.userModel.deleteOne({ _id: user_id });
+  }
+
   async getClinicInfo(id: string) {
     const doctor = await this.userModel
       .findOne({ _id: id })

@@ -167,8 +167,6 @@ export class AuthController {
     return this.authService.refreshTokens(userId, refreshToken);
   }
 
-  @Get('me')
-  @ApiBearerAuth()
   @ApiOkResponse({
     description: 'Successful Response',
     schema: {
@@ -188,6 +186,8 @@ export class AuthController {
       },
     },
   })
+  @Get('me')
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Use Access token get user info' })
   async retrieveUserInfo(

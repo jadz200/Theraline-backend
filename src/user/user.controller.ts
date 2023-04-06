@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   UploadedFile,
   UseGuards,
@@ -119,5 +121,13 @@ export class UserController {
   @Roles('DOCTOR')
   async getPatientList(@GetCurrentUserId() id: mongoose.Types.ObjectId) {
     return await this.userService.getPatientList(id.toString());
+  }
+
+  @Delete('/delete/:id/user')
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @Roles('DOCTOR')
+  async deleteUser(@Param(':id') id) {
+    return await this.userService.deleteUser(id);
   }
 }
