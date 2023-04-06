@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { text } from 'stream/consumers';
 import { GetCurrentUserId } from '../common/decorators';
 import { PaginationParams } from '../common/dto/paginationParams.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
