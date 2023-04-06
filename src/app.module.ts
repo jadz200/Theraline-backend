@@ -10,6 +10,7 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { AppController } from './app.controller';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { SocketModule } from './socket/socket.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { SocketModule } from './socket/socket.module';
     AppointmentModule,
     CloudinaryModule,
     SocketModule,
+    UserModule,
   ],
   providers: [
     {

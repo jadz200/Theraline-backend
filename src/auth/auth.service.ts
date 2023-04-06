@@ -3,13 +3,11 @@ import { BadRequestException } from '@nestjs/common/exceptions';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon from 'argon2';
-import mongoose, { Model, PaginateModel } from 'mongoose';
-import { Appointment, AppointmentDocument } from '../appointment/schema';
+import mongoose, { PaginateModel } from 'mongoose';
 import { User, UserDocument, UserRole } from '../auth/schema/user.schema';
 import {
   AuthResponse,
   AuthDto,
-  CreateDoctorDto,
   CreateUserDto,
   RetrieveUserDTO,
 } from './dto/index';
@@ -21,8 +19,6 @@ export class AuthService {
 
   constructor(
     private readonly jwtService: JwtService,
-    @InjectModel(Appointment.name)
-    private appointmentModel: PaginateModel<AppointmentDocument>,
     @InjectModel(User.name) private userModel: PaginateModel<UserDocument>,
   ) {}
 
@@ -42,35 +38,15 @@ export class AuthService {
       birthday: dto.birthday,
       gender: dto.gender,
       image: dto.image,
+      expoToken: dto.expoToken,
     });
     this.logger.log(`Created new user ${user.id} as a ${user.role}`);
 
     return { msg: 'Created Patient Account' };
   }
 
-  async createDoctor(dto: CreateDoctorDto) {
-    const temp = await this.findByEmail(dto.email);
-    if (temp) {
-      throw new BadRequestException('Email already in use');
-    }
-    const hash = await argon.hash(dto.password);
-    const user = await this.userModel.create({
-      email: dto.email,
-      password: hash,
-      role: 'DOCTOR',
-      firstName: dto.firstName,
-      lastName: dto.lastName,
-      groups: [],
-      clinicInfo: dto.clinicInfo,
-      image: dto.image,
-    });
-    this.logger.log(`Created new user ${user.id} as a ${user.role}`);
-
-    return { msg: 'Created Doctor Account' };
-  }
-
-  async signinLocal(dto: AuthDto): Promise<AuthResponse> {
-    const user = await this.userModel.findOne({
+  async signin(dto: AuthDto): Promise<AuthResponse> {
+    const user: User = await this.userModel.findOne({
       email: dto.email,
     });
 
@@ -81,10 +57,20 @@ export class AuthService {
 
     if (!passwordMatches) throw new BadRequestException('Incorrect password');
 
-    const tokens = await this.getTokens(user._id, user.email, user.role);
+    if (!user.expoToken || user.expoToken != dto.expoToken) {
+      await this.userModel.updateOne(user, {
+        $set: { expoToken: dto.expoToken },
+      });
+    }
+
+    const tokens: Tokens = await this.getTokens(
+      user._id,
+      user.email,
+      user.role,
+    );
     await this.updateRtHash(user._id, tokens.refresh_token);
 
-    this.logger.log(`User ${user.id} logged in`);
+    this.logger.log(`User ${user._id} logged in`);
 
     return {
       access_token: tokens.access_token,
@@ -178,16 +164,5 @@ export class AuthService {
 
   async findById(id: string): Promise<User | undefined> {
     return await this.userModel.findOne({ _id: id });
-  }
-  async getClinicInfo(id: string) {
-    const doctor = await this.userModel
-      .findOne({ _id: id })
-      .select('clinicInfo');
-
-    return doctor;
-  }
-  async getPatientList(id: string) {
-    const resp = await this.appointmentModel.find({ doctor_id: id });
-    return resp;
   }
 }

@@ -7,7 +7,6 @@ import { v2 as cloudinary } from 'cloudinary';
 import { ConfigService } from '@nestjs/config';
 
 @Module({
-  controllers: [UploadController],
   providers: [CloudinaryProvider, CloudinaryService],
   exports: [CloudinaryProvider],
 })

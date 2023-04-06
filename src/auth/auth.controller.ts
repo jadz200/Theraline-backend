@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import mongoose from 'mongoose';
 import {
-  Roles,
   Public,
   GetCurrentUserId,
   GetCurrentUser,
@@ -22,7 +21,6 @@ import {
   ApiBody,
   ApiConsumes,
   ApiCreatedResponse,
-  ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
   ApiProduces,
@@ -37,10 +35,9 @@ import {
   CreateUserDto,
   AuthDto,
   TokenDto,
-  CreateDoctorDto,
 } from './dto/index';
 import { Tokens } from './types/index';
-import { RtGuard, RolesGuard } from '../common/guards/index';
+import { RtGuard } from '../common/guards/index';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
@@ -86,11 +83,24 @@ export class AuthController {
         password: {
           type: 'string',
         },
+        phone: {
+          type: 'string',
+        },
+        gender: {
+          type: 'string',
+        },
+        birthday: {
+          type: 'string',
+        },
+        expoToken: {
+          type: 'string',
+        },
         image: {
           type: 'string',
           format: 'binary',
         },
       },
+      required: ['firstName', 'lastName', 'email', 'password'],
     },
   })
   @ApiConsumes('multipart/form-data')
@@ -101,7 +111,6 @@ export class AuthController {
     @Body() dto: CreateUserDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    console.log(image);
     if (typeof image !== 'undefined') {
       dto.image = (await this.cloudinaryService.upload(image)).url;
     }
@@ -130,7 +139,7 @@ export class AuthController {
   })
   @ApiOperation({ summary: 'Sign in and get access and refresh tokens' })
   async signinLocal(@Body() dto: AuthDto): Promise<AuthResponse> {
-    return this.authService.signinLocal(dto);
+    return this.authService.signin(dto);
   }
 
   @UseGuards(RtGuard)
@@ -185,94 +194,5 @@ export class AuthController {
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ): Promise<RetrieveUserDTO> {
     return this.authService.retrieveUserInfo(userId);
-  }
-
-  @Roles('ADMIN')
-  @ApiBearerAuth()
-  @UseGuards(RolesGuard)
-  @ApiOperation({ summary: 'Creates a doctor' })
-  @Post('/create_doctor')
-  @ApiCreatedResponse({
-    description: 'Successful Response',
-    schema: {
-      example: {
-        msg: 'Created Doctor Account',
-      },
-    },
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden Acees',
-    schema: {
-      example: {
-        statusCode: 403,
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-      },
-    },
-  })
-  @ApiBody({
-    description: 'Data required to create a new doctor',
-    schema: {
-      type: 'object',
-      properties: {
-        firstName: { type: 'string' },
-        lastName: { type: 'string' },
-        email: { type: 'string', format: 'email' },
-        password: { type: 'string' },
-        image: { type: 'string', format: 'binary' },
-        clinicInfo: {
-          type: 'object',
-          properties: {
-            name: { type: 'string' },
-            phone: { type: 'string' },
-            location: { type: 'string' },
-          },
-        },
-      },
-    },
-  })
-  @ApiConsumes('multipart/form-data')
-  @ApiProduces('application/json')
-  @UseInterceptors(FileInterceptor('image', { dest: './uploads' }))
-  async create_doctor(
-    @Body() dto: CreateDoctorDto,
-    @UploadedFile() image: Express.Multer.File,
-  ) {
-    if (typeof dto.clinicInfo === 'string') {
-      dto.clinicInfo = JSON.parse(dto.clinicInfo);
-    }
-    if (dto.image == '') {
-      dto.image = undefined;
-    }
-    if (dto.image) {
-      dto.image = (await this.cloudinaryService.upload(image)).url;
-    }
-    return this.authService.createDoctor(dto);
-  }
-
-  //CHANGE MODULE FOR THESE ENDPOINTS
-  @Get('/clinicInfo')
-  @ApiBearerAuth()
-  @UseGuards(RolesGuard)
-  @Roles('DOCTOR')
-  async get_clinicInfo(@GetCurrentUserId() id: mongoose.Types.ObjectId) {
-    return await this.authService.getClinicInfo(id.toString());
-  }
-
-  @Get('/patient-list')
-  @ApiBearerAuth()
-  @UseGuards(RolesGuard)
-  @Roles('DOCTOR')
-  async getPatientList(@GetCurrentUserId() id: mongoose.Types.ObjectId) {
-    return await this.authService.getPatientList(id.toString());
   }
 }

@@ -7,18 +7,11 @@ import { AuthService } from './auth.service';
 import { AtStrategy, RtStrategy } from './strategies/index';
 import { RolesGuard } from '../common/guards/index';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
-import { Appointment, AppointmentSchema } from 'src/appointment/schema';
 
 @Module({
   imports: [
     JwtModule.register({}),
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      {
-        name: Appointment.name,
-        schema: AppointmentSchema,
-      },
-    ]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     CloudinaryModule,
   ],
   controllers: [AuthController],

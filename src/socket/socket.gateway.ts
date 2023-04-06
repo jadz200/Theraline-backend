@@ -54,7 +54,9 @@ export class SocketGateway implements OnGatewayConnection {
       }
       this.logger.log(`client ${client.id} joined ${groupId}`);
     }
-    this.logger.log(`client ${client.id} listening to messages`);
+    this.logger.log(
+      `client ${client.id} listening to messages, connected:${client.connected}`,
+    );
   }
 
   async handleDisconnect(client: Socket) {

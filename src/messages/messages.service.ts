@@ -1,15 +1,16 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { Socket } from 'socket.io';
+import { Injectable, Logger } from '@nestjs/common';
 import { SendMessageDto } from './dto/sendMessage.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Message, MessageDocument } from './schema/message.schema';
 import { PaginateModel } from 'mongoose';
 import { GroupsService } from '../groups/groups.service';
 import { SocketGateway } from '../socket/socket.gateway';
+import { Expo } from 'expo-server-sdk';
 
 @Injectable()
 export class MessagesService {
   private readonly logger = new Logger(MessagesService.name);
+  private expo = new Expo();
 
   constructor(
     @InjectModel(Message.name)
@@ -46,10 +47,10 @@ export class MessagesService {
       send_at: time,
     });
     const server = this.messageGateway.server;
-    // console.log(this.messageGateway);
     server.to(group_id).emit('newMessage', {
       message: sentMessage,
     });
+    this.logger.log('sending message');
     return sentMessage;
   }
 }

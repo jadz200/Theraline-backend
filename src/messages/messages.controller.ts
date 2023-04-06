@@ -6,7 +6,7 @@ import { PaginationParams } from '../common/dto/paginationParams.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
 import { MessagesService } from './messages.service';
 
-@ApiTags('message')
+@ApiTags('Message')
 @Controller('message')
 export class MessageController {
   constructor(private messageService: MessagesService) {}

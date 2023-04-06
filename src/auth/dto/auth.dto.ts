@@ -11,4 +11,7 @@ export class AuthDto {
   @IsNotEmpty()
   @IsString()
   password: string;
+
+  @ApiProperty()
+  expoToken: string;
 }

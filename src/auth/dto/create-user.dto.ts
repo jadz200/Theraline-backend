@@ -32,5 +32,8 @@ export class CreateUserDto {
   gender: string;
 
   @ApiProperty()
+  expoToken: string;
+
+  @ApiProperty()
   birthday;
 }
