@@ -4,8 +4,12 @@
     {
       "src": "src/main.ts",
       "use": "@vercel/node"
+    },
+    {
+      "buildCommand": "npm build"
     }
   ],
+
   "routes": [
     {
       "src": "/(.*)",
