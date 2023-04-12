@@ -14,7 +14,7 @@ import { GetCurrentUserId } from '../common/decorators/get-current-user-id.decor
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { AppointmentService } from './appointment.service';
-import { CreateAppointmentDto } from './dto/index';
+import { CreateAppointmentDto, paymentInfoDto } from './dto/index';
 
 @ApiTags('Appointment')
 @Controller('appointment')
@@ -65,7 +65,7 @@ export class AppointementController {
       },
     },
   })
-  create_appointment(
+  async create_appointment(
     @Body() dto: CreateAppointmentDto,
     @GetCurrentUserId() doctorId: mongoose.Types.ObjectId,
   ) {
@@ -96,7 +96,7 @@ export class AppointementController {
       },
     },
   })
-  confirm_appointment(
+  async confirm_appointment(
     @Param('id') appointment_id: string,
     @GetCurrentUserId() patient_id: mongoose.Types.ObjectId,
   ) {
@@ -130,7 +130,7 @@ export class AppointementController {
       },
     },
   })
-  cancel_appointment(
+  async cancel_appointment(
     @Param('id') appointment_id: string,
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ) {
@@ -138,10 +138,33 @@ export class AppointementController {
   }
   @ApiBearerAuth()
   @Get('doctor/appointment')
-  get_doctor_appointment(
+  async get_doctor_appointment(
     @GetCurrentUserId() doctor_id,
     @Query() { page }: PaginationParams,
   ) {
     return this.appointmentService.get_doctor_appointment(doctor_id, page);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles('DOCTOR')
+  @ApiBearerAuth()
+  @Patch(':id/complete_appointment')
+  @ApiOperation({
+    summary: 'Marks the appointment completed and adds Payment Info',
+  })
+  async complete_appointment(
+    @Param('id') appointment_id: string,
+    @Body() dto: paymentInfoDto,
+  ) {
+    this.appointmentService.complete_appointment(appointment_id, dto);
+  }
+
+  @Get('get_payment_info')
+  @UseGuards(RolesGuard)
+  @Roles('DOCTOR')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Gets Payment Info for a doctor' })
+  async get_paymentInfo(@GetCurrentUserId() doctor_id) {
+    return this.appointmentService.get_all_paymentInfo(doctor_id);
   }
 }

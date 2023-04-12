@@ -3,6 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class RetrieveUserDTO {
   @ApiProperty()
+  id: string;
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   firstName: string;

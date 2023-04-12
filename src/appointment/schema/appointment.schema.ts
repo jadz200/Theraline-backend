@@ -33,7 +33,6 @@ export class Appointment {
   @Prop({ required: true })
   status: AppointmentStatus;
   @Prop({
-    required: true,
     type: {
       amount: Number,
       status: String,

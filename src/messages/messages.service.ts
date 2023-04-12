@@ -27,7 +27,7 @@ export class MessagesService {
     const options = {
       page: page,
       limit: 10,
-      sort: { createdAt: -1 },
+      sort: { send_at: -1 },
     };
     const resp = this.messageModel.paginate({ group_id: group_id }, options);
     return resp;

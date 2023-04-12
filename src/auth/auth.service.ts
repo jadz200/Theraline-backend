@@ -1,5 +1,6 @@
 import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common/exceptions';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon from 'argon2';
@@ -18,6 +19,7 @@ export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
   constructor(
+    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     @InjectModel(User.name) private userModel: PaginateModel<UserDocument>,
   ) {}
@@ -128,11 +130,11 @@ export class AuthService {
 
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(jwtPayload, {
-        secret: 'AT_SECRET',
+        secret: this.configService.get<string>('AT_SECRET'),
         expiresIn: '15m',
       }),
       this.jwtService.signAsync(jwtPayload, {
-        secret: 'RT_SECRET',
+        secret: this.configService.get<string>('RT_SECRET'),
         expiresIn: '30d',
       }),
     ]);
@@ -147,14 +149,13 @@ export class AuthService {
     id: mongoose.Types.ObjectId,
   ): Promise<RetrieveUserDTO> {
     const user = await this.findById(id.toString());
-    const userInfo: RetrieveUserDTO = {
+    this.logger.log(`retrieved user ${user._id} information`);
+    return {
+      id: user._id.toString(),
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
     };
-    this.logger.log(`retrieved user ${user._id} information`);
-
-    return userInfo;
   }
 
   async findByEmail(email: string): Promise<User | undefined> {
