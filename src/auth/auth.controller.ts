@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -150,15 +151,12 @@ export class AuthController {
     return this.authService.signin(dto);
   }
 
+  @Public()
   @Post('refresh')
-  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Use Refresh token' })
-  refreshTokens(
-    @GetCurrentUserId() userId: mongoose.Types.ObjectId,
-    @GetCurrentUser('refreshToken') refreshToken: string,
-  ) {
-    return this.authService.refreshTokens(userId, refreshToken);
+  refreshTokens(@Query('refreshToken') refreshToken: string) {
+    return this.authService.refreshTokens(refreshToken);
   }
 
   @ApiOkResponse({
