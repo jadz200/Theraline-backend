@@ -1,6 +1,11 @@
 {
+  "buildCommand": "npm run build",
+  "devCommand": "npm run start:dev",
+  "framework": "nextjs",
+  "commandForIgnoringBuildStep": "",
+  "installCommand": "npm",
+  "outputDirectory": "dist",
   "version": 2,
-
   "routes": [
     {
       "src": "/(.*)",
