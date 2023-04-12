@@ -6,7 +6,7 @@
       "use": "@vercel/node"
     }
   ],
-  "buildCommand": "npm build",
+  "buildCommand": "npm run build",
 
   "routes": [
     {
