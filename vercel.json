@@ -1,20 +1,5 @@
 {
-  "projectSettings": {
-    "buildCommand": "npm run build",
-    "devCommand": "npm run start:dev",
-    "framework": "nextjs",
-    "commandForIgnoringBuildStep": "",
-    "installCommand": "npm install --force",
-    "outputDirectory": "dist"
-  },
   "version": 2,
-  "builds": [
-    {
-      "src": "src/main.ts",
-      "use": "@vercel/node"
-    }
-  ],
-  "buildCommand": "npm run build",
 
   "routes": [
     {
