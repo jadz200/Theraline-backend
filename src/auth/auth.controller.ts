@@ -150,28 +150,14 @@ export class AuthController {
     return this.authService.signin(dto);
   }
 
-  @UseGuards(RtGuard)
   @Post('refresh')
   @ApiBearerAuth()
-  @ApiOkResponse({
-    description: 'Successful Response',
-    type: TokenDto,
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Use Refresh token' })
   refreshTokens(
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
     @GetCurrentUser('refreshToken') refreshToken: string,
-  ): Promise<Tokens> {
+  ) {
     return this.authService.refreshTokens(userId, refreshToken);
   }
 

@@ -23,13 +23,27 @@ export class MessagesService {
     const messages = await this.messageModel.find({ group_id: group_id });
     return messages;
   }
+
   async get_chat(user_id, group_id: string, page: number) {
     const options = {
       page: page,
       limit: 10,
       sort: { send_at: -1 },
     };
-    const resp = this.messageModel.paginate({ group_id: group_id }, options);
+    const resp = await this.messageModel.paginate(
+      { group_id: group_id },
+      options,
+    );
+    // for (const message in resp.docs) {
+    //   if (resp.docs[message].user_id == user_id) {
+    //     const newjson = (resp.docs[message]['me'] = 'YES');
+    //     JSON.stringify(newjson);
+    //     resp.docs[message];
+    //   } else {
+    //     resp.docs[message]['me'] = 'NO';
+    //     console.log(resp.docs[message]);
+    //   }
+    // }
     return resp;
   }
 
