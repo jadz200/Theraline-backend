@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpCode,
   HttpStatus,
   Post,
@@ -22,6 +23,7 @@ import {
   ApiBody,
   ApiConsumes,
   ApiCreatedResponse,
+  ApiHeader,
   ApiOkResponse,
   ApiOperation,
   ApiProduces,
@@ -37,10 +39,10 @@ import {
   AuthDto,
   TokenDto,
 } from './dto/index';
-import { Tokens } from './types/index';
-import { RtGuard } from '../common/guards/index';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { RtGuard } from 'src/common/guards';
+import { BadRequestException } from '@nestjs/common/exceptions';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -155,8 +157,15 @@ export class AuthController {
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Use Refresh token' })
-  refreshTokens(@Query('refreshToken') refreshToken: string) {
-    return this.authService.refreshTokens(refreshToken);
+  @ApiHeader({
+    name: 'refreshToken',
+    required: true,
+    description: 'The refresh token to use for authentication',
+  })
+  refreshTokens(@Headers() headers: { refreshToken: string }) {
+    if (!headers['refreshtoken'])
+      throw new BadRequestException('No Refresh token');
+    return this.authService.refreshTokens(headers['refreshtoken']);
   }
 
   @ApiOkResponse({

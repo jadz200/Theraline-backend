@@ -35,14 +35,12 @@ export class MessagesService {
       options,
     );
     // for (const message in resp.docs) {
-    //   if (resp.docs[message].user_id == user_id) {
-    //     const newjson = (resp.docs[message]['me'] = 'YES');
-    //     JSON.stringify(newjson);
-    //     resp.docs[message];
-    //   } else {
-    //     resp.docs[message]['me'] = 'NO';
-    //     console.log(resp.docs[message]);
-    //   }
+    // if (resp.docs[message].user_id == user_id) {
+    // const jsonObject = JSON.parse(resp);
+    // console.log(test);
+    // } else {
+    // resp.docs[message]['me'] = 'NO';
+    // }
     // }
     return resp;
   }

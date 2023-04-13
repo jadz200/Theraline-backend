@@ -70,7 +70,6 @@ export class AuthService {
       user.role,
     );
     await this.updateRtHash(user._id, tokens.refresh_token);
-    console.log(tokens.refresh_token);
     this.logger.log(`User ${user._id} logged in`);
 
     return {
@@ -81,7 +80,7 @@ export class AuthService {
   }
 
   async refreshTokens(rt: string) {
-    const userId = await this.jwtService.decode(rt)['sub'];
+    const userId = this.jwtService.decode(rt)['sub'];
     const user = await this.userModel.findOne({
       _id: userId,
     });
