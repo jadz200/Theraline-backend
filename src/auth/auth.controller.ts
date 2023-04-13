@@ -6,17 +6,11 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Query,
   UploadedFile,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import mongoose from 'mongoose';
-import {
-  Public,
-  GetCurrentUserId,
-  GetCurrentUser,
-} from '../common/decorators/index';
+import { Public, GetCurrentUserId } from '../common/decorators/index';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -41,7 +35,6 @@ import {
 } from './dto/index';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { RtGuard } from 'src/common/guards';
 import { BadRequestException } from '@nestjs/common/exceptions';
 
 @ApiTags('Auth')

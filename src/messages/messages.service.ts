@@ -27,7 +27,7 @@ export class MessagesService {
   async get_chat(user_id, group_id: string, page: number) {
     const options = {
       page: page,
-      limit: 10,
+      limit: 30,
       sort: { send_at: -1 },
     };
     const resp = await this.messageModel.paginate(
