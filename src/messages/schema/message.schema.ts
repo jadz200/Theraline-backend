@@ -17,6 +17,8 @@ export class Message {
   group_id: string;
   @Prop({ required: true })
   send_at: Date;
+  @Prop({ required: false })
+  me: string;
 }
 
 export const MessageSchema =
