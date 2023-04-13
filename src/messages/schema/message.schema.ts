@@ -18,7 +18,7 @@ export class Message {
   @Prop({ required: true })
   send_at: Date;
   @Prop({ required: false })
-  me: string;
+  sentByMe: string;
 }
 
 export const MessageSchema =

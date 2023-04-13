@@ -38,9 +38,9 @@ export class MessagesService {
     const temp: getChat = { messages: resp.docs };
     for (const message in temp.messages) {
       if (temp.messages[message].user_id == user_id) {
-        temp.messages[message]['me'] = SentByMe.YES.toString();
+        temp.messages[message]['sentByMe'] = SentByMe.YES.toString();
       } else {
-        temp.messages[message]['me'] = SentByMe.NO.toString();
+        temp.messages[message]['sentByMe'] = SentByMe.NO.toString();
       }
     }
     return resp;

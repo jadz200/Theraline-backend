@@ -11,7 +11,7 @@ export class getMessage {
   text: string;
   user_id: string;
   send_at: Date;
-  me: string;
+  sentByMe: string;
 }
 
 export class getChat {
