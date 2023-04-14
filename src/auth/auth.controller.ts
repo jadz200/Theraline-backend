@@ -61,11 +61,9 @@ export class AuthController {
       },
     },
   })
-  @ApiConsumes('application/json')
-  @ApiProduces('application/json')
   @ApiOperation({ summary: 'Create patient user' })
   async signupLocal(@Body() dto: CreateUserDto) {
-    if (typeof dto.image !== 'undefined') {
+    if (dto.image) {
       dto.image = (await this.cloudinaryService.upload(dto.image)).url;
     }
     return this.authService.signupLocal(dto);

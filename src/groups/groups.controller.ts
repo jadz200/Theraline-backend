@@ -69,13 +69,13 @@ export class GroupsController {
       },
     },
   })
-  @ApiConsumes('application/json')
-  @ApiProduces('application/json')
   async create_group(
     @Body() dto: CreateGroupDto,
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ) {
-    dto.image = (await this.cloudinaryService.upload(dto.image)).url;
+    if (dto.image) {
+      dto.image = (await this.cloudinaryService.upload(dto.image)).url;
+    }
     dto.users_id.push(userId.toString());
 
     return this.groupService.create_group(dto);

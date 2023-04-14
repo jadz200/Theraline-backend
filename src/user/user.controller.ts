@@ -63,12 +63,6 @@ export class UserController {
     },
   })
   async create_doctor(@Body() dto: CreateDoctorDto) {
-    if (typeof dto.clinicInfo === 'string') {
-      dto.clinicInfo = JSON.parse(dto.clinicInfo);
-    }
-    if (dto.image == '') {
-      dto.image = undefined;
-    }
     if (dto.image) {
       dto.image = (await this.cloudinaryService.upload(dto.image)).url;
     }
