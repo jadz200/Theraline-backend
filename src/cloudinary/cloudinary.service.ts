@@ -3,10 +3,10 @@ import { v2 as cloudinary } from 'cloudinary';
 
 @Injectable()
 export class CloudinaryService {
-  async upload(file: Express.Multer.File) {
+  async upload(file: string) {
     let url;
     try {
-      url = await cloudinary.uploader.upload(file.path);
+      url = await cloudinary.uploader.upload(file);
     } catch (error) {
       console.log(error);
     }

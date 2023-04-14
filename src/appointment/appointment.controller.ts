@@ -164,7 +164,10 @@ export class AppointementController {
   @Roles('DOCTOR')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Gets Payment Info for a doctor' })
-  async get_paymentInfo(@GetCurrentUserId() doctor_id) {
-    return this.appointmentService.get_all_paymentInfo(doctor_id);
+  async get_paymentInfo(
+    @GetCurrentUserId() doctor_id,
+    @Query() { page }: PaginationParams,
+  ) {
+    return this.appointmentService.get_all_paymentInfo(doctor_id, page);
   }
 }

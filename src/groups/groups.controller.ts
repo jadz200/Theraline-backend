@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -82,16 +74,14 @@ export class GroupsController {
     type: CreateGroupDto,
     schema: {},
   })
-  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiConsumes('application/json')
   @ApiProduces('application/json')
-  @UseInterceptors(FileInterceptor('image', { dest: './uploads' }))
   async create_group(
     @Body() dto,
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
-    @UploadedFile() image: Express.Multer.File,
   ) {
-    dto.users_id = dto.users_id.split(',');
-    dto.image = (await this.cloudinaryService.upload(image)).url;
+    // dto.users_id = dto.users_id.split(',');
+    dto.image = (await this.cloudinaryService.upload(dto.image)).url;
     dto.users_id.push(userId.toString());
 
     return this.groupService.create_group(dto);

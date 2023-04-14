@@ -5,7 +5,6 @@ import {
   Get,
   Param,
   Post,
-  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -16,7 +15,6 @@ import {
   ApiCreatedResponse,
   ApiUnauthorizedResponse,
   ApiForbiddenResponse,
-  ApiBody,
   ApiConsumes,
   ApiProduces,
   ApiTags,
@@ -67,34 +65,9 @@ export class UserController {
       },
     },
   })
-  @ApiBody({
-    description: 'Data required to create a new doctor',
-    schema: {
-      type: 'object',
-      properties: {
-        firstName: { type: 'string' },
-        lastName: { type: 'string' },
-        email: { type: 'string', format: 'email' },
-        password: { type: 'string' },
-        image: { type: 'string', format: 'binary' },
-        clinicInfo: {
-          type: 'object',
-          properties: {
-            name: { type: 'string' },
-            phone: { type: 'string' },
-            location: { type: 'string' },
-          },
-        },
-      },
-    },
-  })
   @ApiConsumes('multipart/form-data')
   @ApiProduces('application/json')
-  @UseInterceptors(FileInterceptor('image', { dest: './uploads' }))
-  async create_doctor(
-    @Body() dto: CreateDoctorDto,
-    @UploadedFile() image: Express.Multer.File,
-  ) {
+  async create_doctor(@Body() dto: CreateDoctorDto) {
     if (typeof dto.clinicInfo === 'string') {
       dto.clinicInfo = JSON.parse(dto.clinicInfo);
     }
@@ -102,7 +75,7 @@ export class UserController {
       dto.image = undefined;
     }
     if (dto.image) {
-      dto.image = (await this.cloudinaryService.upload(image)).url;
+      dto.image = (await this.cloudinaryService.upload(dto.image)).url;
     }
     return this.userService.createDoctor(dto);
   }

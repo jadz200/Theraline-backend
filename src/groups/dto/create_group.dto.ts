@@ -9,6 +9,6 @@ export class CreateGroupDto {
   @IsNotEmpty()
   @IsString()
   name: string;
-  @ApiProperty({ type: 'string', format: 'binary' })
-  image: string;
+  @ApiProperty()
+  image?: string;
 }

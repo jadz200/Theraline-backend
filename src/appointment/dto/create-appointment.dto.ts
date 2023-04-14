@@ -18,7 +18,7 @@ export class paymentInfoDto {
   @ApiProperty()
   @IsNotEmpty()
   @Matches(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/)
-  date: string;
+  date: string | Date;
 }
 
 export class CreateAppointmentDto {

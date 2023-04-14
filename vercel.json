@@ -1,8 +1,10 @@
 {
-  "buildCommand": "npm run build",
-  "devCommand": "npm run start:dev",
-  "installCommand": "npm install --legacy-peer-deps",
-  "outputDirectory": "dist",
+  "builds": [
+    {
+      "src": "src/main.ts",
+      "use": "@vercel/node"
+    }
+  ],
   "version": 2,
   "routes": [
     {

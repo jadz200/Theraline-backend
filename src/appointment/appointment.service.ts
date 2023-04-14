@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaginateModel } from 'mongoose';
 import { AuthService } from '../auth/auth.service';
+import { GetpaymentInfoDtoList } from './dto/getPaymentInfo.dto';
 import { CreateAppointmentDto, paymentInfoDto } from './dto/index';
 import { Appointment, AppointmentDocument } from './schema/index';
 
@@ -83,10 +84,26 @@ export class AppointmentService {
     return { msg: 'added payment' };
   }
 
-  async get_all_paymentInfo(doctor_id) {
-    const paymentInfo = await this.appointmentModel
-      .find({ doctor_id: doctor_id })
-      .select('paymentInfo');
+  async get_all_paymentInfo(doctor_id, page) {
+    const options = {
+      page: page,
+      limit: 25,
+      select: 'patient_id paymentInfo',
+      sort: { createdAt: -1 },
+    };
+    const paymentInfo = await this.appointmentModel.paginate(
+      { doctor_id: doctor_id },
+      options,
+    );
+    const temp: GetpaymentInfoDtoList = { paymentList: paymentInfo.docs };
+
+    for (const i in temp) {
+      const patient_id = temp[i].patient_id;
+      const patient = await this.authService.getPatientProfile(patient_id);
+      console.log(patient);
+      // temp[i] = { firstName: patient.firstName };
+    }
+    console.log(temp);
     this.logger.log(`Payment Info for ${doctor_id} retrieved`);
     return paymentInfo;
   }
@@ -97,7 +114,7 @@ export class AppointmentService {
       limit: 25,
       sort: { createdAt: -1 },
     };
-    const resp = this.appointmentModel.paginate(
+    const resp = await this.appointmentModel.paginate(
       { doctor_id: doctor_id },
       options,
     );

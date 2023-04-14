@@ -39,8 +39,8 @@ export class CreateDoctorDto {
   password: string;
 
   @IsOptional()
-  @ApiProperty({ type: 'string', format: 'binary' })
-  image: string;
+  @ApiProperty()
+  image?: string;
 
   @IsNotEmpty()
   @ApiProperty({ type: ClinicInfoDto })

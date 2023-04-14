@@ -23,7 +23,7 @@ export class CreateUserDto {
   password: string;
 
   @IsOptional()
-  image: string;
+  image?: string;
 
   @ApiProperty()
   phone: string;

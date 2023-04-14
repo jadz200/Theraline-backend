@@ -6,8 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { Public, GetCurrentUserId } from '../common/decorators/index';
@@ -33,7 +31,6 @@ import {
   AuthDto,
   TokenDto,
 } from './dto/index';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { BadRequestException } from '@nestjs/common/exceptions';
 
@@ -63,52 +60,12 @@ export class AuthController {
       },
     },
   })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        firstName: {
-          type: 'string',
-        },
-        lastName: {
-          type: 'string',
-        },
-        email: {
-          type: 'string',
-        },
-        password: {
-          type: 'string',
-        },
-        phone: {
-          type: 'string',
-        },
-        gender: {
-          type: 'string',
-        },
-        birthday: {
-          type: 'string',
-        },
-        expoToken: {
-          type: 'string',
-        },
-        image: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-      required: ['firstName', 'lastName', 'email', 'password'],
-    },
-  })
-  @ApiConsumes('multipart/form-data')
+  @ApiConsumes('application/json')
   @ApiProduces('application/json')
   @ApiOperation({ summary: 'Create patient user' })
-  @UseInterceptors(FileInterceptor('image', { dest: './uploads' }))
-  async signupLocal(
-    @Body() dto: CreateUserDto,
-    @UploadedFile() image: Express.Multer.File,
-  ) {
-    if (typeof image !== 'undefined') {
-      dto.image = (await this.cloudinaryService.upload(image)).url;
+  async signupLocal(@Body() dto: CreateUserDto) {
+    if (typeof dto.image !== 'undefined') {
+      dto.image = (await this.cloudinaryService.upload(dto.image)).url;
     }
     return this.authService.signupLocal(dto);
   }
