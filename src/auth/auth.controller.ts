@@ -13,12 +13,10 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
-  ApiConsumes,
   ApiCreatedResponse,
   ApiHeader,
   ApiOkResponse,
   ApiOperation,
-  ApiProduces,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -66,6 +64,7 @@ export class AuthController {
     if (dto.image) {
       dto.image = (await this.cloudinaryService.upload(dto.image)).url;
     }
+    console.log('test');
     return this.authService.signupLocal(dto);
   }
 
