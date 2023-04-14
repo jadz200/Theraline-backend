@@ -53,7 +53,7 @@ export class AuthService {
     });
 
     if (!user)
-      throw new ForbiddenException('No user with current email adress');
+      throw new BadRequestException('No user with current email adress');
 
     const passwordMatches = await argon.verify(user.password, dto.password);
 

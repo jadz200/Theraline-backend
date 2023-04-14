@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { UserRole } from '../schema/user.schema';
 
 export class TokenDto {
   @ApiProperty()
@@ -11,4 +12,7 @@ export class TokenDto {
   @IsNotEmpty()
   @IsString()
   refresh_token: string;
+
+  @ApiProperty()
+  role: UserRole;
 }

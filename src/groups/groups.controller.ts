@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiConsumes,
   ApiCreatedResponse,
   ApiOperation,
@@ -70,17 +69,12 @@ export class GroupsController {
       },
     },
   })
-  @ApiBody({
-    type: CreateGroupDto,
-    schema: {},
-  })
   @ApiConsumes('application/json')
   @ApiProduces('application/json')
   async create_group(
-    @Body() dto,
+    @Body() dto: CreateGroupDto,
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ) {
-    // dto.users_id = dto.users_id.split(',');
     dto.image = (await this.cloudinaryService.upload(dto.image)).url;
     dto.users_id.push(userId.toString());
 

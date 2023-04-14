@@ -75,7 +75,7 @@ export class AppointementController {
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('PATIENT')
-  @Patch(':id/confirm_appointment')
+  @Patch(':appointment_id/confirm_appointment')
   @ApiOperation({ summary: 'Patient confirm appoinment' })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
@@ -97,7 +97,7 @@ export class AppointementController {
     },
   })
   async confirm_appointment(
-    @Param('id') appointment_id: string,
+    @Param('appointment_id') appointment_id: string,
     @GetCurrentUserId() patient_id: mongoose.Types.ObjectId,
   ) {
     return this.appointmentService.confirm_appointment(
@@ -109,7 +109,7 @@ export class AppointementController {
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('PATIENT', 'DOCTOR')
-  @Patch(':id/cancel_appointment')
+  @Patch(':appointment_id/cancel_appointment')
   @ApiOperation({ summary: 'Patient/Doctor cancel the appoinment' })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
@@ -131,7 +131,7 @@ export class AppointementController {
     },
   })
   async cancel_appointment(
-    @Param('id') appointment_id: string,
+    @Param('appointment_id') appointment_id: string,
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ) {
     return this.appointmentService.cancel_appointment(appointment_id, userId);
@@ -148,12 +148,12 @@ export class AppointementController {
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
   @ApiBearerAuth()
-  @Patch(':id/complete_appointment')
+  @Patch(':appointment_id/complete_appointment')
   @ApiOperation({
     summary: 'Marks the appointment completed and adds Payment Info',
   })
   async complete_appointment(
-    @Param('id') appointment_id: string,
+    @Param('appointment_id') appointment_id: string,
     @Body() dto: paymentInfoDto,
   ) {
     this.appointmentService.complete_appointment(appointment_id, dto);

@@ -23,6 +23,7 @@ export class CreateUserDto {
   password: string;
 
   @IsOptional()
+  @ApiProperty()
   image?: string;
 
   @ApiProperty()
@@ -32,7 +33,7 @@ export class CreateUserDto {
   gender: string;
 
   @ApiProperty()
-  expoToken: string;
+  expoToken?: string;
 
   @ApiProperty()
   birthday;

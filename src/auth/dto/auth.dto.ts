@@ -13,5 +13,5 @@ export class AuthDto {
   password: string;
 
   @ApiProperty()
-  expoToken: string;
+  expoToken?: string;
 }

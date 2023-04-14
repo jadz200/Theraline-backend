@@ -10,19 +10,20 @@ import { MessagesService } from './messages.service';
 export class MessageController {
   constructor(private messageService: MessagesService) {}
   @ApiBearerAuth()
-  @Get('/:id/chat')
+  @Get('/:chat_id/chat')
   async get_chat(
     @GetCurrentUserId() user_id,
-    @Param('id') group_id: string,
+    @Param('chat_id') group_id: string,
     @Query() { page }: PaginationParams,
   ) {
     return this.messageService.get_chat(user_id, group_id, page);
   }
+
   @ApiBearerAuth()
-  @Post('/:id/sendMessage')
+  @Post('/:chat_id/sendMessage')
   async send_chat_message(
     @GetCurrentUserId() user_id,
-    @Param('id') group_id: string,
+    @Param('chat_id') group_id: string,
     @Body() dto: SendMessageDto,
   ) {
     return this.messageService.sendMessage(user_id, group_id, dto);

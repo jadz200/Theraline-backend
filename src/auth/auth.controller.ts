@@ -19,6 +19,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiProduces,
+  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -76,6 +77,30 @@ export class AuthController {
   @ApiOkResponse({
     description: 'Successful Response',
     type: TokenDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Validation error',
+    content: {
+      'application/json': {
+        examples: {
+          Incorrect_Password: {
+            value: {
+              statusCode: 400,
+              message: 'Incorrect password',
+              error: 'Bad Request',
+            },
+          },
+          No_User_with_email: {
+            value: {
+              statusCode: 400,
+              message: 'No user with current email adress',
+              error: 'Bad Request',
+            },
+          },
+        },
+      },
+    },
   })
   @ApiBody({
     type: AuthDto,

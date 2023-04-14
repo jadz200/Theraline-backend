@@ -6,17 +6,13 @@ import {
   Param,
   Post,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiCreatedResponse,
   ApiUnauthorizedResponse,
   ApiForbiddenResponse,
-  ApiConsumes,
-  ApiProduces,
   ApiTags,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
@@ -33,6 +29,7 @@ export class UserController {
     private userService: UserService,
     private cloudinaryService: CloudinaryService,
   ) {}
+
   @Roles('ADMIN')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
@@ -65,8 +62,6 @@ export class UserController {
       },
     },
   })
-  @ApiConsumes('multipart/form-data')
-  @ApiProduces('application/json')
   async create_doctor(@Body() dto: CreateDoctorDto) {
     if (typeof dto.clinicInfo === 'string') {
       dto.clinicInfo = JSON.parse(dto.clinicInfo);
@@ -96,11 +91,11 @@ export class UserController {
     return await this.userService.getPatientList(id.toString());
   }
 
-  @Delete('/delete/:id/user')
+  @Delete('/delete/:user_id/user')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
-  async deleteUser(@Param(':id') id) {
+  async deleteUser(@Param(':user_id') id) {
     return await this.userService.deleteUser(id);
   }
 }
