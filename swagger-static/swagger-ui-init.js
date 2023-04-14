@@ -1,1 +1,1 @@
-Redirecting to https://theraline-backend-31wxv5o7s-jadz200.vercel.app//swagger/swagger-ui-init.js
+Redirecting to https://theraline-backend-api.vercel.app/swagger/swagger-ui-init.js

@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
-  const serverUrl = 'http://theraline-backend-31wxv5o7s-jadz200.vercel.app/';
+  const serverUrl = 'http://theraline-backend-api.vercel.app';
   const config = new DocumentBuilder()
     .setTitle('Theraline endpoints')
     .addBearerAuth()
