@@ -5,6 +5,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Public } from './common/decorators/public.decorator';
 import { Roles } from './common/decorators/roles.decorator';
@@ -50,6 +51,15 @@ export class AppController {
       },
     },
   })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    schema: {
+      example: {
+        statusCode: 401,
+        message: 'Unauthorized',
+      },
+    },
+  })
   @ApiOperation({ summary: 'Checking doctor permission' })
   doctor() {
     return { msg: 'Hello doctors' };
@@ -64,6 +74,15 @@ export class AppController {
     schema: {
       example: {
         msg: 'Hello patient',
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    schema: {
+      example: {
+        statusCode: 401,
+        message: 'Unauthorized',
       },
     },
   })

@@ -71,6 +71,10 @@ export class GroupsService {
   }
 
   async create_convo(dto: CreateConvoDto) {
+    if (dto.users_id.length !== 2) {
+      throw new BadRequestException('More than 2 users in this conversation');
+    }
+
     const time = Date.now();
     const resp = this.check_users(dto.users_id);
     if ((await resp) === false) {
@@ -117,8 +121,12 @@ export class GroupsService {
   async create_group(dto: CreateGroupDto) {
     const time = Date.now();
     const resp = this.check_users(dto.users_id);
-    console.log('test');
 
+    const set = new Set(dto.users_id);
+
+    if (dto.users_id.length !== set.size) {
+      throw new BadRequestException('Duplicate entries');
+    }
     if ((await resp) === false) {
       throw new BadRequestException('User does not exists');
     }
@@ -129,6 +137,7 @@ export class GroupsService {
       name: dto.name,
       image: dto.image,
     });
+
     this.logger.log(`Created group ${newGroup.id}`);
 
     for (const user_id of dto.users_id) {
@@ -142,6 +151,9 @@ export class GroupsService {
 
   async check_users(users_id): Promise<boolean> {
     for (const user_id of users_id) {
+      if (!mongoose.Types.ObjectId.isValid(user_id)) {
+        throw new BadRequestException('Id is not in valid format');
+      }
       const user_mongoose_id = new mongoose.Types.ObjectId(user_id);
       const user = await this.userModel.exists({ _id: user_mongoose_id });
       if (!user) {

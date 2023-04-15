@@ -20,7 +20,7 @@ export class MessageController {
   }
 
   @ApiBearerAuth()
-  @Post('/:chat_id/sendMessage')
+  @Post('/:chat_id/send_message')
   async send_chat_message(
     @GetCurrentUserId() user_id,
     @Param('chat_id') group_id: string,

@@ -31,8 +31,8 @@ import {
   TokenDto,
 } from './dto/index';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { BadRequestException } from '@nestjs/common/exceptions';
-
+import { UnauthorizedException } from '@nestjs/common/exceptions';
+import { RefreshDto } from './dto/refresh.dto';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -41,6 +41,40 @@ export class AuthController {
     private cloudinaryService: CloudinaryService,
   ) {}
 
+  @ApiBody({
+    type: CreateUserDto,
+    examples: {
+      Required_Fields: {
+        value: {
+          firstName: 'string',
+          lastName: 'string',
+          email: 'string',
+          password: 'string',
+        },
+        summary: 'Required field',
+      },
+      ExpoToken: {
+        value: {
+          firstName: 'string',
+          lastName: 'string',
+          email: 'string',
+          password: 'string',
+          expoToken: 'string',
+        },
+        summary: 'Required field + Expo Token',
+      },
+      Image: {
+        value: {
+          firstName: 'string',
+          lastName: 'string',
+          email: 'string',
+          password: 'string',
+          image: 'string',
+        },
+        summary: 'Required field + Image Base64',
+      },
+    },
+  })
   @Public()
   @Post('signup')
   @ApiCreatedResponse({
@@ -64,7 +98,6 @@ export class AuthController {
     if (dto.image) {
       dto.image = (await this.cloudinaryService.upload(dto.image)).url;
     }
-    console.log('test');
     return this.authService.signupLocal(dto);
   }
 
@@ -125,6 +158,47 @@ export class AuthController {
     return this.authService.signin(dto);
   }
 
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized error',
+    content: {
+      'application/json': {
+        examples: {
+          No_Refresh_Token: {
+            value: {
+              statusCode: 401,
+              message: 'No Refresh token',
+              error: 'Bad Request',
+            },
+          },
+          Incorrect_Refresh_Token_Format: {
+            value: {
+              statusCode: 401,
+              message: 'Wrong Refresh Token format',
+              error: 'Bad Request',
+            },
+          },
+          No_User: {
+            value: {
+              statusCode: 401,
+              message: 'No user with this token',
+              error: 'Bad Request',
+            },
+          },
+          No_Match: {
+            value: {
+              statusCode: 401,
+              message: 'Incorrect Refresh token',
+              error: 'Bad Request',
+            },
+          },
+        },
+      },
+    },
+  })
+  @ApiOkResponse({
+    type: RefreshDto,
+  })
   @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
@@ -136,7 +210,7 @@ export class AuthController {
   })
   refreshTokens(@Headers() headers: { refreshToken: string }) {
     if (!headers['refreshtoken'])
-      throw new BadRequestException('No Refresh token');
+      throw new UnauthorizedException('No Refresh token');
     return this.authService.refreshTokens(headers['refreshtoken']);
   }
 

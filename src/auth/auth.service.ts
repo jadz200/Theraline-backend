@@ -1,5 +1,8 @@
 import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
-import { BadRequestException } from '@nestjs/common/exceptions';
+import {
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common/exceptions';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -80,15 +83,20 @@ export class AuthService {
   }
 
   async refreshTokens(rt: string) {
-    const userId = this.jwtService.decode(rt)['sub'];
+    let userId;
+    try {
+      userId = this.jwtService.decode(rt)['sub'];
+    } catch {
+      throw new UnauthorizedException('Wrong Refresh Token format');
+    }
     const user = await this.userModel.findOne({
       _id: userId,
     });
     if (!user || !user.hashedRt)
-      throw new ForbiddenException('No user with this token');
+      throw new UnauthorizedException('No user with this token');
     const rtMatches = await argon.verify(user.hashedRt, rt);
 
-    if (!rtMatches) throw new ForbiddenException('Incorrect Refresh token');
+    if (!rtMatches) throw new UnauthorizedException('Incorrect Refresh token');
     const tokens = await this.getTokens(user.id, user.email, user.role);
     await this.updateRtHash(user._id, tokens.refresh_token);
     return tokens;
@@ -158,6 +166,9 @@ export class AuthService {
   }
 
   async findById(id: string): Promise<User | undefined> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Id is not in valid format');
+    }
     return await this.userModel.findOne({ _id: id });
   }
   async getPatientProfile(id: string): Promise<User | undefined> {

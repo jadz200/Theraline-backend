@@ -63,7 +63,7 @@ export class MessagesService {
     server.to(group_id).emit('newMessage', {
       message: sentMessage,
     });
-    this.logger.log('sending message');
+    this.logger.log('Message sent');
     return sentMessage;
   }
 }

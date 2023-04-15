@@ -1,1 +1,1 @@
-Redirecting to https://theraline-jadz200.vercel.app/api/swagger-ui-standalone-preset.js
+Redirecting to https://theraline-backend-api.vercel.app/api/swagger-ui-standalone-preset.js

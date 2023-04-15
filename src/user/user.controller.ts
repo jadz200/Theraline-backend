@@ -69,7 +69,7 @@ export class UserController {
     return this.userService.createDoctor(dto);
   }
 
-  @Get('/clinicInfo')
+  @Get('/get_clinic_info')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
@@ -77,7 +77,7 @@ export class UserController {
     return await this.userService.getClinicInfo(id.toString());
   }
 
-  @Get('/patient-list')
+  @Get('/patient_list')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
