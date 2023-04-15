@@ -4,28 +4,31 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { createWriteStream } from 'fs';
 import { json } from 'express';
+import { resolve } from 'path';
 import { get } from 'http';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
   app.use(json({ limit: '25mb' }));
 
-  const serverUrl = 'http://theraline-backend-api.vercel.app';
+  const serverUrl = 'http://theraline-jadz200.vercel.app';
   const config = new DocumentBuilder()
     .setTitle('Theraline endpoints')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document, {
+  SwaggerModule.setup('/api', app, document, {
     swaggerOptions: {
       displayRequestDuration: true,
     },
   });
+
   await app.listen(3000);
+
   // get the swagger json file (if app is running in development mode)
   if (process.env.NODE_ENV === 'development') {
-    // write swagger ui files
     get(`${serverUrl}/api/swagger-ui-bundle.js`, function (response) {
       response.pipe(createWriteStream('swagger-static/swagger-ui-bundle.js'));
       console.log(
