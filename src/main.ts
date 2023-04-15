@@ -13,7 +13,7 @@ async function bootstrap() {
   app.enableCors();
   app.use(json({ limit: '25mb' }));
 
-  const serverUrl = 'http://theraline-jadz200.vercel.app';
+  const serverUrl = 'http://theraline-backend-api.vercel.app';
   const config = new DocumentBuilder()
     .setTitle('Theraline endpoints')
     .addBearerAuth()
