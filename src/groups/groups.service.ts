@@ -24,7 +24,7 @@ export class GroupsService {
     const user = await this.userModel.findOne({ _id: user_id });
     return user.groups;
   }
-  async get_all_chats(user_id): Promise<getChatsDto> {
+  async get_all_chats(user_id): Promise<Chat[]> {
     const user = await this.userModel.findOne({ _id: user_id });
 
     const user_groups = user.groups;
@@ -41,7 +41,7 @@ export class GroupsService {
         fullName = temp2.firstName + ' ' + temp2.lastName;
         image = temp2.image;
       }
-      const latestMessage = await this.messageModel.findOne(
+      const latestMessage: Message = await this.messageModel.findOne(
         { group_id: temp._id },
         {},
         { created_at: -1 },
@@ -66,11 +66,12 @@ export class GroupsService {
           name: fullName,
           groupImage: image,
           groupType: temp.groupType,
+          latestMessage: null,
         };
       }
       resp.push(chat);
     }
-    return { chats: resp };
+    return resp;
   }
 
   async create_convo(dto: CreateConvoDto) {

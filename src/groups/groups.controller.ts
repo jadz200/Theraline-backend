@@ -14,7 +14,7 @@ import mongoose from 'mongoose';
 import { RolesGuard } from 'src/common/guards';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { GetCurrentUserId, Roles } from '../common/decorators/index';
-import { CreateConvoDto, CreateGroupDto, getChatsDto } from './dto/index';
+import { Chat, CreateConvoDto, CreateGroupDto, getChatsDto } from './dto/index';
 import { GroupsService } from './groups.service';
 
 @ApiTags('Groups')
@@ -262,7 +262,7 @@ export class GroupsController {
   })
   async get_all_chats(
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
-  ): Promise<getChatsDto> {
+  ): Promise<Chat[]> {
     return this.groupService.get_all_chats(userId);
   }
 

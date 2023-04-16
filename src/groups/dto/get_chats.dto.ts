@@ -8,9 +8,10 @@ export class Chat {
   name: string;
   groupType: GroupType;
   groupImage: string;
-  @IsOptional()
-  latestMessage: receiveMessage;
+  latestMessage?: receiveMessage;
+  image?: string;
 }
+
 export class getChatsDto {
   chats: Chat[];
 }

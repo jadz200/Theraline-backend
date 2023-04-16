@@ -6,7 +6,7 @@ import { PaginateModel } from 'mongoose';
 import { GroupsService } from '../groups/groups.service';
 import { SocketGateway } from '../socket/socket.gateway';
 import { Expo } from 'expo-server-sdk';
-import { getChat, SentByMe } from './dto/getChat.dto';
+import { getChatMessages } from './dto/getChat.dto';
 
 @Injectable()
 export class MessagesService {
@@ -37,12 +37,12 @@ export class MessagesService {
       { group_id: group_id },
       options,
     );
-    const temp: getChat = { messages: resp.docs };
+    const temp: getChatMessages = { messages: resp.docs };
     for (const message in temp.messages) {
       if (temp.messages[message].user_id == user_id) {
-        temp.messages[message]['sentByMe'] = SentByMe.YES.toString();
+        temp.messages[message]['sentByMe'] = true;
       } else {
-        temp.messages[message]['sentByMe'] = SentByMe.NO.toString();
+        temp.messages[message]['sentByMe'] = false;
       }
     }
     return resp;
