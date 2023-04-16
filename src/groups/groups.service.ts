@@ -6,6 +6,7 @@ import { User, UserDocument } from '../auth/schema/user.schema';
 
 import { Chat, getChatsDto, CreateConvoDto, CreateGroupDto } from './dto/index';
 import { Group, GroupDocument } from './schema/group.schema';
+import { Appointment, AppointmentDocument } from 'src/appointment/schema';
 
 @Injectable()
 export class GroupsService {
@@ -15,6 +16,8 @@ export class GroupsService {
     @InjectModel(Group.name) private groupModel: Model<GroupDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Message.name) private messageModel: Model<MessageDocument>,
+    @InjectModel(Appointment.name)
+    private appointmentModel: Model<AppointmentDocument>,
   ) {}
 
   async get_groups_id(user_id): Promise<string[]> {
@@ -164,11 +167,38 @@ export class GroupsService {
     return true;
   }
 
+  async get_users_to_create_chat(user_id) {
+    const set = new Set();
+    const user = await this.userModel.findOne({ _id: user_id });
+    for (const group_id of user.groups) {
+      const group = await this.groupModel.findOne({ _id: group_id });
+      for (const contact_id of group.users) {
+        if (contact_id != user_id && group.groupType.toString() !== 'PRIVATE') {
+          const contact = await this.userModel
+            .findOne({ _id: contact_id })
+            .select('_id firstName lastName email image');
+          set.add(contact);
+        }
+      }
+    }
+    const jsonData = Array.from(set);
+    return { users: jsonData };
+  }
+
   async check_user_group_socket(user_id: string, group_id: string) {
     const group = await this.groupModel.findOne({ _id: group_id });
     if (group.users.length == 0) {
       return;
     }
     return group.users.includes(user_id);
+  }
+
+  async check_group_valid(group_id: string) {
+    if (!mongoose.Types.ObjectId.isValid(group_id)) {
+      throw new BadRequestException('Id is not in valid format');
+    }
+    if (!(await this.groupModel.exists({ _id: group_id }))) {
+      throw new BadRequestException("Group doesn't exist");
+    }
   }
 }

@@ -26,6 +26,8 @@ export class MessagesService {
   }
 
   async get_chat(user_id, group_id: string, page: number) {
+    await this.groupService.check_group_valid(group_id);
+
     const options = {
       page: page,
       limit: 30,
@@ -51,8 +53,8 @@ export class MessagesService {
     group_id: string,
     message: SendMessageDto,
   ) {
+    await this.groupService.check_group_valid(group_id);
     const time = Date.now();
-
     const sentMessage = await this.messageModel.create({
       user_id: user_id,
       group_id: group_id,

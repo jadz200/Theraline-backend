@@ -1,7 +1,9 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common/decorators';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
   ApiResponse,
@@ -9,8 +11,9 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
+import { RolesGuard } from 'src/common/guards';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { GetCurrentUserId } from '../common/decorators/index';
+import { GetCurrentUserId, Roles } from '../common/decorators/index';
 import { CreateConvoDto, CreateGroupDto, getChatsDto } from './dto/index';
 import { GroupsService } from './groups.service';
 
@@ -94,6 +97,8 @@ export class GroupsController {
     return this.groupService.create_convo(dto);
   }
 
+  @Roles('DOCTOR')
+  @UseGuards(RolesGuard)
   @ApiBearerAuth()
   @Post('create_group')
   @ApiResponse({
@@ -144,6 +149,16 @@ export class GroupsController {
       },
     },
   })
+  @ApiForbiddenResponse({
+    description: 'Forbidden Acees',
+    schema: {
+      example: {
+        statusCode: 403,
+        message: 'Forbidden resource',
+        error: 'Forbidden',
+      },
+    },
+  })
   @ApiCreatedResponse({
     description: 'Successful Response',
     schema: {
@@ -187,7 +202,7 @@ export class GroupsController {
             latestMessage: {
               _id: 'string',
               send_at: '2023-04-04T08:19:08.508Z',
-              user_id: '6418b239337d50ab61fe5912',
+              user_id: 'string',
               text: 'testing time!',
             },
           },
@@ -224,6 +239,15 @@ export class GroupsController {
       },
     },
   })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    schema: {
+      example: {
+        statusCode: 401,
+        message: 'Unauthorized',
+      },
+    },
+  })
   @ApiBearerAuth()
   @Get('get_chats')
   @ApiOperation({ summary: 'Get all groups for a user' })
@@ -236,9 +260,65 @@ export class GroupsController {
       },
     },
   })
-  get_all_chats(
+  async get_all_chats(
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ): Promise<getChatsDto> {
     return this.groupService.get_all_chats(userId);
+  }
+
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    schema: {
+      example: {
+        statusCode: 401,
+        message: 'Unauthorized',
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden Acees',
+    schema: {
+      example: {
+        statusCode: 403,
+        message: 'Forbidden resource',
+        error: 'Forbidden',
+      },
+    },
+  })
+  @ApiOkResponse({
+    schema: {
+      example: {
+        users: [
+          {
+            _id: 'string',
+            email: 'string',
+            firstName: 'Jhon',
+            lastName: 'Doe',
+          },
+          {
+            _id: 'string',
+            email: 'string',
+            firstName: 'Mart',
+            lastName: 'Slavin',
+          },
+          {
+            _id: 'string',
+            email: 'string',
+            firstName: 'string',
+            lastName: 'string',
+          },
+        ],
+      },
+    },
+  })
+  @ApiBearerAuth()
+  @Get('/user_convo')
+  @ApiOperation({
+    summary: 'Gets all the users that a user can create a convo with',
+  })
+  get_users_to_create_convo(
+    @GetCurrentUserId() userId: mongoose.Types.ObjectId,
+  ) {
+    return this.groupService.get_users_to_create_chat(userId);
   }
 }

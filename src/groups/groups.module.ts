@@ -6,6 +6,8 @@ import { User, UserSchema } from '../auth/schema/user.schema';
 import { GroupsController } from './groups.controller';
 import { GroupsService } from './groups.service';
 import { Group, GroupSchema } from './schema/group.schema';
+import { AuthModule } from 'src/auth/auth.module';
+import { Appointment, AppointmentSchema } from 'src/appointment/schema';
 
 @Module({
   imports: [
@@ -13,8 +15,10 @@ import { Group, GroupSchema } from './schema/group.schema';
       { name: Group.name, schema: GroupSchema },
       { name: User.name, schema: UserSchema },
       { name: Message.name, schema: MessageSchema },
+      { name: Appointment.name, schema: AppointmentSchema },
     ]),
     CloudinaryModule,
+    AuthModule,
   ],
   controllers: [GroupsController],
   providers: [GroupsService],
