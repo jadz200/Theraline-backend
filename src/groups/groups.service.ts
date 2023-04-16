@@ -4,7 +4,7 @@ import mongoose, { Model } from 'mongoose';
 import { Message, MessageDocument } from '../messages/schema/message.schema';
 import { User, UserDocument } from '../auth/schema/user.schema';
 
-import { Chat, getChatsDto, CreateConvoDto, CreateGroupDto } from './dto/index';
+import { Chat, CreateConvoDto, CreateGroupDto } from './dto/index';
 import { Group, GroupDocument } from './schema/group.schema';
 import { Appointment, AppointmentDocument } from 'src/appointment/schema';
 

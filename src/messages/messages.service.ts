@@ -7,6 +7,7 @@ import { GroupsService } from '../groups/groups.service';
 import { SocketGateway } from '../socket/socket.gateway';
 import { Expo } from 'expo-server-sdk';
 import { getChatMessages } from './dto/getChat.dto';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class MessagesService {
@@ -18,6 +19,7 @@ export class MessagesService {
     private messageModel: PaginateModel<MessageDocument>,
     private readonly groupService: GroupsService,
     private readonly messageGateway: SocketGateway,
+    private readonly authService: AuthService,
   ) {}
 
   async findAll(group_id: string) {
@@ -39,6 +41,9 @@ export class MessagesService {
     );
     const temp: getChatMessages = { messages: resp.docs };
     for (const message in temp.messages) {
+      temp.messages[message]['username'] = await this.authService.getName(
+        temp.messages[message].user_id,
+      );
       if (temp.messages[message].user_id == user_id) {
         temp.messages[message]['sentByMe'] = true;
       } else {

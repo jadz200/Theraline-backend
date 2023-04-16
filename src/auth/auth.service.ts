@@ -176,4 +176,13 @@ export class AuthService {
       .findOne({ _id: id })
       .select('firstName lastName email image');
   }
+  async getName(id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Id is not in valid format');
+    }
+    const user = await this.userModel
+      .findOne({ _id: id })
+      .select('firstName lastName ');
+    return user.firstName + ' ' + user.lastName;
+  }
 }

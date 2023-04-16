@@ -1,4 +1,3 @@
-import { IsOptional } from 'class-validator';
 import mongoose from 'mongoose';
 import { receiveMessage } from '../../messages/dto/receiveMessage.dto';
 import { GroupType } from '../schema/group.schema';

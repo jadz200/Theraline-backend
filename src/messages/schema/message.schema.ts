@@ -19,6 +19,8 @@ export class Message {
   send_at: Date;
   @Prop({ required: false })
   sentByMe: boolean;
+  @Prop({ required: false })
+  username: string;
 }
 
 export const MessageSchema =

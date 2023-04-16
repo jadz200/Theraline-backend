@@ -6,6 +6,7 @@ export class getMessage {
   user_id: string;
   send_at: Date;
   sentByMe: boolean;
+  username?: string;
 }
 
 export class getChatMessages {
