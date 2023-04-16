@@ -34,7 +34,7 @@ export class AuthService {
     }
     const hash = await argon.hash(dto.password);
     const user = await this.userModel.create({
-      email: dto.email,
+      email: dto.email.toLowerCase(),
       password: hash,
       role: 'PATIENT',
       firstName: dto.firstName,
@@ -52,7 +52,7 @@ export class AuthService {
 
   async signin(dto: AuthDto): Promise<AuthResponse> {
     const user: User = await this.userModel.findOne({
-      email: dto.email,
+      email: dto.email.toLowerCase(),
     });
 
     if (!user)
