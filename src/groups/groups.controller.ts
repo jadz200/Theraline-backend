@@ -275,6 +275,52 @@ export class GroupsController {
       },
     },
   })
+  @ApiOkResponse({
+    schema: {
+      example: {
+        users: [
+          {
+            _id: 'string',
+            email: 'string',
+            firstName: 'Jhon',
+            lastName: 'Doe',
+          },
+          {
+            _id: 'string',
+            email: 'string',
+            firstName: 'Mart',
+            lastName: 'Slavin',
+          },
+          {
+            _id: 'string',
+            email: 'string',
+            firstName: 'string',
+            lastName: 'string',
+          },
+        ],
+      },
+    },
+  })
+  @ApiBearerAuth()
+  @Get('/user_convo')
+  @ApiOperation({
+    summary: 'Gets all the users that a user can create a convo with',
+  })
+  get_users_to_create_convo(
+    @GetCurrentUserId() userId: mongoose.Types.ObjectId,
+  ) {
+    return this.groupService.get_users_to_create_chat(userId);
+  }
+
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    schema: {
+      example: {
+        statusCode: 401,
+        message: 'Unauthorized',
+      },
+    },
+  })
   @ApiForbiddenResponse({
     description: 'Forbidden Acees',
     schema: {
@@ -312,13 +358,15 @@ export class GroupsController {
     },
   })
   @ApiBearerAuth()
-  @Get('/user_convo')
+  @Get('/user_group')
   @ApiOperation({
-    summary: 'Gets all the users that a user can create a convo with',
+    summary: 'Gets all the users that a doctor can create a group with',
   })
-  get_users_to_create_convo(
+  @UseGuards(RolesGuard)
+  @Roles('DOCTOR')
+  get_users_to_create_group(
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ) {
-    return this.groupService.get_users_to_create_chat(userId);
+    return this.groupService.get_users_to_create_group(userId);
   }
 }

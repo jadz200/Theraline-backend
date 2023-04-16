@@ -6,6 +6,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { CreateDoctorDto, User } from 'src/auth/dto';
 import { UserDocument } from 'src/auth/schema/user.schema';
 import * as argon from 'argon2';
+import { patientInfo, patientList } from './dto/patientList.dto';
 
 @Injectable()
 export class UserService {
@@ -52,7 +53,44 @@ export class UserService {
   }
 
   async getPatientList(id: string) {
-    const resp = await this.appointmentModel.find({ doctor_id: id });
-    return resp;
+    const patientIds = await this.appointmentModel.distinct('patient_id', {
+      doctor_id: id,
+    });
+    const patientList = [];
+    for (const patient_id of patientIds) {
+      const patient = await this.userModel
+        .findOne({ _id: patient_id })
+        .select('_id firstName lastName email image');
+      if (!patient) {
+        continue;
+      }
+      const latestAppoinments = await this.appointmentModel
+        .find({
+          patient_id: patient_id,
+        })
+        .sort({ start_date: -1 })
+        .limit(2);
+      if (latestAppoinments[0].status.toString() === 'DONE') {
+        const patientInfo: patientInfo = {
+          firstName: patient.firstName,
+          lastName: patient.lastName,
+          email: patient.email,
+          image: patient.image,
+          lastAppointment: latestAppoinments[0],
+        };
+        patientList.push(patientInfo);
+      } else {
+        const patientInfo: patientInfo = {
+          firstName: patient.firstName,
+          lastName: patient.lastName,
+          email: patient.email,
+          image: patient.image,
+          nextAppointment: latestAppoinments[0],
+          lastAppointment: latestAppoinments[1],
+        };
+        patientList.push(patientInfo);
+      }
+    }
+    return patientList;
   }
 }

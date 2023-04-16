@@ -185,6 +185,23 @@ export class GroupsService {
     return { users: jsonData };
   }
 
+  async get_users_to_create_group(doctor_id) {
+    const patientIds = await this.appointmentModel.distinct('patient_id', {
+      doctor_id: doctor_id,
+    });
+    const users = [];
+    for (const patient_id of patientIds) {
+      const patient = await this.userModel
+        .findOne({ _id: patient_id })
+        .select('_id firstName lastName email image');
+      if (!patient) {
+        continue;
+      }
+      users.push(patient);
+    }
+    return { users };
+  }
+
   async check_user_group_socket(user_id: string, group_id: string) {
     const group = await this.groupModel.findOne({ _id: group_id });
     if (group.users.length == 0) {
