@@ -151,4 +151,13 @@ export class UserController {
   async get_patients() {
     return await this.userService.get_all_patients();
   }
+
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @Roles('DOCTOR')
+  @Get('/patient_details/:email')
+  @ApiOperation({ summary: 'Gets patient details using that patient email' })
+  async get_patient_details(@Param('email') email: string) {
+    return await this.userService.get_patient_details(email);
+  }
 }

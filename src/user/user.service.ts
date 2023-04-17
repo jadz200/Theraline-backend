@@ -6,7 +6,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { CreateDoctorDto, User } from 'src/auth/dto';
 import { UserDocument } from 'src/auth/schema/user.schema';
 import * as argon from 'argon2';
-import { patientInfo } from './dto/patientList.dto';
+import { UserDetail, patientInfo } from './dto';
 
 @Injectable()
 export class UserService {
@@ -93,9 +93,39 @@ export class UserService {
     }
     return patientList;
   }
+
   async get_all_patients() {
     return await this.userModel
       .find({ role: ['PATIENT'] })
       .select('firstName lastName email image');
+  }
+
+  async get_patient_details(email: string) {
+    const user: User = await this.userModel
+      .findOne({ email: email })
+      .select('firstName lastName email gender phone birthday');
+    const doctors_id: string[] = await this.appointmentModel.distinct(
+      'patient_id',
+      {
+        patient_id: user._id,
+      },
+    );
+    console.log(user);
+    const resp: UserDetail = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      image: user.image,
+      phone: user.phone,
+      gender: user.gender,
+      groups: user.groups,
+      doctors_id: doctors_id,
+    };
+
+    return resp;
+  }
+
+  async find_by_email(email: string): Promise<User> {
+    return await this.userModel.findOne({ email: email });
   }
 }

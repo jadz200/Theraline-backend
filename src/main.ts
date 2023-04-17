@@ -4,7 +4,6 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { createWriteStream } from 'fs';
 import { json } from 'express';
-import { resolve } from 'path';
 import { get } from 'http';
 
 async function bootstrap() {

@@ -27,11 +27,11 @@ export class User {
   @Prop({ required: true })
   lastName: string;
   @Prop()
-  phone: string;
+  phone?: string;
   @Prop()
-  birthday: Date;
+  birthday?: Date;
   @Prop()
-  gender: string;
+  gender?: string;
   @Prop({ required: true })
   role: UserRole;
   @Prop()
@@ -39,11 +39,11 @@ export class User {
   @Prop()
   groups: string[];
   @Prop()
-  clinicInfo: ClinicInfo;
+  clinicInfo?: ClinicInfo;
   @Prop()
-  image: string;
+  image?: string;
   @Prop()
-  expoToken: string;
+  expoToken?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
