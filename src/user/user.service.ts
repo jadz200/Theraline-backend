@@ -94,13 +94,14 @@ export class UserService {
     return patientList;
   }
 
-  async get_all_patients() {
-    return await this.userModel
+  async get_all_patients(): Promise<User[]> {
+    const resp: User[] = await this.userModel
       .find({ role: ['PATIENT'] })
       .select('firstName lastName email image');
+    return resp;
   }
 
-  async get_patient_details(email: string) {
+  async get_patient_details(email: string): Promise<UserDetail> {
     const user: User = await this.userModel
       .findOne({ email: email })
       .select('firstName lastName email gender phone birthday');
@@ -110,7 +111,6 @@ export class UserService {
         patient_id: user._id,
       },
     );
-    console.log(user);
     const resp: UserDetail = {
       _id: user._id.toString(),
       firstName: user.firstName,

@@ -17,11 +17,12 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
-import { CreateDoctorDto } from '../auth/dto';
+import { CreateDoctorDto, User } from '../auth/dto';
 import { Roles, GetCurrentUserId } from '../common/decorators';
 import { RolesGuard } from '../common/guards';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UserService } from './user.service';
+import { UserDetail } from './dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -123,7 +124,6 @@ export class UserController {
       },
     },
   })
-  @ApiOkResponse({})
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
     schema: {
@@ -148,16 +148,48 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
-  async get_patients() {
+  async get_patients(): Promise<User[]> {
     return await this.userService.get_all_patients();
   }
 
+  @ApiOkResponse({
+    schema: {
+      example: {
+        _id: 'string',
+        firstName: 'string',
+        lastName: 'string',
+        email: 'string@gmail.com',
+        doctors_id: ['string'],
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    schema: {
+      example: {
+        statusCode: 401,
+        message: 'Unauthorized',
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden Acees',
+    schema: {
+      example: {
+        statusCode: 403,
+        message: 'Forbidden resource',
+        error: 'Forbidden',
+      },
+    },
+  })
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
   @Get('/patient_details/:email')
   @ApiOperation({ summary: 'Gets patient details using that patient email' })
-  async get_patient_details(@Param('email') email: string) {
+  async get_patient_details(
+    @Param('email') email: string,
+  ): Promise<UserDetail> {
     return await this.userService.get_patient_details(email);
   }
 }
