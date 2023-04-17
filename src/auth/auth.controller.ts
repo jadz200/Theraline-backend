@@ -2,10 +2,13 @@ import {
   Body,
   Controller,
   Get,
+  Head,
   Headers,
   HttpCode,
   HttpStatus,
   Post,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { Public, GetCurrentUserId } from '../common/decorators/index';
@@ -203,15 +206,11 @@ export class AuthController {
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Use Refresh token' })
-  @ApiHeader({
-    name: 'refreshToken',
-    required: true,
-    description: 'The refresh token to use for authentication',
-  })
-  refreshTokens(@Headers() headers: { refreshToken: string }) {
-    if (!headers['refreshtoken'])
-      throw new UnauthorizedException('No Refresh token');
-    return this.authService.refreshTokens(headers['refreshtoken']);
+  @ApiBearerAuth()
+  refreshTokens(@Headers('Authorization') refresh_token) {
+    console.log(refresh_token);
+    if (!refresh_token) throw new UnauthorizedException('No Refresh token');
+    return this.authService.refreshTokens(refresh_token);
   }
 
   @ApiOkResponse({

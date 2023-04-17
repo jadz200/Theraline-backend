@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   BadRequestException,
   UnauthorizedException,
@@ -83,9 +83,13 @@ export class AuthService {
   }
 
   async refreshTokens(rt: string) {
+    const [bearer, token] = rt.split(' ');
+    if (bearer !== 'Bearer')
+      throw new UnauthorizedException('Wrong Refresh Token format');
+
     let userId;
     try {
-      userId = this.jwtService.decode(rt)['sub'];
+      userId = this.jwtService.decode(token)['sub'];
     } catch {
       throw new UnauthorizedException('Wrong Refresh Token format');
     }
@@ -94,7 +98,7 @@ export class AuthService {
     });
     if (!user || !user.hashedRt)
       throw new UnauthorizedException('No user with this token');
-    const rtMatches = await argon.verify(user.hashedRt, rt);
+    const rtMatches = await argon.verify(user.hashedRt, token);
 
     if (!rtMatches) throw new UnauthorizedException('Incorrect Refresh token');
     const tokens = await this.getTokens(user.id, user.email, user.role);
