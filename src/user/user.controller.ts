@@ -14,6 +14,7 @@ import {
   ApiUnauthorizedResponse,
   ApiForbiddenResponse,
   ApiTags,
+  ApiOkResponse,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
 import { CreateDoctorDto } from '../auth/dto';
@@ -91,5 +92,63 @@ export class UserController {
   @Roles('DOCTOR')
   async deleteUser(@Param(':user_id') id) {
     return await this.userService.deleteUser(id);
+  }
+
+  @ApiOkResponse({
+    schema: {
+      example: {
+        test: [
+          {
+            _id: 'string',
+            email: 'string@gmail.com',
+            firstName: 'string',
+            lastName: 'string',
+            image: 'string',
+          },
+          {
+            _id: 'string',
+            email: 'string@gmail.com',
+            firstName: 'string',
+            lastName: 'string',
+            image: 'string',
+          },
+          {
+            _id: 'string',
+            email: 'string@gfr.com',
+            firstName: 'string',
+            lastName: 'string',
+            image: null,
+          },
+        ],
+      },
+    },
+  })
+  @ApiOkResponse({})
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+    schema: {
+      example: {
+        statusCode: 401,
+        message: 'Unauthorized',
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden Acees',
+    schema: {
+      example: {
+        statusCode: 403,
+        message: 'Forbidden resource',
+        error: 'Forbidden',
+      },
+    },
+  })
+  @Get('/patients')
+  @ApiOperation({ summary: 'Gets a list of all the patients' })
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @Roles('DOCTOR')
+  async get_patients() {
+    return await this.userService.get_all_patients();
   }
 }

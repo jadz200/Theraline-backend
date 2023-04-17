@@ -6,7 +6,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { CreateDoctorDto, User } from 'src/auth/dto';
 import { UserDocument } from 'src/auth/schema/user.schema';
 import * as argon from 'argon2';
-import { patientInfo, patientList } from './dto/patientList.dto';
+import { patientInfo } from './dto/patientList.dto';
 
 @Injectable()
 export class UserService {
@@ -92,5 +92,10 @@ export class UserService {
       }
     }
     return patientList;
+  }
+  async get_all_patients() {
+    return await this.userModel
+      .find({ role: ['PATIENT'] })
+      .select('firstName lastName email image');
   }
 }
