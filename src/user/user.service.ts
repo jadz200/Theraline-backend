@@ -112,6 +112,7 @@ export class UserService {
     );
     console.log(user);
     const resp: UserDetail = {
+      _id: user._id.toString(),
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
@@ -119,7 +120,7 @@ export class UserService {
       phone: user.phone,
       gender: user.gender,
       groups: user.groups,
-      doctors_id: doctors_id,
+      doctors: doctors_id,
     };
 
     return resp;
