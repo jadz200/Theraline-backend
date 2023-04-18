@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { PaginateModel, PaginateResult } from 'mongoose';
+import mongoose, { PaginateModel, PaginateResult } from 'mongoose';
 import { ArticleDto } from './dto/article.dto';
 import { Article, ArticleDocument } from './schema/article.schema';
 
@@ -21,6 +21,9 @@ export class ArticlesService {
     return resp;
   }
   async get_article(article_id: string): Promise<ArticleDto> {
+    if (!mongoose.Types.ObjectId.isValid(article_id)) {
+      throw new BadRequestException('Id is not in valid format');
+    }
     const resp: ArticleDto = await this.articleModel.findOne({
       _id: article_id,
     });
@@ -29,10 +32,11 @@ export class ArticlesService {
     return resp;
   }
   async post_article(dto: ArticleDto): Promise<{ msg: string }> {
+    const date = Date.now();
     const article: Article = await this.articleModel.create({
       title: dto.title,
       content: dto.content,
-      date: dto.date,
+      date: date,
     });
 
     this.logger.debug(`Posted article ${article._id}`);

@@ -13,8 +13,8 @@ import {
 import mongoose from 'mongoose';
 import { RolesGuard } from 'src/common/guards';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { GetCurrentUserId, Public, Roles } from '../common/decorators/index';
-import { Chat, CreateConvoDto, CreateGroupDto, getChatsDto } from './dto/index';
+import { GetCurrentUserId, Roles } from '../common/decorators/index';
+import { Chat, CreateConvoDto, CreateGroupDto } from './dto/index';
 import { GroupsService } from './groups.service';
 
 @ApiTags('Groups')
@@ -368,11 +368,5 @@ export class GroupsController {
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ) {
     return this.groupService.get_users_to_create_group(userId);
-  }
-
-  @Public()
-  @Get('test')
-  async test() {
-    return this.groupService.test();
   }
 }
