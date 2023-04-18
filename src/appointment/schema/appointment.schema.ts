@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as mongoosePaginate from 'mongoose-paginate-v2';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -7,8 +8,8 @@ const aggregatePaginate = require('mongoose-paginate-v2');
 export type AppointmentDocument = Appointment & Document;
 
 export type AppointmentStatus = 'CREATED' | 'CONFIRMED' | 'CANCELED' | 'DONE';
-export type PaymentStatus = 'N/A' | 'PENDING' | 'AWAITING' | 'PAID';
-export type PaymentMethod = 'N/A' | 'CASH' | 'CHECK' | 'CREDIT CARD';
+export type PaymentStatus = 'PENDING' | 'AWAITING' | 'PAID';
+export type PaymentMethod = 'CASH' | 'CHECK' | 'CREDIT CARD';
 
 export class paymentInfo {
   amount: number;

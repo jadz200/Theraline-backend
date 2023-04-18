@@ -7,9 +7,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Appointment, AppointmentSchema } from 'src/appointment/schema';
 import { User } from 'src/auth/dto';
 import { UserSchema } from 'src/auth/schema/user.schema';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
+    JwtModule.register({}),
+
     AuthModule,
     CloudinaryModule,
     MongooseModule.forFeature([

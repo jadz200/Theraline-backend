@@ -173,7 +173,7 @@ export class AuthService {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Id is not in valid format');
     }
-    return await this.userModel.findOne({ _id: id });
+    return await this.userModel.findOne({ _id: id }).select('role');
   }
   async getPatientProfile(id: string): Promise<User | undefined> {
     return await this.userModel

@@ -8,6 +8,7 @@ import { GroupsService } from './groups.service';
 import { Group, GroupSchema } from './schema/group.schema';
 import { AuthModule } from 'src/auth/auth.module';
 import { Appointment, AppointmentSchema } from 'src/appointment/schema';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { Appointment, AppointmentSchema } from 'src/appointment/schema';
     ]),
     CloudinaryModule,
     AuthModule,
+    JwtModule,
   ],
   controllers: [GroupsController],
   providers: [GroupsService],
