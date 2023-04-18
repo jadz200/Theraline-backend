@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as mongoosePaginate from 'mongoose-paginate-v2';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const aggregatePaginate = require('mongoose-paginate-v2');
 export type UserDocument = User & Document;
 
-export type UserRole = ['PATIENT', 'MODERATOR', 'DOCTOR', 'ADMIN'];
+export type UserRole = 'PATIENT' | 'MODERATOR' | 'DOCTOR' | 'ADMIN';
 
 export class ClinicInfo {
   @Prop()
@@ -48,3 +49,7 @@ export class User {
 
 export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.plugin(aggregatePaginate);
+
+UserSchema.virtual('fullName').get(function () {
+  return this.firstName + ' ' + this.lastName;
+});

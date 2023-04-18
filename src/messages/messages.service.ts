@@ -2,11 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { SendMessageDto } from './dto/sendMessage.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Message, MessageDocument } from './schema/message.schema';
-import { PaginateModel } from 'mongoose';
+import { PaginateModel, PaginateResult } from 'mongoose';
 import { GroupsService } from '../groups/groups.service';
 import { SocketGateway } from '../socket/socket.gateway';
 import { Expo } from 'expo-server-sdk';
-import { getChatMessages } from './dto/getChat.dto';
 import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
@@ -22,12 +21,11 @@ export class MessagesService {
     private readonly authService: AuthService,
   ) {}
 
-  async findAll(group_id: string) {
-    const messages = await this.messageModel.find({ group_id: group_id });
-    return messages;
-  }
-
-  async get_chat(user_id, group_id: string, page: number) {
+  async get_chat_messages(
+    user_id,
+    group_id: string,
+    page: number,
+  ): Promise<PaginateResult<Message>> {
     await this.groupService.check_group_valid(group_id);
 
     const options = {
@@ -35,19 +33,18 @@ export class MessagesService {
       limit: 30,
       sort: { send_at: -1 },
     };
-    const resp = await this.messageModel.paginate(
+    const resp: PaginateResult<Message> = await this.messageModel.paginate(
       { group_id: group_id },
       options,
     );
-    const temp: getChatMessages = { messages: resp.docs };
-    for (const message in temp.messages) {
-      temp.messages[message]['username'] = await this.authService.getName(
-        temp.messages[message].user_id,
+    for (const index in resp.docs) {
+      resp.docs[index].username = await this.authService.getName(
+        resp.docs[index].user_id,
       );
-      if (temp.messages[message].user_id == user_id) {
-        temp.messages[message]['sentByMe'] = true;
+      if (resp.docs[index].user_id == user_id) {
+        resp.docs[index].sentByMe = true;
       } else {
-        temp.messages[message]['sentByMe'] = false;
+        resp.docs[index].sentByMe = false;
       }
     }
     return resp;
@@ -57,7 +54,7 @@ export class MessagesService {
     user_id: string,
     group_id: string,
     message: SendMessageDto,
-  ) {
+  ): Promise<{ msg: string }> {
     await this.groupService.check_group_valid(group_id);
     const time = Date.now();
     const sentMessage = await this.messageModel.create({
@@ -71,6 +68,6 @@ export class MessagesService {
       message: sentMessage,
     });
     this.logger.log('Message sent');
-    return sentMessage;
+    return { msg: 'message sent' };
   }
 }

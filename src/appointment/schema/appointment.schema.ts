@@ -6,9 +6,9 @@ import * as mongoosePaginate from 'mongoose-paginate-v2';
 const aggregatePaginate = require('mongoose-paginate-v2');
 export type AppointmentDocument = Appointment & Document;
 
-export type AppointmentStatus = ['CREATED', 'CONFIRMED', 'CANCELED', 'DONE'];
-export type PaymentStatus = ['N/A', 'PENDING', 'AWAITING', 'PAID'];
-export type PaymentMethod = ['N/A', 'CASH', 'CHECK', 'CREDIT CARD'];
+export type AppointmentStatus = 'CREATED' | 'CONFIRMED' | 'CANCELED' | 'DONE';
+export type PaymentStatus = 'N/A' | 'PENDING' | 'AWAITING' | 'PAID';
+export type PaymentMethod = 'N/A' | 'CASH' | 'CHECK' | 'CREDIT CARD';
 
 export class paymentInfo {
   amount: number;

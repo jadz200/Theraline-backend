@@ -6,10 +6,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { PaginateResult } from 'mongoose';
 import { GetCurrentUserId } from '../common/decorators';
 import { PaginationParams } from '../common/dto/paginationParams.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
 import { MessagesService } from './messages.service';
+import { Message } from './schema/message.schema';
 
 @ApiTags('Message')
 @Controller('message')
@@ -85,14 +87,14 @@ export class MessageController {
     },
   })
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get all chats for a specific user' })
+  @ApiOperation({ summary: 'Get all chat messages for a specific chat id' })
   @Get('/:chat_id/chat')
   async get_chat(
     @GetCurrentUserId() user_id,
     @Param('chat_id') group_id: string,
     @Query() { page }: PaginationParams,
-  ) {
-    return this.messageService.get_chat(user_id, group_id, page);
+  ): Promise<PaginateResult<Message>> {
+    return this.messageService.get_chat_messages(user_id, group_id, page);
   }
 
   @ApiResponse({
@@ -126,7 +128,7 @@ export class MessageController {
     @GetCurrentUserId() user_id,
     @Param('chat_id') group_id: string,
     @Body() dto: SendMessageDto,
-  ) {
-    return this.messageService.sendMessage(user_id, group_id, dto);
+  ): Promise<{ msg: string }> {
+    return await this.messageService.sendMessage(user_id, group_id, dto);
   }
 }

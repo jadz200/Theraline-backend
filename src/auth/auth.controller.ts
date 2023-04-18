@@ -2,13 +2,10 @@ import {
   Body,
   Controller,
   Get,
-  Head,
   Headers,
   HttpCode,
   HttpStatus,
   Post,
-  Res,
-  UseGuards,
 } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { Public, GetCurrentUserId } from '../common/decorators/index';
@@ -17,7 +14,6 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
-  ApiHeader,
   ApiOkResponse,
   ApiOperation,
   ApiResponse,
@@ -78,8 +74,6 @@ export class AuthController {
       },
     },
   })
-  @Public()
-  @Post('signup')
   @ApiCreatedResponse({
     description: 'Successful Response',
     schema: {
@@ -97,6 +91,8 @@ export class AuthController {
     },
   })
   @ApiOperation({ summary: 'Create patient user' })
+  @Public()
+  @Post('signup')
   async signupLocal(@Body() dto: CreateUserDto) {
     if (dto.image) {
       dto.image = (await this.cloudinaryService.upload(dto.image)).url;
@@ -104,8 +100,6 @@ export class AuthController {
     return this.authService.signupLocal(dto);
   }
 
-  @Public()
-  @Post('signin')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     description: 'Successful Response',
@@ -157,6 +151,8 @@ export class AuthController {
     },
   })
   @ApiOperation({ summary: 'Sign in and get access and refresh tokens' })
+  @Public()
+  @Post('signin')
   async signinLocal(@Body() dto: AuthDto): Promise<AuthResponse> {
     return this.authService.signin(dto);
   }
@@ -202,11 +198,10 @@ export class AuthController {
   @ApiOkResponse({
     type: RefreshDto,
   })
-  @Public()
-  @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Use Refresh token' })
   @ApiBearerAuth()
+  @Post('refresh')
   refreshTokens(@Headers('Authorization') refresh_token) {
     console.log(refresh_token);
     if (!refresh_token) throw new UnauthorizedException('No Refresh token');
@@ -232,10 +227,10 @@ export class AuthController {
       },
     },
   })
-  @Get('me')
-  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Use Access token get user info' })
+  @Get('me')
   async retrieveUserInfo(
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ): Promise<RetrieveUserDTO> {

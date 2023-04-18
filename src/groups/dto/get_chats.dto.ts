@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { receiveMessage } from '../../messages/dto/receiveMessage.dto';
+import { MessageDto } from 'src/messages/dto/message.dto';
 import { GroupType } from '../schema/group.schema';
 
 export class Chat {
@@ -7,7 +7,7 @@ export class Chat {
   name: string;
   groupType: GroupType;
   groupImage: string;
-  latestMessage?: receiveMessage;
+  latestMessage?: MessageDto;
   image?: string;
 }
 

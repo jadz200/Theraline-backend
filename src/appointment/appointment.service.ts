@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { PaginateModel } from 'mongoose';
+import mongoose, { PaginateModel, PaginateResult } from 'mongoose';
 import { AuthService } from '../auth/auth.service';
 import { GetpaymentInfoDtoList } from './dto/getPaymentInfo.dto';
 import { CreateAppointmentDto, paymentInfoDto } from './dto/index';
@@ -149,10 +149,8 @@ export class AppointmentService {
       select: 'patient_id paymentInfo',
       sort: { createdAt: -1 },
     };
-    const paymentInfo = await this.appointmentModel.paginate(
-      { doctor_id: doctor_id },
-      options,
-    );
+    const paymentInfo: PaginateResult<Appointment> =
+      await this.appointmentModel.paginate({ doctor_id: doctor_id }, options);
     const temp: GetpaymentInfoDtoList = { paymentList: paymentInfo.docs };
 
     for (const i in temp) {

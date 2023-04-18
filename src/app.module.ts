@@ -13,6 +13,7 @@ import { SocketModule } from './socket/socket.module';
 import { UserModule } from './user/user.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ArticlesModule } from './articles/articles.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { join } from 'path';
     CloudinaryModule,
     SocketModule,
     UserModule,
+    ArticlesModule,
   ],
   providers: [
     {
