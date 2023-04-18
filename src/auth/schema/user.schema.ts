@@ -45,6 +45,7 @@ export class User {
   image?: string;
   @Prop()
   expoToken?: string;
+  fullName: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

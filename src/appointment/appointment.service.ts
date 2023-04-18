@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { PaginateModel, PaginateResult } from 'mongoose';
+import { User } from 'src/auth/schema/user.schema';
 import { AuthService } from '../auth/auth.service';
-import { GetpaymentInfoDtoList } from './dto/getPaymentInfo.dto';
 import { CreateAppointmentDto, paymentInfoDto } from './dto/index';
 import { Appointment, AppointmentDocument } from './schema/index';
 
@@ -134,11 +134,10 @@ export class AppointmentService {
       );
     }
 
-    const resp = await this.appointmentModel.findByIdAndUpdate(
+    await this.appointmentModel.findByIdAndUpdate(
       { _id: appointment_id },
       { status: 'DONE', paymentInfo: dto },
     );
-    console.log(resp);
     return { msg: 'Appointment complete with payment info' };
   }
 
@@ -150,16 +149,20 @@ export class AppointmentService {
       sort: { createdAt: -1 },
     };
     const paymentInfo: PaginateResult<Appointment> =
-      await this.appointmentModel.paginate({ doctor_id: doctor_id }, options);
-    const temp: GetpaymentInfoDtoList = { paymentList: paymentInfo.docs };
+      await this.appointmentModel.paginate(
+        { doctor_id: doctor_id, status: 'DONE' },
+        options,
+      );
 
-    for (const i in temp) {
-      const patient_id = temp[i].patient_id;
-      const patient = await this.authService.getPatientProfile(patient_id);
-      console.log(patient);
+    for (const index in paymentInfo.docs) {
+      const patient_id = paymentInfo.docs[index].patient_id;
+      const patient: User = await this.authService.getPatientProfile(
+        patient_id,
+      );
+      console.log(patient.fullName);
       // temp[i] = { firstName: patient.firstName };
     }
-    console.log(temp);
+    console.log(paymentInfo.docs);
     this.logger.log(`Payment Info for ${doctor_id} retrieved`);
     return paymentInfo;
   }
