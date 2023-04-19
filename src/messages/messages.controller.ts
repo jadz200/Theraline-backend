@@ -7,7 +7,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PaginateResult } from 'mongoose';
-import { SwaggerBadResponse } from 'src/common/swagger/response.swagger';
+import { getChatMessagesResp } from 'src/common/swagger/message.swager';
+import { SwaggerBadResponseMessage } from 'src/common/swagger/general.swagger';
 import { GetCurrentUserId } from '../common/decorators';
 import { PaginationParams } from '../common/dto/paginationParams.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
@@ -21,46 +22,7 @@ export class MessageController {
 
   @ApiOkResponse({
     schema: {
-      example: {
-        docs: [
-          {
-            _id: 'string',
-            text: 'Hello',
-            user_id: 'string',
-            group_id: 'string',
-            send_at: '2023-04-15T11:48:49.442Z',
-            __v: 0,
-            sentByMe: 'NO',
-          },
-          {
-            _id: 'string',
-            text: 'string',
-            user_id: 'string',
-            group_id: 'string',
-            send_at: '2023-04-14T12:12:06.714Z',
-            __v: 0,
-            sentByMe: 'NO',
-          },
-          {
-            _id: 'string',
-            text: 'jj',
-            user_id: 'string',
-            group_id: 'string',
-            send_at: '2023-04-13T10:50:33.992Z',
-            __v: 0,
-            sentByMe: 'NO',
-          },
-        ],
-        totalDocs: 34,
-        limit: 30,
-        totalPages: 2,
-        page: 1,
-        pagingCounter: 1,
-        hasPrevPage: false,
-        hasNextPage: true,
-        prevPage: null,
-        nextPage: 2,
-      },
+      example: getChatMessagesResp,
     },
   })
   @ApiResponse({
@@ -69,14 +31,14 @@ export class MessageController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
-          Invalid_Group_ID: SwaggerBadResponse("Group doesn't exist"),
+          Invalid_id: SwaggerBadResponseMessage('Id is not in valid format'),
+          Invalid_Group_ID: SwaggerBadResponseMessage("Group doesn't exist"),
         },
       },
     },
   })
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all chat messages for a specific chat id' })
+  @ApiBearerAuth()
   @Get('/:chat_id/chat')
   async get_chat(
     @GetCurrentUserId() user_id,
@@ -92,8 +54,8 @@ export class MessageController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
-          Invalid_Group_ID: SwaggerBadResponse("Group doesn't exist"),
+          Invalid_id: SwaggerBadResponseMessage('Id is not in valid format'),
+          Invalid_Group_ID: SwaggerBadResponseMessage("Group doesn't exist"),
         },
       },
     },

@@ -30,12 +30,21 @@ export function SwaggerResponseSuccessfulWithMessage(message) {
   };
 }
 
-export function SwaggerBadResponse(message) {
+export function SwaggerBadResponseMessage(message) {
   return {
     value: {
       statusCode: 400,
       message: message,
       error: 'Bad Request',
+    },
+  };
+}
+export function SwaggerUnauthorizedResponseMessage(message) {
+  return {
+    value: {
+      statusCode: 401,
+      message: message,
+      error: 'Unauthorized',
     },
   };
 }

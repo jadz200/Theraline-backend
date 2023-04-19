@@ -27,7 +27,7 @@ import {
   SwaggerForbiddenResponse,
   SwaggerResponseSuccessfulWithMessage,
   SwaggerUnauthorizedResponse,
-} from 'src/common/swagger/response.swagger';
+} from 'src/common/swagger/general.swagger';
 
 @ApiTags('User')
 @Controller('user')

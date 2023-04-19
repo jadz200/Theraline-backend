@@ -20,11 +20,12 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto, paymentInfoDto } from './dto/index';
 import {
-  SwaggerBadResponse,
-  SwaggerForbiddenResponse,
   SwaggerResponseSuccessfulWithMessage,
   SwaggerUnauthorizedResponse,
-} from '../common/swagger/response.swagger';
+  SwaggerForbiddenResponse,
+  SwaggerBadResponseMessage,
+  getAppointmentResp,
+} from 'src/common/swagger';
 
 @ApiTags('Appointment')
 @Controller('appointment')
@@ -61,11 +62,11 @@ export class AppointementController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
-          Date_format: SwaggerBadResponse([
+          Invalid_id: SwaggerBadResponseMessage('Id is not in valid format'),
+          Date_format: SwaggerBadResponseMessage([
             'start_date and end_date must match /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$/ regular expression',
           ]),
-          Unable_to_cast_date_type: SwaggerBadResponse(
+          Unable_to_cast_date_type: SwaggerBadResponseMessage(
             'start_date and/or end_date are not a correct time',
           ),
         },
@@ -93,11 +94,11 @@ export class AppointementController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
-          No_appointment_for_this_user: SwaggerBadResponse(
+          Invalid_id: SwaggerBadResponseMessage('Id is not in valid format'),
+          No_appointment_for_this_user: SwaggerBadResponseMessage(
             'No appointment for this patient',
           ),
-          Wrong_status: SwaggerBadResponse(
+          Wrong_status: SwaggerBadResponseMessage(
             'Appointment is not in the CREATED status',
           ),
         },
@@ -128,11 +129,11 @@ export class AppointementController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
-          No_appointment_for_this_user: SwaggerBadResponse(
+          Invalid_id: SwaggerBadResponseMessage('Id is not in valid format'),
+          No_appointment_for_this_user: SwaggerBadResponseMessage(
             'No appointment for this patient',
           ),
-          Wrong_status: SwaggerBadResponse(
+          Wrong_status: SwaggerBadResponseMessage(
             'Appointment is not in the CONFIRMED or CREATED status',
           ),
         },
@@ -173,17 +174,17 @@ export class AppointementController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
-          No_appointment_for_this_user: SwaggerBadResponse(
+          Invalid_id: SwaggerBadResponseMessage('Id is not in valid format'),
+          No_appointment_for_this_user: SwaggerBadResponseMessage(
             'No appointment for this doctor',
           ),
-          Must_be_CONFIRMED: SwaggerBadResponse(
+          Must_be_CONFIRMED: SwaggerBadResponseMessage(
             'Appointment is not in the CONFIRMED status',
           ),
-          Date_format: SwaggerBadResponse([
+          Date_format: SwaggerBadResponseMessage([
             'date must match /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$/ regular expression',
           ]),
-          Unable_to_cast_date_type: SwaggerBadResponse(
+          Unable_to_cast_date_type: SwaggerBadResponseMessage(
             'date are not a correct time',
           ),
         },
@@ -213,48 +214,7 @@ export class AppointementController {
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiOkResponse({
     schema: {
-      example: {
-        docs: [
-          {
-            _id: 'string',
-            patient_id: 'string',
-            doctor_id: 'string',
-            start_date: '2023-12-07T12:30:00.000Z',
-            end_date: '2023-12-07T12:50:00.000Z',
-            status: ['CREATED'],
-            __v: 0,
-          },
-          {
-            _id: 'string',
-            patient_id: 'string',
-            title: 'Cool appointment',
-            doctor_id: 'string',
-            start_date: '2023-11-07T10:30:00.000Z',
-            end_date: '2023-11-07T10:40:00.000Z',
-            status: ['CREATED'],
-            __v: 0,
-          },
-          {
-            _id: 'string',
-            patient_id: 'string',
-            title: 'title',
-            doctor_id: 'string',
-            start_date: '2023-11-07T10:30:00.000Z',
-            end_date: '2023-11-07T11:30:00.000Z',
-            status: ['CONFIRMED'],
-            __v: 0,
-          },
-        ],
-        totalDocs: 3,
-        limit: 25,
-        totalPages: 1,
-        page: 1,
-        pagingCounter: 1,
-        hasPrevPage: false,
-        hasNextPage: false,
-        prevPage: null,
-        nextPage: null,
-      },
+      example: getAppointmentResp,
     },
   })
   @UseGuards(RolesGuard)
@@ -275,48 +235,7 @@ export class AppointementController {
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiOkResponse({
     schema: {
-      example: {
-        docs: [
-          {
-            _id: 'string',
-            patient_id: 'string',
-            doctor_id: 'string',
-            start_date: '2023-12-07T12:30:00.000Z',
-            end_date: '2023-12-07T12:50:00.000Z',
-            status: ['CREATED'],
-            __v: 0,
-          },
-          {
-            _id: 'string',
-            patient_id: 'string',
-            title: 'Cool appointment',
-            doctor_id: 'string',
-            start_date: '2023-11-07T10:30:00.000Z',
-            end_date: '2023-11-07T10:40:00.000Z',
-            status: ['CREATED'],
-            __v: 0,
-          },
-          {
-            _id: 'string',
-            patient_id: 'string',
-            title: 'title',
-            doctor_id: 'string',
-            start_date: '2023-11-07T10:30:00.000Z',
-            end_date: '2023-11-07T11:30:00.000Z',
-            status: ['CONFIRMED'],
-            __v: 0,
-          },
-        ],
-        totalDocs: 3,
-        limit: 25,
-        totalPages: 1,
-        page: 1,
-        pagingCounter: 1,
-        hasPrevPage: false,
-        hasNextPage: false,
-        prevPage: null,
-        nextPage: null,
-      },
+      example: getAppointmentResp,
     },
   })
   @UseGuards(RolesGuard)
@@ -341,11 +260,11 @@ export class AppointementController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
-          Appointment_Incomplete: SwaggerBadResponse(
+          Invalid_id: SwaggerBadResponseMessage('Id is not in valid format'),
+          Appointment_Incomplete: SwaggerBadResponseMessage(
             "Appointment isn't complete",
           ),
-          Already_Paid: SwaggerBadResponse('Appointment already paid'),
+          Already_Paid: SwaggerBadResponseMessage('Appointment already paid'),
         },
       },
     },

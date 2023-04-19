@@ -11,13 +11,15 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
-import { RolesGuard } from 'src/common/guards';
+import { RolesGuard } from '../common/guards';
 import {
-  SwaggerBadResponse,
+  getChatsResp,
+  getUserChatResp,
+  SwaggerBadResponseMessage,
   SwaggerForbiddenResponse,
   SwaggerResponseSuccessfulWithMessage,
   SwaggerUnauthorizedResponse,
-} from 'src/common/swagger/response.swagger';
+} from '../common/swagger';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { GetCurrentUserId, Roles } from '../common/decorators/index';
 import { Chat, CreateConvoDto, CreateGroupDto } from './dto/index';
@@ -39,35 +41,15 @@ export class GroupsController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
-          User_Doesnt_Exist: {
-            value: {
-              statusCode: 400,
-              message: 'User does not exists',
-              error: 'Bad Request',
-            },
-          },
-          Already_Exists: {
-            value: {
-              statusCode: 400,
-              message: 'Conv already exists',
-              error: 'Bad Request',
-            },
-          },
-          No_Self_Conv: {
-            value: {
-              statusCode: 400,
-              message: "You can't create a conversation with yourself ",
-              error: 'Bad Request',
-            },
-          },
-          More_than_2_users: {
-            value: {
-              statusCode: 400,
-              message: 'More than 2 users in this conversation',
-              error: 'Bad Request',
-            },
-          },
+          Invalid_id: SwaggerBadResponseMessage('Id is not in valid format'),
+          User_Doesnt_Exist: SwaggerBadResponseMessage('User does not exists'),
+          Already_Exists: SwaggerBadResponseMessage('Conv already exists'),
+          No_Self_Conv: SwaggerBadResponseMessage(
+            "You can't create a conversation with yourself",
+          ),
+          More_than_2_users: SwaggerBadResponseMessage(
+            'More than 2 users in this conversation',
+          ),
         },
       },
     },
@@ -92,28 +74,10 @@ export class GroupsController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
-          User_Doesnt_Exist: {
-            value: {
-              statusCode: 400,
-              message: 'User does not exists',
-              error: 'Bad Request',
-            },
-          },
-          Cannot_Upload_Image: {
-            value: {
-              statusCode: 400,
-              message: 'Cannot upload image',
-              error: 'Bad Request',
-            },
-          },
-          Duplicate_Entries: {
-            value: {
-              statusCode: 400,
-              message: 'Duplicate entries',
-              error: 'Bad Request',
-            },
-          },
+          Invalid_id: SwaggerBadResponseMessage('Id is not in valid format'),
+          User_Doesnt_Exist: SwaggerBadResponseMessage('User does not exists'),
+          Cannot_Upload_Image: SwaggerBadResponseMessage('Cannot upload image'),
+          Duplicate_Entries: SwaggerBadResponseMessage('Duplicate entries'),
         },
       },
     },
@@ -136,62 +100,7 @@ export class GroupsController {
 
   @ApiOkResponse({
     schema: {
-      example: {
-        chats: [
-          {
-            _id: 'string',
-            name: 'Super cool group',
-            groupType: ['GROUP'],
-            latestMessage: {
-              _id: 'string',
-              send_at: '2023-03-20T19:44:19.883Z',
-              user_id: 'string',
-              text: 'Hello!',
-            },
-          },
-          {
-            _id: 'string',
-            name: 'ADHD',
-            groupType: ['GROUP'],
-            groupImage: 'string',
-            latestMessage: {
-              _id: 'string',
-              send_at: '2023-04-04T08:19:08.508Z',
-              user_id: 'string',
-              text: 'testing time!',
-            },
-          },
-          {
-            _id: 'string',
-            name: 'Jad Zarzour',
-            groupType: ['PRIVATE'],
-            groupImage: 'string',
-            latestMessage: {
-              _id: 'string',
-              send_at: '2023-04-13T05:53:33.190Z',
-              user_id: 'string',
-              text: 'hi',
-            },
-          },
-          {
-            _id: 'string',
-            name: 'Very cool',
-            groupImage: 'string',
-            groupType: ['GROUP'],
-          },
-          {
-            _id: 'string',
-            name: 'string string',
-            groupType: ['PRIVATE'],
-          },
-          {
-            _id: 'string',
-            name: 'string string',
-            groupImage: null,
-            groupType: ['PRIVATE'],
-          },
-        ],
-      },
+      example: getChatsResp,
     },
   })
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
@@ -208,28 +117,7 @@ export class GroupsController {
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiOkResponse({
     schema: {
-      example: {
-        users: [
-          {
-            _id: 'string',
-            email: 'string',
-            firstName: 'Jhon',
-            lastName: 'Doe',
-          },
-          {
-            _id: 'string',
-            email: 'string',
-            firstName: 'Mart',
-            lastName: 'Slavin',
-          },
-          {
-            _id: 'string',
-            email: 'string',
-            firstName: 'string',
-            lastName: 'string',
-          },
-        ],
-      },
+      example: getUserChatResp,
     },
   })
   @ApiBearerAuth()
@@ -247,28 +135,7 @@ export class GroupsController {
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiOkResponse({
     schema: {
-      example: {
-        users: [
-          {
-            _id: 'string',
-            email: 'string',
-            firstName: 'Jhon',
-            lastName: 'Doe',
-          },
-          {
-            _id: 'string',
-            email: 'string',
-            firstName: 'Mart',
-            lastName: 'Slavin',
-          },
-          {
-            _id: 'string',
-            email: 'string',
-            firstName: 'string',
-            lastName: 'string',
-          },
-        ],
-      },
+      example: getUserChatResp,
     },
   })
   @ApiBearerAuth()
