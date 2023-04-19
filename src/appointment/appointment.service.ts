@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { PaginateModel, PaginateResult } from 'mongoose';
 import { User } from 'src/auth/schema/user.schema';
@@ -141,6 +146,30 @@ export class AppointmentService {
     return { msg: 'Appointment complete with payment info' };
   }
 
+  async confirm_payment(appointment_id, doctor_id) {
+    if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
+      throw new BadRequestException('Id is not in valid format');
+    }
+    const appointment: Appointment = await this.appointmentModel.findOne({
+      _id: appointment_id,
+      doctor_id: doctor_id,
+    });
+    if (!appointment) {
+      throw new NotFoundException('Appointment Not Found');
+    }
+    if (appointment.status !== 'DONE') {
+      throw new BadRequestException("Appointment isn't complete");
+    }
+    if (appointment.paymentInfo.status === 'PAID') {
+      throw new BadRequestException('Appointment already paid');
+    }
+    await this.appointmentModel.updateOne(appointment, {
+      $set: { 'paymentInfo.status': 'DONE' },
+    });
+
+    return { msg: 'Appointment has already been paid' };
+  }
+
   async get_all_paymentInfo(doctor_id, page) {
     const options = {
       page: page,
@@ -160,9 +189,11 @@ export class AppointmentService {
         patient_id,
       );
       console.log(patient.fullName);
+      const test = { ...patient, ...paymentInfo.docs[index].paymentInfo };
+      // paymentInfo.docs[index] = test;
+      console.log(test);
       // temp[i] = { firstName: patient.firstName };
     }
-    console.log(paymentInfo.docs);
     this.logger.log(`Payment Info for ${doctor_id} retrieved`);
     return paymentInfo;
   }

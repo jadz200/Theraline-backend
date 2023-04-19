@@ -5,6 +5,7 @@ import {
   ApiBody,
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiResponse,
@@ -474,6 +475,65 @@ export class AppointementController {
     @Query() { page }: PaginationParams,
   ) {
     return this.appointmentService.get_patient_appointment(patient_id, page);
+  }
+
+  @ApiResponse({
+    status: 400,
+    description: 'Validation error',
+    content: {
+      'application/json': {
+        examples: {
+          Invalid_id: {
+            value: {
+              statusCode: 400,
+              message: 'Id is not in valid format',
+              error: 'Bad Request',
+            },
+          },
+          Appointment_Incomplete: {
+            value: {
+              statusCode: 400,
+              message: "Appointment isn't complete",
+              error: 'Bad Request',
+            },
+          },
+          Already_Paid: {
+            value: {
+              statusCode: 400,
+              message: 'Appointment already paid',
+              error: 'Bad Request',
+            },
+          },
+        },
+      },
+    },
+  })
+  @ApiNotFoundResponse({
+    schema: {
+      example: {
+        statusCode: 400,
+        message: 'Appointment Not Found',
+        error: 'Bad Request',
+      },
+    },
+  })
+  @ApiOkResponse({
+    schema: {
+      example: {
+        msg: 'Appointment has already been paid',
+      },
+    },
+  })
+  @UseGuards(RolesGuard)
+  @Roles('DOCTOR')
+  @ApiOperation({ summary: "Change payment status to paid if it isn't yet" })
+  @ApiBearerAuth()
+  @Patch(':appointment_id/confirm_payment')
+  async confirm_payment(
+    @GetCurrentUserId() doctor_id,
+    @Param('appointment_id') appointment_id: string,
+  ) {
+    return this.appointmentService.confirm_payment(appointment_id, doctor_id);
   }
 
   @Get('get_payment_info')
