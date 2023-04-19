@@ -10,6 +10,11 @@ import {
 import { Public } from './common/decorators/public.decorator';
 import { Roles } from './common/decorators/roles.decorator';
 import { RolesGuard } from './common/guards/roles.guard';
+import {
+  SwaggerForbiddenResponse,
+  SwaggerResponseSuccessfulWithMessage,
+  SwaggerUnauthorizedResponse,
+} from './common/swagger/response.swagger';
 
 @ApiTags('Main')
 @Controller()
@@ -17,14 +22,7 @@ export class AppController {
   @Public()
   @Get('/')
   @ApiOperation({ summary: 'Health check' })
-  @ApiOkResponse({
-    description: 'Successful Response',
-    schema: {
-      example: {
-        msg: 'Hello World',
-      },
-    },
-  })
+  @ApiOkResponse(SwaggerResponseSuccessfulWithMessage('Hello World'))
   healthcheck() {
     return { msg: 'Hello World' };
   }
@@ -33,33 +31,9 @@ export class AppController {
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
   @Get('/doctor')
-  @ApiOkResponse({
-    description: 'Successful Response',
-    schema: {
-      example: {
-        msg: 'Hello doctors',
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden Acees',
-    schema: {
-      example: {
-        statusCode: 403,
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-      },
-    },
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
+  @ApiOkResponse(SwaggerResponseSuccessfulWithMessage('Hello doctors'))
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiOperation({ summary: 'Checking doctor permission' })
   doctor() {
     return { msg: 'Hello doctors' };
@@ -69,33 +43,9 @@ export class AppController {
   @UseGuards(RolesGuard)
   @Roles('PATIENT')
   @Get('/patient')
-  @ApiOkResponse({
-    description: 'Successful Response',
-    schema: {
-      example: {
-        msg: 'Hello patient',
-      },
-    },
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden Acees',
-    schema: {
-      example: {
-        statusCode: 403,
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-      },
-    },
-  })
+  @ApiOkResponse(SwaggerResponseSuccessfulWithMessage('Hello patient'))
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiOperation({ summary: 'Checking patient permission' })
   patient() {
     return { msg: 'Hello patient' };

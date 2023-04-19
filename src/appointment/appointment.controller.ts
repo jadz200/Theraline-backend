@@ -19,19 +19,21 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto, paymentInfoDto } from './dto/index';
+import {
+  SwaggerBadResponse,
+  SwaggerForbiddenResponse,
+  SwaggerResponseSuccessfulWithMessage,
+  SwaggerUnauthorizedResponse,
+} from '../common/swagger/response.swagger';
 
 @ApiTags('Appointment')
 @Controller('appointment')
 export class AppointementController {
   constructor(private appointmentService: AppointmentService) {}
 
-  @ApiCreatedResponse({
-    schema: {
-      example: {
-        msg: 'Created Appointment',
-      },
-    },
-  })
+  @ApiCreatedResponse(
+    SwaggerResponseSuccessfulWithMessage('Created Appointment'),
+  )
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
@@ -51,54 +53,21 @@ export class AppointementController {
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden Acees',
-    schema: {
-      example: {
-        statusCode: 403,
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-      },
-    },
-  })
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiResponse({
     status: 400,
     description: 'Validation error',
     content: {
       'application/json': {
         examples: {
-          Invalid_id: {
-            value: {
-              statusCode: 400,
-              message: 'Id is not in valid format',
-              error: 'Bad Request',
-            },
-          },
-          Date_format: {
-            value: {
-              statusCode: 400,
-              message: [
-                'start_date and end_date must match /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$/ regular expression',
-              ],
-              error: 'Bad Request',
-            },
-          },
-          Unable_to_cast_date_type: {
-            value: {
-              statusCode: 400,
-              message: 'start_date and/or end_date are not a correct time',
-              error: 'Bad Request',
-            },
-          },
+          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
+          Date_format: SwaggerBadResponse([
+            'start_date and end_date must match /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$/ regular expression',
+          ]),
+          Unable_to_cast_date_type: SwaggerBadResponse(
+            'start_date and/or end_date are not a correct time',
+          ),
         },
       },
     },
@@ -115,59 +84,22 @@ export class AppointementController {
   @Roles('PATIENT')
   @Patch(':appointment_id/confirm_appointment')
   @ApiOperation({ summary: 'Patient confirm appoinment' })
-  @ApiOkResponse({
-    schema: {
-      example: {
-        msg: 'Appointment confirmed',
-      },
-    },
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden Acees',
-    schema: {
-      example: {
-        statusCode: 403,
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-      },
-    },
-  })
+  @ApiOkResponse(SwaggerResponseSuccessfulWithMessage('Appointment confirmed'))
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiResponse({
     status: 400,
     description: 'Validation error',
     content: {
       'application/json': {
         examples: {
-          Invalid_id: {
-            value: {
-              statusCode: 400,
-              message: 'Id is not in valid format',
-              error: 'Bad Request',
-            },
-          },
-          No_appointment_for_this_user: {
-            value: {
-              statusCode: 400,
-              message: 'No appointment for this patient',
-              error: 'Bad Request',
-            },
-          },
-          Wrong_status: {
-            value: {
-              statusCode: 400,
-              message: 'Appointment is not in the CREATED status',
-              error: 'Bad Request',
-            },
-          },
+          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
+          No_appointment_for_this_user: SwaggerBadResponse(
+            'No appointment for this patient',
+          ),
+          Wrong_status: SwaggerBadResponse(
+            'Appointment is not in the CREATED status',
+          ),
         },
       },
     },
@@ -182,64 +114,27 @@ export class AppointementController {
     );
   }
 
-  @ApiOkResponse({
-    schema: {
-      example: {
-        msg: 'Appointment canceled',
-      },
-    },
-  })
+  @ApiOkResponse(SwaggerResponseSuccessfulWithMessage('Appointment canceled'))
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('PATIENT', 'DOCTOR')
   @Patch(':appointment_id/cancel_appointment')
   @ApiOperation({ summary: 'Patient/Doctor cancel the appoinment' })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden Acees',
-    schema: {
-      example: {
-        statusCode: 403,
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-      },
-    },
-  })
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiResponse({
     status: 400,
     description: 'Validation error',
     content: {
       'application/json': {
         examples: {
-          Invalid_id: {
-            value: {
-              statusCode: 400,
-              message: 'Id is not in valid format',
-              error: 'Bad Request',
-            },
-          },
-          No_appointment_for_this_user: {
-            value: {
-              statusCode: 400,
-              message: 'No appointment for this patient',
-              error: 'Bad Request',
-            },
-          },
-          Wrong_status: {
-            value: {
-              statusCode: 400,
-              message: 'Appointment is not in the CONFIRMED or CREATED status',
-              error: 'Bad Request',
-            },
-          },
+          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
+          No_appointment_for_this_user: SwaggerBadResponse(
+            'No appointment for this patient',
+          ),
+          Wrong_status: SwaggerBadResponse(
+            'Appointment is not in the CONFIRMED or CREATED status',
+          ),
         },
       },
     },
@@ -251,13 +146,11 @@ export class AppointementController {
     return this.appointmentService.cancel_appointment(appointment_id, userId);
   }
 
-  @ApiOkResponse({
-    schema: {
-      example: {
-        msg: 'Appointment completed with payment info',
-      },
-    },
-  })
+  @ApiOkResponse(
+    SwaggerResponseSuccessfulWithMessage(
+      'Appointment completed with payment info',
+    ),
+  )
   @ApiBody({
     type: paymentInfoDto,
     examples: {
@@ -272,68 +165,27 @@ export class AppointementController {
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden Acees',
-    schema: {
-      example: {
-        statusCode: 403,
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-      },
-    },
-  })
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiResponse({
     status: 400,
     description: 'Validation error',
     content: {
       'application/json': {
         examples: {
-          Invalid_id: {
-            value: {
-              statusCode: 400,
-              message: 'Id is not in valid format',
-              error: 'Bad Request',
-            },
-          },
-          No_appointment_for_this_user: {
-            value: {
-              statusCode: 400,
-              message: 'No appointment for this doctor',
-              error: 'Bad Request',
-            },
-          },
-          Wrong_status: {
-            value: {
-              statusCode: 400,
-              message: 'Appointment is not in the CONFIRMED status',
-              error: 'Bad Request',
-            },
-          },
-          Date_format: {
-            value: {
-              statusCode: 400,
-              message: [
-                'date must match /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$/ regular expression',
-              ],
-              error: 'Bad Request',
-            },
-          },
-          Unable_to_cast_date_type: {
-            value: {
-              statusCode: 400,
-              message: 'date are not a correct time',
-              error: 'Bad Request',
-            },
-          },
+          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
+          No_appointment_for_this_user: SwaggerBadResponse(
+            'No appointment for this doctor',
+          ),
+          Must_be_CONFIRMED: SwaggerBadResponse(
+            'Appointment is not in the CONFIRMED status',
+          ),
+          Date_format: SwaggerBadResponse([
+            'date must match /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$/ regular expression',
+          ]),
+          Unable_to_cast_date_type: SwaggerBadResponse(
+            'date are not a correct time',
+          ),
         },
       },
     },
@@ -357,6 +209,8 @@ export class AppointementController {
     );
   }
 
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiOkResponse({
     schema: {
       example: {
@@ -417,6 +271,8 @@ export class AppointementController {
     return this.appointmentService.get_doctor_appointment(doctor_id, page);
   }
 
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiOkResponse({
     schema: {
       example: {
@@ -477,33 +333,19 @@ export class AppointementController {
     return this.appointmentService.get_patient_appointment(patient_id, page);
   }
 
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse()
   @ApiResponse({
     status: 400,
     description: 'Validation error',
     content: {
       'application/json': {
         examples: {
-          Invalid_id: {
-            value: {
-              statusCode: 400,
-              message: 'Id is not in valid format',
-              error: 'Bad Request',
-            },
-          },
-          Appointment_Incomplete: {
-            value: {
-              statusCode: 400,
-              message: "Appointment isn't complete",
-              error: 'Bad Request',
-            },
-          },
-          Already_Paid: {
-            value: {
-              statusCode: 400,
-              message: 'Appointment already paid',
-              error: 'Bad Request',
-            },
-          },
+          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
+          Appointment_Incomplete: SwaggerBadResponse(
+            "Appointment isn't complete",
+          ),
+          Already_Paid: SwaggerBadResponse('Appointment already paid'),
         },
       },
     },
@@ -511,19 +353,13 @@ export class AppointementController {
   @ApiNotFoundResponse({
     schema: {
       example: {
-        statusCode: 400,
+        statusCode: 404,
         message: 'Appointment Not Found',
         error: 'Bad Request',
       },
     },
   })
-  @ApiOkResponse({
-    schema: {
-      example: {
-        msg: 'Appointment has already been paid',
-      },
-    },
-  })
+  @ApiOkResponse(SwaggerResponseSuccessfulWithMessage('Appointment  paid'))
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
   @ApiOperation({ summary: "Change payment status to paid if it isn't yet" })
@@ -546,5 +382,32 @@ export class AppointementController {
     @Query() { page }: PaginationParams,
   ) {
     return this.appointmentService.get_all_paymentInfo(doctor_id, page);
+  }
+
+  @ApiNotFoundResponse({
+    schema: {
+      example: {
+        statusCode: 404,
+        message: 'Appointment Not Found',
+        error: 'Bad Request',
+      },
+    },
+  })
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @Roles('DOCTOR')
+  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
+  @Patch(':appointment_id/edit_payment_info')
+  async edit_payment_info(
+    @Param('appointmemt_id') appointment_id: string,
+    @GetCurrentUserId() doctor_id,
+    @Body() amount,
+  ) {
+    return this.appointmentService.edit_amount(
+      appointment_id,
+      doctor_id,
+      amount,
+    );
   }
 }

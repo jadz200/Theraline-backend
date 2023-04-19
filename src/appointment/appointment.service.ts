@@ -164,7 +164,7 @@ export class AppointmentService {
       throw new BadRequestException('Appointment already paid');
     }
     await this.appointmentModel.updateOne(appointment, {
-      $set: { 'paymentInfo.status': 'DONE' },
+      $set: { 'paymentInfo.status': 'PAID' },
     });
 
     return { msg: 'Appointment has already been paid' };
@@ -211,6 +211,22 @@ export class AppointmentService {
     this.logger.log(`Appointments for ${patient_id} retrieved`);
 
     return resp;
+  }
+
+  async edit_amount(appointment_id, doctor_id, amount) {
+    if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
+      throw new BadRequestException('Id is not in valid format');
+    }
+    const appointment: Appointment = await this.appointmentModel.findOne({
+      _id: appointment_id,
+      doctor_id: doctor_id,
+    });
+    if (!appointment) {
+      throw new NotFoundException('Appointment Not Found');
+    }
+    await this.appointmentModel.updateOne(appointment, {
+      $set: { 'paymentInfo.amount': amount },
+    });
   }
 
   async get_doctor_appointment(doctor_id, page) {

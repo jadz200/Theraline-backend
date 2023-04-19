@@ -7,6 +7,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PaginateResult } from 'mongoose';
+import { SwaggerBadResponse } from 'src/common/swagger/response.swagger';
 import { GetCurrentUserId } from '../common/decorators';
 import { PaginationParams } from '../common/dto/paginationParams.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
@@ -68,20 +69,8 @@ export class MessageController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: {
-            value: {
-              statusCode: 400,
-              message: 'Id is not in valid format',
-              error: 'Bad Request',
-            },
-          },
-          Invalid_Group_ID: {
-            value: {
-              statusCode: 400,
-              message: "Group doesn't exist",
-              error: 'Bad Request',
-            },
-          },
+          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
+          Invalid_Group_ID: SwaggerBadResponse("Group doesn't exist"),
         },
       },
     },
@@ -103,20 +92,8 @@ export class MessageController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: {
-            value: {
-              statusCode: 400,
-              message: 'Id is not in valid format',
-              error: 'Bad Request',
-            },
-          },
-          Invalid_Group_ID: {
-            value: {
-              statusCode: 400,
-              message: "Group doesn't exist",
-              error: 'Bad Request',
-            },
-          },
+          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
+          Invalid_Group_ID: SwaggerBadResponse("Group doesn't exist"),
         },
       },
     },

@@ -12,6 +12,12 @@ import {
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
 import { RolesGuard } from 'src/common/guards';
+import {
+  SwaggerBadResponse,
+  SwaggerForbiddenResponse,
+  SwaggerResponseSuccessfulWithMessage,
+  SwaggerUnauthorizedResponse,
+} from 'src/common/swagger/response.swagger';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { GetCurrentUserId, Roles } from '../common/decorators/index';
 import { Chat, CreateConvoDto, CreateGroupDto } from './dto/index';
@@ -33,13 +39,7 @@ export class GroupsController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: {
-            value: {
-              statusCode: 400,
-              message: 'Id is not in valid format',
-              error: 'Bad Request',
-            },
-          },
+          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
           User_Doesnt_Exist: {
             value: {
               statusCode: 400,
@@ -72,23 +72,8 @@ export class GroupsController {
       },
     },
   })
-  @ApiCreatedResponse({
-    description: 'Successful Response',
-    schema: {
-      example: {
-        msg: 'Created convo',
-      },
-    },
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
+  @ApiCreatedResponse(SwaggerResponseSuccessfulWithMessage('Created convo'))
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   create_convo(
     @Body() dto: CreateConvoDto,
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
@@ -107,13 +92,7 @@ export class GroupsController {
     content: {
       'application/json': {
         examples: {
-          Invalid_id: {
-            value: {
-              statusCode: 400,
-              message: 'Id is not in valid format',
-              error: 'Bad Request',
-            },
-          },
+          Invalid_id: SwaggerBadResponse('Id is not in valid format'),
           User_Doesnt_Exist: {
             value: {
               statusCode: 400,
@@ -140,33 +119,9 @@ export class GroupsController {
     },
   })
   @ApiOperation({ summary: 'Create group' })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden Acees',
-    schema: {
-      example: {
-        statusCode: 403,
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-      },
-    },
-  })
-  @ApiCreatedResponse({
-    description: 'Successful Response',
-    schema: {
-      example: {
-        msg: 'Created Group',
-      },
-    },
-  })
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiCreatedResponse(SwaggerResponseSuccessfulWithMessage('Created Group'))
   async create_group(
     @Body() dto: CreateGroupDto,
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
@@ -239,42 +194,18 @@ export class GroupsController {
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiBearerAuth()
   @Get('get_chats')
   @ApiOperation({ summary: 'Get all groups for a user' })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   async get_all_chats(
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ): Promise<Chat[]> {
     return this.groupService.get_all_chats(userId);
   }
 
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiOkResponse({
     schema: {
       example: {
@@ -312,25 +243,8 @@ export class GroupsController {
     return this.groupService.get_users_to_create_chat(userId);
   }
 
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden Acees',
-    schema: {
-      example: {
-        statusCode: 403,
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-      },
-    },
-  })
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiOkResponse({
     schema: {
       example: {

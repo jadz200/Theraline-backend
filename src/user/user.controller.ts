@@ -23,6 +23,11 @@ import { RolesGuard } from '../common/guards';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UserService } from './user.service';
 import { UserDetail } from './dto';
+import {
+  SwaggerForbiddenResponse,
+  SwaggerResponseSuccessfulWithMessage,
+  SwaggerUnauthorizedResponse,
+} from 'src/common/swagger/response.swagger';
 
 @ApiTags('User')
 @Controller('user')
@@ -37,33 +42,11 @@ export class UserController {
   @UseGuards(RolesGuard)
   @ApiOperation({ summary: 'Creates a doctor' })
   @Post('/create_doctor')
-  @ApiCreatedResponse({
-    description: 'Successful Response',
-    schema: {
-      example: {
-        msg: 'Created Doctor Account',
-      },
-    },
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden Acees',
-    schema: {
-      example: {
-        statusCode: 403,
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-      },
-    },
-  })
+  @ApiCreatedResponse(
+    SwaggerResponseSuccessfulWithMessage('Created Doctor Account'),
+  )
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
   async create_doctor(@Body() dto: CreateDoctorDto) {
     if (dto.image) {
       dto.image = (await this.cloudinaryService.upload(dto.image)).url;
@@ -124,25 +107,8 @@ export class UserController {
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden Acees',
-    schema: {
-      example: {
-        statusCode: 403,
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-      },
-    },
-  })
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @Get('/patients')
   @ApiOperation({ summary: 'Gets a list of all the patients' })
   @ApiBearerAuth()
@@ -163,25 +129,8 @@ export class UserController {
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden Acees',
-    schema: {
-      example: {
-        statusCode: 403,
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-      },
-    },
-  })
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')

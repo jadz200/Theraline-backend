@@ -32,6 +32,11 @@ import {
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
 import { RefreshDto } from './dto/refresh.dto';
+import {
+  SwaggerBadResponse,
+  SwaggerResponseSuccessfulWithMessage,
+  SwaggerUnauthorizedResponse,
+} from 'src/common/swagger/response.swagger';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -74,12 +79,7 @@ export class AuthController {
       },
     },
   })
-  @ApiCreatedResponse({
-    description: 'Successful Response',
-    schema: {
-      example: { msg: 'Created account' },
-    },
-  })
+  @ApiCreatedResponse(SwaggerResponseSuccessfulWithMessage('Created account'))
   @ApiBadRequestResponse({
     description: 'Validation error',
     schema: {
@@ -111,20 +111,10 @@ export class AuthController {
     content: {
       'application/json': {
         examples: {
-          Incorrect_Password: {
-            value: {
-              statusCode: 400,
-              message: 'Incorrect password',
-              error: 'Bad Request',
-            },
-          },
-          No_User_with_email: {
-            value: {
-              statusCode: 400,
-              message: 'No user with current email adress',
-              error: 'Bad Request',
-            },
-          },
+          Incorrect_Password: SwaggerBadResponse('Incorrect password'),
+          No_User_with_email: SwaggerBadResponse(
+            'No user with current email adress',
+          ),
         },
       },
     },
@@ -218,15 +208,7 @@ export class AuthController {
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    schema: {
-      example: {
-        statusCode: 401,
-        message: 'Unauthorized',
-      },
-    },
-  })
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Use Access token get user info' })
