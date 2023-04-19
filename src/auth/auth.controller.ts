@@ -39,6 +39,7 @@ import {
   SwaggerResponseSuccessfulWithMessage,
   SwaggerUnauthorizedResponse,
   SwaggerSignInReq,
+  SwaggerUnauthorizedResponseMessage,
 } from '../common/swagger';
 @ApiTags('Auth')
 @Controller('auth')
@@ -109,34 +110,17 @@ export class AuthController {
     content: {
       'application/json': {
         examples: {
-          No_Refresh_Token: {
-            value: {
-              statusCode: 401,
-              message: 'No Refresh token',
-              error: 'Bad Request',
-            },
-          },
-          Incorrect_Refresh_Token_Format: {
-            value: {
-              statusCode: 401,
-              message: 'Wrong Refresh Token format',
-              error: 'Bad Request',
-            },
-          },
-          No_User: {
-            value: {
-              statusCode: 401,
-              message: 'No user with this token',
-              error: 'Bad Request',
-            },
-          },
-          No_Match: {
-            value: {
-              statusCode: 401,
-              message: 'Incorrect Refresh token',
-              error: 'Bad Request',
-            },
-          },
+          No_Refresh_Token:
+            SwaggerUnauthorizedResponseMessage('No Refresh token'),
+          Incorrect_Refresh_Token_Format: SwaggerUnauthorizedResponseMessage(
+            'Wrong Refresh Token format',
+          ),
+          No_User: SwaggerUnauthorizedResponseMessage(
+            'No user with this token',
+          ),
+          No_Match: SwaggerUnauthorizedResponseMessage(
+            'Incorrect Refresh token',
+          ),
         },
       },
     },

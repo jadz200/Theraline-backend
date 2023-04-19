@@ -1,4 +1,4 @@
-import { paymentInfoDto } from './create-appointment.dto';
+import { paymentInfoDto } from './createAppointment.dto';
 
 export class GetpaymentInfoDtoList {
   paymentList: GetpaymentInfoDto[];

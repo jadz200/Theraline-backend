@@ -158,7 +158,7 @@ export class AuthService {
     const user = await this.findById(id.toString());
     this.logger.log(`retrieved user ${user._id} information`);
     return {
-      id: user._id.toString(),
+      _id: user._id.toString(),
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,

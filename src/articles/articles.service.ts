@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { PaginateModel, PaginateResult } from 'mongoose';
 import { ArticleDto } from './dto/article.dto';
+import { CreateArticleDto } from './dto/createArticle.dto';
 import { Article, ArticleDocument } from './schema/article.schema';
 
 @Injectable()
@@ -31,7 +32,7 @@ export class ArticlesService {
     this.logger.debug(`Fetched article ${resp._id}`);
     return resp;
   }
-  async post_article(dto: ArticleDto): Promise<{ msg: string }> {
+  async post_article(dto: CreateArticleDto): Promise<{ msg: string }> {
     const date = Date.now();
     const article: Article = await this.articleModel.create({
       title: dto.title,

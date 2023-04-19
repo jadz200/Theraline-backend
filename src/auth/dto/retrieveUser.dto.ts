@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class RetrieveUserDTO {
   @ApiProperty()
-  id: string;
+  _id: string;
   @ApiProperty()
   @IsNotEmpty()
   @IsString()

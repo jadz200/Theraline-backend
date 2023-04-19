@@ -12,20 +12,25 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import mongoose from 'mongoose';
+import mongoose, { PaginateResult } from 'mongoose';
 import { PaginationParams } from '../common/dto/paginationParams.dto';
 import { GetCurrentUserId } from '../common/decorators/get-current-user-id.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { AppointmentService } from './appointment.service';
-import { CreateAppointmentDto, paymentInfoDto } from './dto/index';
+import {
+  CreateAppointmentDto,
+  EditAmountDto,
+  paymentInfoDto,
+} from './dto/index';
 import {
   SwaggerResponseSuccessfulWithMessage,
   SwaggerUnauthorizedResponse,
   SwaggerForbiddenResponse,
   SwaggerBadResponseMessage,
   getAppointmentResp,
-} from 'src/common/swagger';
+} from '../common/swagger';
+import { Appointment } from './schema';
 
 @ApiTags('Appointment')
 @Controller('appointment')
@@ -76,7 +81,7 @@ export class AppointementController {
   async create_appointment(
     @Body() dto: CreateAppointmentDto,
     @GetCurrentUserId() doctorId: mongoose.Types.ObjectId,
-  ) {
+  ): Promise<{ msg: string }> {
     return this.appointmentService.create_appointment(dto, doctorId);
   }
 
@@ -108,7 +113,7 @@ export class AppointementController {
   async confirm_appointment(
     @Param('appointment_id') appointment_id: string,
     @GetCurrentUserId() patient_id: mongoose.Types.ObjectId,
-  ) {
+  ): Promise<{ msg: string }> {
     return this.appointmentService.confirm_appointment(
       appointment_id,
       patient_id,
@@ -143,7 +148,7 @@ export class AppointementController {
   async cancel_appointment(
     @Param('appointment_id') appointment_id: string,
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
-  ) {
+  ): Promise<{ msg: string }> {
     return this.appointmentService.cancel_appointment(appointment_id, userId);
   }
 
@@ -202,7 +207,7 @@ export class AppointementController {
     @GetCurrentUserId() doctor_id,
     @Param('appointment_id') appointment_id: string,
     @Body() dto: paymentInfoDto,
-  ) {
+  ): Promise<{ msg: string }> {
     return this.appointmentService.complete_appointment(
       doctor_id,
       appointment_id,
@@ -227,7 +232,7 @@ export class AppointementController {
   async get_doctor_appointment(
     @GetCurrentUserId() doctor_id,
     @Query() { page }: PaginationParams,
-  ) {
+  ): Promise<PaginateResult<Appointment>> {
     return this.appointmentService.get_doctor_appointment(doctor_id, page);
   }
 
@@ -248,7 +253,7 @@ export class AppointementController {
   async get_patient_appointment(
     @GetCurrentUserId() patient_id,
     @Query() { page }: PaginationParams,
-  ) {
+  ): Promise<PaginateResult<Appointment>> {
     return this.appointmentService.get_patient_appointment(patient_id, page);
   }
 
@@ -287,7 +292,7 @@ export class AppointementController {
   async confirm_payment(
     @GetCurrentUserId() doctor_id,
     @Param('appointment_id') appointment_id: string,
-  ) {
+  ): Promise<{ msg: string }> {
     return this.appointmentService.confirm_payment(appointment_id, doctor_id);
   }
 
@@ -312,21 +317,26 @@ export class AppointementController {
       },
     },
   })
+  @ApiOkResponse(
+    SwaggerResponseSuccessfulWithMessage(
+      'Payment info for appointment has been  edited',
+    ),
+  )
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @Roles('DOCTOR')
   @UseGuards(RolesGuard)
   @ApiBearerAuth()
-  @Patch(':appointment_id/edit_payment_info')
+  @Patch(':appointment_id/edit_amount')
   async edit_payment_info(
-    @Param('appointmemt_id') appointment_id: string,
+    @Param('appointment_id') appointment_id: string,
     @GetCurrentUserId() doctor_id,
-    @Body() amount,
-  ) {
+    @Body() body: EditAmountDto,
+  ): Promise<{ msg: string }> {
     return this.appointmentService.edit_amount(
       appointment_id,
       doctor_id,
-      amount,
+      body.amount,
     );
   }
 }

@@ -1,3 +1,3 @@
-export * from './create_convo.dto';
-export * from './create_group.dto';
-export * from './get_chats.dto';
+export * from './createConvo.dto';
+export * from './createGroup.dto';
+export * from './getChats.dto';

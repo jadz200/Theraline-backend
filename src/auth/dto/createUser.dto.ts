@@ -36,5 +36,5 @@ export class CreateUserDto {
   expoToken?: string;
 
   @ApiProperty()
-  birthday;
+  birthday: string;
 }

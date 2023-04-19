@@ -198,22 +198,27 @@ export class AppointmentService {
     return paymentInfo;
   }
 
-  async get_patient_appointment(patient_id, page) {
+  async get_patient_appointment(
+    patient_id,
+    page,
+  ): Promise<PaginateResult<Appointment>> {
     const options = {
       page: page,
       limit: 25,
       sort: { createdAt: -1 },
     };
-    const resp = await this.appointmentModel.paginate(
-      { patient_id: patient_id },
-      options,
-    );
+    const resp: PaginateResult<Appointment> =
+      await this.appointmentModel.paginate({ patient_id: patient_id }, options);
     this.logger.log(`Appointments for ${patient_id} retrieved`);
 
     return resp;
   }
 
-  async edit_amount(appointment_id, doctor_id, amount) {
+  async edit_amount(
+    appointment_id,
+    doctor_id,
+    amount,
+  ): Promise<{ msg: string }> {
     if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
       throw new BadRequestException('Id is not in valid format');
     }
@@ -227,9 +232,16 @@ export class AppointmentService {
     await this.appointmentModel.updateOne(appointment, {
       $set: { 'paymentInfo.amount': amount },
     });
+    this.logger.log(
+      `Appointment ${appointment._id} has now an amount of ${amount}`,
+    );
+    return { msg: 'Payment info for appointment has been  edited' };
   }
 
-  async get_doctor_appointment(doctor_id, page) {
+  async get_doctor_appointment(
+    doctor_id,
+    page,
+  ): Promise<PaginateResult<Appointment>> {
     const options = {
       page: page,
       limit: 25,
