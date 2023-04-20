@@ -1,12 +1,8 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsObject,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ClinicInfo } from 'src/auth/schema';
+import { Type } from 'class-transformer';
+import { ClinicInfoDto } from './clinicInfo.dto';
 
 export class CreateDoctorDto {
   @ApiProperty()
@@ -39,6 +35,6 @@ export class CreateDoctorDto {
 
   @IsNotEmpty()
   @ApiProperty({ type: ClinicInfo })
-  @IsObject()
-  clinicInfo: ClinicInfo;
+  @Type(() => ClinicInfoDto)
+  clinicInfo: ClinicInfoDto;
 }

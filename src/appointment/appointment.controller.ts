@@ -345,16 +345,16 @@ export class AppointementController {
   @UseGuards(RolesGuard)
   @UsePipes(ValidationPipe)
   @ApiBearerAuth()
-  @Patch(':appointment_id/edit_amount')
+  @Patch(':appointment_id/edit_payment_info')
   async edit_payment_info(
     @Param('appointment_id') appointment_id: string,
     @GetCurrentUserId() doctor_id,
-    @Body() body: EditAmountDto,
+    @Body() dto: EditAmountDto,
   ): Promise<{ msg: string }> {
-    return this.appointmentService.edit_amount(
+    return this.appointmentService.edit_payment_info(
       appointment_id,
       doctor_id,
-      body.amount,
+      dto,
     );
   }
 }

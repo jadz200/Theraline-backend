@@ -8,7 +8,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { PaginateModel, PaginateResult } from 'mongoose';
 import { User } from 'src/auth/schema/user.schema';
 import { AuthService } from '../auth/auth.service';
-import { CreateAppointmentDto, GetpaymentInfoDto } from './dto/index';
+import {
+  CreateAppointmentDto,
+  EditAmountDto,
+  GetpaymentInfoDto,
+} from './dto/index';
 import { Appointment, AppointmentDocument, PaymentInfo } from './schema/index';
 
 @Injectable()
@@ -224,10 +228,10 @@ export class AppointmentService {
     };
   }
 
-  async edit_amount(
+  async edit_payment_info(
     appointment_id,
     doctor_id,
-    amount,
+    dto: EditAmountDto,
   ): Promise<{ msg: string }> {
     if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
       throw new BadRequestException('Id is not in valid format');
@@ -240,10 +244,13 @@ export class AppointmentService {
       throw new NotFoundException('Appointment Not Found');
     }
     await this.appointmentModel.updateOne(appointment, {
-      $set: { 'paymentInfo.amount': amount },
+      $set: {
+        'paymentInfo.amount': dto.amount,
+        'paymentInfo.status': dto.status,
+      },
     });
     this.logger.log(
-      `Appointment ${appointment._id} has now an amount of ${amount}`,
+      `Appointment ${appointment._id} has now an amount of ${dto}`,
     );
     return { msg: 'Payment info for appointment has been  edited' };
   }

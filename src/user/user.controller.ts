@@ -34,7 +34,7 @@ import {
   CreateDoctorDto,
   EditDoctoInfoDto,
   PatientInfo,
-  UserDetail,
+  PatientDetail,
 } from './dto';
 import { ClinicInfoDto } from './dto/clinicInfo.dto';
 
@@ -165,9 +165,33 @@ export class UserController {
   @Roles('DOCTOR')
   @Get('/patient_details/:email')
   @ApiOperation({ summary: 'Gets patient details using that patient email' })
-  async get_patient_details(
+  async get_patient_details_email(
     @Param('email') email: string,
-  ): Promise<UserDetail> {
-    return this.userService.get_patient_details(email);
+  ): Promise<PatientDetail> {
+    return this.userService.get_patient_details_email(email);
+  }
+
+  @ApiOkResponse({
+    schema: {
+      example: {
+        _id: 'string',
+        firstName: 'string',
+        lastName: 'string',
+        email: 'string@gmail.com',
+        doctors_id: ['string'],
+      },
+    },
+  })
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @Roles('DOCTOR')
+  @Get('/patient_details/:id')
+  @ApiOperation({ summary: 'Gets patient details using that patient _id' })
+  async get_patient_details_id(
+    @Param('id') id: string,
+  ): Promise<PatientDetail> {
+    return this.userService.get_patient_details_id(id);
   }
 }

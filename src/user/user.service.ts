@@ -12,7 +12,7 @@ import { AuthService } from '../auth/auth.service';
 import { User } from '../auth/dto';
 import { UserDocument } from '../auth/schema/user.schema';
 import {
-  UserDetail,
+  PatientDetail,
   PatientInfo,
   EditDoctoInfoDto,
   CreateDoctorDto,
@@ -127,7 +127,7 @@ export class UserService {
     return resp;
   }
 
-  async get_patient_details(email: string): Promise<UserDetail> {
+  async get_patient_details_email(email: string): Promise<PatientDetail> {
     const user: User = await this.userModel
       .findOne({ email })
       .select('firstName lastName email gender phone birthday');
@@ -137,7 +137,32 @@ export class UserService {
         patient_id: user._id,
       },
     );
-    const resp: UserDetail = {
+    const resp: PatientDetail = {
+      _id: user._id.toString(),
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      image: user.image,
+      phone: user.phone,
+      gender: user.gender,
+      groups: user.groups,
+      doctors: doctorsId,
+    };
+
+    return resp;
+  }
+
+  async get_patient_details_id(id: string): Promise<PatientDetail> {
+    const user: User = await this.userModel
+      .findOne({ _id: id })
+      .select('firstName lastName email gender phone birthday');
+    const doctorsId: string[] = await this.appointmentModel.distinct(
+      'patient_id',
+      {
+        patient_id: user._id,
+      },
+    );
+    const resp: PatientDetail = {
       _id: user._id.toString(),
       firstName: user.firstName,
       lastName: user.lastName,

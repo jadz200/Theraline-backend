@@ -1,4 +1,4 @@
-export class UserDetail {
+export class PatientDetail {
   _id: string;
 
   firstName: string;
