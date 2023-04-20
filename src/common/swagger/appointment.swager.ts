@@ -1,4 +1,4 @@
-export const getAppointmentResp = {
+export const SwaggerGetAppointmentResp = {
   docs: [
     {
       _id: 'string',
@@ -31,6 +31,33 @@ export const getAppointmentResp = {
     },
   ],
   totalDocs: 3,
+  limit: 25,
+  totalPages: 1,
+  page: 1,
+  pagingCounter: 1,
+  hasPrevPage: false,
+  hasNextPage: false,
+  prevPage: null,
+  nextPage: null,
+};
+
+export const SwaggerGetPaymentInfoResp = {
+  docs: [
+    {
+      _id: 'string',
+      patient_id: 'string',
+      fullName: 'Sam Smith',
+      email: 'string@gmail.com',
+      paymentInfo: {
+        amount: 5,
+        status: 'PAID',
+        method: 'string',
+        date: '2023-11-07T08:30:00.000Z',
+        _id: 'string',
+      },
+    },
+  ],
+  totalDocs: 1,
   limit: 25,
   totalPages: 1,
   page: 1,

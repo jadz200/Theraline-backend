@@ -21,6 +21,7 @@ import { AppointmentService } from './appointment.service';
 import {
   CreateAppointmentDto,
   EditAmountDto,
+  GetpaymentInfoDto,
   paymentInfoDto,
 } from './dto/index';
 import {
@@ -28,7 +29,8 @@ import {
   SwaggerUnauthorizedResponse,
   SwaggerForbiddenResponse,
   SwaggerBadResponseMessage,
-  getAppointmentResp,
+  SwaggerGetAppointmentResp,
+  SwaggerGetPaymentInfoResp,
 } from '../common/swagger';
 import { Appointment } from './schema';
 
@@ -219,7 +221,7 @@ export class AppointementController {
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiOkResponse({
     schema: {
-      example: getAppointmentResp,
+      example: SwaggerGetAppointmentResp,
     },
   })
   @UseGuards(RolesGuard)
@@ -240,7 +242,7 @@ export class AppointementController {
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiOkResponse({
     schema: {
-      example: getAppointmentResp,
+      example: SwaggerGetAppointmentResp,
     },
   })
   @UseGuards(RolesGuard)
@@ -258,7 +260,7 @@ export class AppointementController {
   }
 
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
-  @ApiForbiddenResponse()
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiResponse({
     status: 400,
     description: 'Validation error',
@@ -296,15 +298,22 @@ export class AppointementController {
     return this.appointmentService.confirm_payment(appointment_id, doctor_id);
   }
 
-  @Get('get_payment_info')
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiOkResponse({
+    schema: {
+      example: SwaggerGetPaymentInfoResp,
+    },
+  })
+  @ApiOperation({ summary: 'Gets Payment Info for a doctor' })
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Gets Payment Info for a doctor' })
+  @Get('get_payment_info')
   async get_paymentInfo(
     @GetCurrentUserId() doctor_id,
     @Query() { page }: PaginationParams,
-  ) {
+  ): Promise<PaginateResult<GetpaymentInfoDto>> {
     return this.appointmentService.get_all_paymentInfo(doctor_id, page);
   }
 

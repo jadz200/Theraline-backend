@@ -5,7 +5,6 @@
       "use": "@vercel/node"
     }
   ],
-  "version": 2,
   "headers": [
     {
       "source": "/(.*)",
@@ -28,5 +27,6 @@
       "source": "/(.*)",
       "destination": "src/main.ts"
     }
-  ]
+  ],
+  "version": 2
 }

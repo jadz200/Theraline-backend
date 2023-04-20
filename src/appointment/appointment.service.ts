@@ -24,7 +24,10 @@ export class AppointmentService {
     private appointmentModel: PaginateModel<AppointmentDocument>,
     private readonly authService: AuthService,
   ) {}
-  async create_appointment(dto: CreateAppointmentDto, doctor_id) {
+  async create_appointment(
+    dto: CreateAppointmentDto,
+    doctor_id,
+  ): Promise<{ msg: string }> {
     const userFound = await this.authService.findById(dto.patient_id);
 
     if (!userFound || userFound.role.toString() !== 'PATIENT') {
@@ -55,7 +58,10 @@ export class AppointmentService {
     return { msg: 'Created Appointment' };
   }
 
-  async confirm_appointment(appointment_id: string, patient_id) {
+  async confirm_appointment(
+    appointment_id: string,
+    patient_id,
+  ): Promise<{ msg: string }> {
     if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
       throw new BadRequestException('Id is not in valid format');
     }
@@ -81,7 +87,10 @@ export class AppointmentService {
     return { msg: 'Appointment confirmed' };
   }
 
-  async cancel_appointment(appointment_id: string, user_id) {
+  async cancel_appointment(
+    appointment_id: string,
+    user_id,
+  ): Promise<{ msg: string }> {
     if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
       throw new BadRequestException('Id is not in valid format');
     }
@@ -122,7 +131,7 @@ export class AppointmentService {
     doctor_id: string,
     appointment_id: string,
     dto: paymentInfoDto,
-  ) {
+  ): Promise<{ msg: string }> {
     if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
       throw new BadRequestException('Id is not in valid format');
     }
@@ -147,10 +156,12 @@ export class AppointmentService {
       { _id: appointment_id },
       { status: 'DONE', paymentInfo: dto },
     );
+
+    this.logger.log(`Appointment ${appointment._id} has been confirmed`);
     return { msg: 'Appointment complete with payment info' };
   }
 
-  async confirm_payment(appointment_id, doctor_id) {
+  async confirm_payment(appointment_id, doctor_id): Promise<{ msg: string }> {
     if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
       throw new BadRequestException('Id is not in valid format');
     }
@@ -171,10 +182,16 @@ export class AppointmentService {
       $set: { 'paymentInfo.status': 'PAID' },
     });
 
-    return { msg: 'Appointment has already been paid' };
+    this.logger.log(
+      `Payment for appointment ${appointment._id} has been confirmed`,
+    );
+    return { msg: 'Appointment has been paid' };
   }
 
-  async get_all_paymentInfo(doctor_id, page) {
+  async get_all_paymentInfo(
+    doctor_id,
+    page,
+  ): Promise<PaginateResult<GetpaymentInfoDto>> {
     const options = {
       page: page,
       limit: 25,
