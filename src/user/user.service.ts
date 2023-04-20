@@ -67,8 +67,9 @@ export class UserService {
     return { msg: 'Doctor changed info' };
   }
 
-  async deleteUser(user_id: string) {
+  async deleteUser(user_id: string): Promise<{ msg: string }> {
     await this.userModel.deleteOne({ _id: user_id });
+    return { msg: 'User deleted' };
   }
 
   async getClinicInfo(id: string) {

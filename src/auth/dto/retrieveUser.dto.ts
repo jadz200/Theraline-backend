@@ -1,8 +1,9 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsDefined, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class RetrieveUserDTO {
   @ApiProperty()
+  @IsDefined()
   _id: string;
 
   @ApiProperty()

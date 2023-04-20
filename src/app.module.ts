@@ -6,7 +6,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
-import { AtGuard } from './common/guards/at.guard';
 import { GroupsModule } from './groups/groups.module';
 import { MessagesModule } from './messages/messages.module';
 import { AppointmentModule } from './appointment/appointment.module';
@@ -15,6 +14,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { SocketModule } from './socket/socket.module';
 import { UserModule } from './user/user.module';
 import { ArticlesModule } from './articles/articles.module';
+import { AtGuard } from './common/guards';
 
 @Module({
   imports: [

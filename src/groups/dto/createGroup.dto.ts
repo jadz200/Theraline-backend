@@ -1,8 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateGroupDto {
-  @ApiProperty()
+  @ApiProperty({ type: String, isArray: true })
   @IsNotEmpty()
   users_id: string[];
 
@@ -11,6 +11,7 @@ export class CreateGroupDto {
   @IsString()
   name: string;
 
-  @ApiProperty()
+  @IsOptional()
+  @ApiPropertyOptional()
   image?: string;
 }

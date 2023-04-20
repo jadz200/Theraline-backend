@@ -30,7 +30,13 @@ import { Roles, GetCurrentUserId } from '../common/decorators';
 import { RolesGuard } from '../common/guards';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UserService } from './user.service';
-import { CreateDoctorDto, EditDoctoInfoDto, UserDetail } from './dto';
+import {
+  CreateDoctorDto,
+  EditDoctoInfoDto,
+  PatientInfo,
+  UserDetail,
+} from './dto';
+import { ClinicInfoDto } from './dto/clinicInfo.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -59,6 +65,7 @@ export class UserController {
     return this.userService.createDoctor(dtoCopy);
   }
 
+  @ApiOkResponse({ type: ClinicInfoDto })
   @Get('/get_clinic_info')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
@@ -67,14 +74,18 @@ export class UserController {
     return this.userService.getClinicInfo(id.toString());
   }
 
+  @ApiOkResponse({ type: PatientInfo })
   @Get('/patient_list')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
-  async getPatientList(@GetCurrentUserId() id: mongoose.Types.ObjectId) {
+  async getPatientList(
+    @GetCurrentUserId() id: mongoose.Types.ObjectId,
+  ): Promise<PatientInfo[]> {
     return this.userService.getPatientList(id.toString());
   }
 
+  @ApiOkResponse(SwaggerResponseSuccessfulWithMessage('Doctor changed info'))
   @Put('edit_doctor_info')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
@@ -87,11 +98,12 @@ export class UserController {
     return this.userService.edit_doctor(dto, doctor_id);
   }
 
+  @ApiOkResponse(SwaggerResponseSuccessfulWithMessage('User deleted'))
   @Delete(':user_id/delete/')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
-  async deleteUser(@Param(':user_id') id) {
+  async deleteUser(@Param('user_id') id) {
     return this.userService.deleteUser(id);
   }
 

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsObject } from 'class-validator';
 import { PaymentMethod, PaymentStatus } from './status.schema';
 
 export class PaymentInfo {
@@ -9,13 +10,16 @@ export class PaymentInfo {
 
   @ApiProperty()
   @IsNotEmpty()
+  @Type()
   status: PaymentStatus;
 
   @ApiProperty()
   @IsNotEmpty()
+  @Type()
   method: PaymentMethod;
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsObject()
   date: Date;
 }

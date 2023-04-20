@@ -8,12 +8,19 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { PaginateResult } from 'mongoose';
 import { Roles } from 'src/common/decorators';
 import { RolesGuard } from 'src/common/guards';
+import { SwaggerResponseSuccessfulWithMessage } from 'src/common/swagger';
 import { ArticlesService } from './articles.service';
 import { ArticleDto } from './dto/article.dto';
+import { ArticleListDto } from './dto/articleList.dto';
 import { CreateArticleDto } from './dto/createArticle.dto';
 
 @ApiTags('Articles')
@@ -21,18 +28,21 @@ import { CreateArticleDto } from './dto/createArticle.dto';
 export class ArticlesController {
   constructor(private readonly articleService: ArticlesService) {}
 
+  @ApiOkResponse({ type: ArticleListDto })
   @ApiBearerAuth()
   @Get('get_articles')
   async get_atricles(): Promise<PaginateResult<ArticleDto>> {
     return this.articleService.get_articles();
   }
 
+  @ApiOkResponse({ type: ArticleDto })
   @ApiBearerAuth()
   @Get('article/:article_id')
   async get_article(@Param('article_id') article_id: string) {
     return this.articleService.get_article(article_id);
   }
 
+  @ApiCreatedResponse(SwaggerResponseSuccessfulWithMessage('Created Article'))
   @ApiBearerAuth()
   @Roles('DOCTOR')
   @Patch('post')
