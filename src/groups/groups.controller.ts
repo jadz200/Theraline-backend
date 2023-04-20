@@ -32,6 +32,7 @@ export class GroupsController {
     private groupService: GroupsService,
     private cloudinaryService: CloudinaryService,
   ) {}
+
   @ApiBearerAuth()
   @Post('create_convo')
   @ApiOperation({ summary: 'Create personal conversation' })
@@ -90,12 +91,14 @@ export class GroupsController {
     @Body() dto: CreateGroupDto,
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ) {
-    if (dto.image) {
-      dto.image = (await this.cloudinaryService.upload(dto.image)).url;
-    }
     dto.users_id.push(userId.toString());
 
-    return this.groupService.create_group(dto);
+    const copyDto = { ...dto };
+    if (dto.image) {
+      copyDto.image = (await this.cloudinaryService.upload(dto.image)).url;
+    }
+
+    return this.groupService.create_group(copyDto);
   }
 
   @ApiOkResponse({

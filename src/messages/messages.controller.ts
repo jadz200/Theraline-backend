@@ -68,6 +68,6 @@ export class MessageController {
     @Param('chat_id') group_id: string,
     @Body() dto: SendMessageDto,
   ): Promise<{ msg: string }> {
-    return await this.messageService.sendMessage(user_id, group_id, dto);
+    return this.messageService.sendMessage(user_id, group_id, dto);
   }
 }

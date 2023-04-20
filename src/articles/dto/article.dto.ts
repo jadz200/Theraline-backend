@@ -1,9 +1,11 @@
-import { ObjectId, Schema } from 'mongoose';
-import { PaginationResp } from 'src/common/dto/pagintionResp.dto';
+import { ObjectId } from 'mongoose';
 
 export class ArticleDto {
   _id: string | ObjectId;
+
   title: string;
+
   date: string | Date;
+
   content: string;
 }

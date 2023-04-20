@@ -19,6 +19,7 @@ import {
 @ApiTags('Main')
 @Controller()
 export class AppController {
+  // eslint-disable-next-line class-methods-use-this
   @Public()
   @Get('/')
   @ApiOperation({ summary: 'Health check' })
@@ -27,6 +28,7 @@ export class AppController {
     return { msg: 'Hello World' };
   }
 
+  // eslint-disable-next-line class-methods-use-this
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
@@ -39,6 +41,7 @@ export class AppController {
     return { msg: 'Hello doctors' };
   }
 
+  // eslint-disable-next-line class-methods-use-this
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('PATIENT')

@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '../auth/auth.module';
-import { AppointementController, AppointmentService } from './index';
+import { AppointementController } from './appointment.controller';
+import { AppointmentService } from './appointment.service';
 import { Appointment, AppointmentSchema } from './schema/index';
 
 @Module({

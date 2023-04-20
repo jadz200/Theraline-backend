@@ -35,9 +35,9 @@ describe('AuthController (e2e)', () => {
       email: process.env.PATIENT_EMAIL,
       password: process.env.USER_PASSWORD,
     });
-    const bearerToken = res.body['access_token'];
+    const bearerToken = res.body.access_token;
 
-    return await request(server)
+    return request(server)
       .get('/auth/me')
       .set('Authorization', `Bearer ${bearerToken}`)
       .expect(200);

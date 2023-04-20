@@ -11,6 +11,6 @@ export class CloudinaryService {
       console.log(error);
       throw new BadRequestException('Cannot upload image');
     }
-    return { url: url['secure_url'] };
+    return { url: url.secure_url };
   }
 }

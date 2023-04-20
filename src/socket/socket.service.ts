@@ -7,11 +7,11 @@ import * as jwt from 'jsonwebtoken';
 export class SocketService {
   async getUserFromSocket(socket: Socket) {
     try {
-      const auth_token = socket.handshake.query.accessToken.toString();
-      if (!auth_token) {
+      const authToken = socket.handshake.query.accessToken.toString();
+      if (!authToken) {
         throw new WsException('Missing authorization header');
       }
-      const token = auth_token.replace('Bearer ', '');
+      const token = authToken.replace('Bearer ', '');
       if (!token) {
         throw new WsException('Missing bearer token');
       }
@@ -25,7 +25,7 @@ export class SocketService {
       return decoded;
     } catch (error) {
       socket.disconnect();
-      return;
     }
+    return 'No user';
   }
 }

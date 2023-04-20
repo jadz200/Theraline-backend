@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon from 'argon2';
 import mongoose, { PaginateModel } from 'mongoose';
-import { User, UserDocument, UserRole } from '../auth/schema/user.schema';
+import { User, UserDocument, UserRole } from './schema/user.schema';
 import {
   AuthResponse,
   AuthDto,
@@ -89,7 +89,7 @@ export class AuthService {
 
     let userId;
     try {
-      userId = this.jwtService.decode(token)['sub'];
+      userId = this.jwtService.decode(token).sub;
     } catch {
       throw new UnauthorizedException('Wrong Refresh Token format');
     }
@@ -131,8 +131,8 @@ export class AuthService {
   ): Promise<Tokens> {
     const jwtPayload: JwtPayload = {
       sub: userId,
-      email: email,
-      role: role,
+      email,
+      role,
     };
 
     const [at, rt] = await Promise.all([
@@ -166,20 +166,22 @@ export class AuthService {
   }
 
   async findByEmail(email: string): Promise<User | undefined> {
-    return await this.userModel.findOne({ email: email });
+    return this.userModel.findOne({ email });
   }
 
   async findById(id: string): Promise<User | undefined> {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Id is not in valid format');
     }
-    return await this.userModel.findOne({ _id: id }).select('role');
+    return this.userModel.findOne({ _id: id }).select('role');
   }
+
   async getPatientProfile(id: string): Promise<User | undefined> {
-    return await this.userModel
+    return this.userModel
       .findOne({ _id: id })
       .select('firstName lastName email image');
   }
+
   async getName(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Id is not in valid format');

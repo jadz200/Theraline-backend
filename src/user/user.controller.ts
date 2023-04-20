@@ -18,17 +18,17 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
+import {
+  SwaggerForbiddenResponse,
+  SwaggerResponseSuccessfulWithMessage,
+  SwaggerUnauthorizedResponse,
+} from 'src/common/swagger/general.swagger';
 import { User } from '../auth/dto';
 import { Roles, GetCurrentUserId } from '../common/decorators';
 import { RolesGuard } from '../common/guards';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UserService } from './user.service';
 import { CreateDoctorDto, EditDoctoInfoDto, UserDetail } from './dto';
-import {
-  SwaggerForbiddenResponse,
-  SwaggerResponseSuccessfulWithMessage,
-  SwaggerUnauthorizedResponse,
-} from 'src/common/swagger/general.swagger';
 
 @ApiTags('User')
 @Controller('user')
@@ -49,10 +49,11 @@ export class UserController {
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   async create_doctor(@Body() dto: CreateDoctorDto) {
+    const dtoCopy = { ...dto };
     if (dto.image) {
-      dto.image = (await this.cloudinaryService.upload(dto.image)).url;
+      dtoCopy.image = (await this.cloudinaryService.upload(dto.image)).url;
     }
-    return this.userService.createDoctor(dto);
+    return this.userService.createDoctor(dtoCopy);
   }
 
   @Get('/get_clinic_info')
@@ -60,7 +61,7 @@ export class UserController {
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
   async get_clinicInfo(@GetCurrentUserId() id: mongoose.Types.ObjectId) {
-    return await this.userService.getClinicInfo(id.toString());
+    return this.userService.getClinicInfo(id.toString());
   }
 
   @Get('/patient_list')
@@ -68,7 +69,7 @@ export class UserController {
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
   async getPatientList(@GetCurrentUserId() id: mongoose.Types.ObjectId) {
-    return await this.userService.getPatientList(id.toString());
+    return this.userService.getPatientList(id.toString());
   }
 
   @Put('edit_doctor_info')
@@ -87,7 +88,7 @@ export class UserController {
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
   async deleteUser(@Param(':user_id') id) {
-    return await this.userService.deleteUser(id);
+    return this.userService.deleteUser(id);
   }
 
   @ApiOkResponse({
@@ -127,7 +128,7 @@ export class UserController {
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
   async get_patients(): Promise<User[]> {
-    return await this.userService.get_all_patients();
+    return this.userService.get_all_patients();
   }
 
   @ApiOkResponse({
@@ -151,6 +152,6 @@ export class UserController {
   async get_patient_details(
     @Param('email') email: string,
   ): Promise<UserDetail> {
-    return await this.userService.get_patient_details(email);
+    return this.userService.get_patient_details(email);
   }
 }

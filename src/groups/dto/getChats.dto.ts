@@ -4,13 +4,14 @@ import { GroupType } from '../schema/group.schema';
 
 export class Chat {
   _id: mongoose.Types.ObjectId;
-  name: string;
-  groupType: GroupType;
-  groupImage: string;
-  latestMessage?: MessageDto;
-  image?: string;
-}
 
-export class getChatsDto {
-  chats: Chat[];
+  name: string;
+
+  groupType: GroupType;
+
+  groupImage: string;
+
+  latestMessage?: MessageDto;
+
+  image?: string;
 }

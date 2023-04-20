@@ -6,10 +6,11 @@ import { CloudinaryService } from './cloudinary.service';
 @Controller('upload')
 export class UploadController {
   constructor(private cloudinaryService: CloudinaryService) {}
+
   @Public()
   @ApiOperation({ summary: 'Upload an image base64' })
   @Post('post')
   async uploadFile(@Body() file) {
-    return await this.cloudinaryService.upload(file.file);
+    return this.cloudinaryService.upload(file.file);
   }
 }

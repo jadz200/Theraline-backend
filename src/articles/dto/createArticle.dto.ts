@@ -5,6 +5,7 @@ export class CreateArticleDto {
   @ApiProperty()
   @IsNotEmpty()
   title: string;
+
   @ApiProperty()
   @IsNotEmpty()
   content: string;

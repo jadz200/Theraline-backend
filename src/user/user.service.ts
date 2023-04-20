@@ -6,14 +6,14 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { PaginateModel } from 'mongoose';
+import * as argon from 'argon2';
 import { Appointment, AppointmentDocument } from '../appointment/schema';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../auth/dto';
 import { UserDocument } from '../auth/schema/user.schema';
-import * as argon from 'argon2';
 import {
   UserDetail,
-  patientInfo,
+  PatientInfo,
   EditDoctoInfoDto,
   CreateDoctorDto,
 } from './dto';
@@ -79,45 +79,43 @@ export class UserService {
     return doctor;
   }
 
-  async getPatientList(id: string) {
+  async getPatientList(id: string): Promise<PatientInfo[]> {
     const patientIds = await this.appointmentModel.distinct('patient_id', {
       doctor_id: id,
     });
-    const patientList = [];
-    for (const patient_id of patientIds) {
-      const patient = await this.userModel
-        .findOne({ _id: patient_id })
-        .select('_id firstName lastName email image');
-      if (!patient) {
-        continue;
-      }
-      const latestAppoinments = await this.appointmentModel
-        .find({
-          patient_id: patient_id,
-        })
-        .sort({ start_date: -1 })
-        .limit(2);
-      if (latestAppoinments[0].status.toString() === 'DONE') {
-        const patientInfo: patientInfo = {
-          firstName: patient.firstName,
-          lastName: patient.lastName,
-          email: patient.email,
-          image: patient.image,
-          lastAppointment: latestAppoinments[0],
-        };
-        patientList.push(patientInfo);
-      } else {
-        const patientInfo: patientInfo = {
-          firstName: patient.firstName,
-          lastName: patient.lastName,
-          email: patient.email,
-          image: patient.image,
-          nextAppointment: latestAppoinments[0],
-          lastAppointment: latestAppoinments[1],
-        };
-        patientList.push(patientInfo);
-      }
-    }
+    const patientList: PatientInfo[] = await Promise.all(
+      patientIds.map(async (patient_id) => {
+        const patient = await this.userModel
+          .findOne({ _id: patient_id })
+          .select('_id firstName lastName email image');
+
+        const latestAppoinments = await this.appointmentModel
+          .find({ patient_id })
+          .sort({ start_date: -1 })
+          .limit(2);
+        let patientInfo: PatientInfo;
+        if (latestAppoinments[0].status === 'DONE') {
+          patientInfo = {
+            firstName: patient.firstName,
+            lastName: patient.lastName,
+            email: patient.email,
+            image: patient.image,
+            lastAppointment: latestAppoinments[0],
+          };
+        } else {
+          patientInfo = {
+            firstName: patient.firstName,
+            lastName: patient.lastName,
+            email: patient.email,
+            image: patient.image,
+            nextAppointment: latestAppoinments[0],
+            lastAppointment: latestAppoinments[1],
+          };
+        }
+        return patientInfo;
+      }),
+    );
+
     return patientList;
   }
 
@@ -130,9 +128,9 @@ export class UserService {
 
   async get_patient_details(email: string): Promise<UserDetail> {
     const user: User = await this.userModel
-      .findOne({ email: email })
+      .findOne({ email })
       .select('firstName lastName email gender phone birthday');
-    const doctors_id: string[] = await this.appointmentModel.distinct(
+    const doctorsId: string[] = await this.appointmentModel.distinct(
       'patient_id',
       {
         patient_id: user._id,
@@ -147,13 +145,13 @@ export class UserService {
       phone: user.phone,
       gender: user.gender,
       groups: user.groups,
-      doctors: doctors_id,
+      doctors: doctorsId,
     };
 
     return resp;
   }
 
   async find_by_email(email: string): Promise<User> {
-    return await this.userModel.findOne({ email: email });
+    return this.userModel.findOne({ email });
   }
 }

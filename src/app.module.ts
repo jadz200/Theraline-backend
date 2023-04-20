@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from './auth/auth.module';
 import { AtGuard } from './common/guards/at.guard';
 import { GroupsModule } from './groups/groups.module';
 import { MessagesModule } from './messages/messages.module';
@@ -11,10 +14,7 @@ import { AppController } from './app.controller';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { SocketModule } from './socket/socket.module';
 import { UserModule } from './user/user.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 import { ArticlesModule } from './articles/articles.module';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [

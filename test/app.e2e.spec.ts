@@ -24,10 +24,7 @@ describe('AppController (e2e)', () => {
   });
 
   it('/ (GET)', async () => {
-    return await request(server)
-      .get('/')
-      .expect(200)
-      .expect('{"msg":"Hello World"}');
+    return request(server).get('/').expect(200).expect('{"msg":"Hello World"}');
   });
 
   it('/patient (GET)', async () => {
@@ -35,8 +32,8 @@ describe('AppController (e2e)', () => {
       email: process.env.PATIENT_EMAIL,
       password: process.env.USER_PASSWORD,
     });
-    const bearerToken = res.body['access_token'];
-    return await request(server)
+    const bearerToken = res.body.access_token;
+    return request(server)
       .get('/patient')
       .expect(200)
       .set('Authorization', `Bearer ${bearerToken}`)
@@ -48,8 +45,8 @@ describe('AppController (e2e)', () => {
       email: process.env.DOCTOR_EMAIL,
       password: process.env.USER_PASSWORD,
     });
-    const bearerToken = res.body['access_token'];
-    return await request(server)
+    const bearerToken = res.body.access_token;
+    return request(server)
       .get('/doctor')
       .expect(200)
       .set('Authorization', `Bearer ${bearerToken}`)

@@ -8,12 +8,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { PaginateModel, PaginateResult } from 'mongoose';
 import { User } from 'src/auth/schema/user.schema';
 import { AuthService } from '../auth/auth.service';
-import {
-  CreateAppointmentDto,
-  GetpaymentInfoDto,
-  paymentInfoDto,
-} from './dto/index';
-import { Appointment, AppointmentDocument } from './schema/index';
+import { CreateAppointmentDto, GetpaymentInfoDto } from './dto/index';
+import { Appointment, AppointmentDocument, PaymentInfo } from './schema/index';
 
 @Injectable()
 export class AppointmentService {
@@ -24,6 +20,7 @@ export class AppointmentService {
     private appointmentModel: PaginateModel<AppointmentDocument>,
     private readonly authService: AuthService,
   ) {}
+
   async create_appointment(
     dto: CreateAppointmentDto,
     doctor_id,
@@ -33,11 +30,11 @@ export class AppointmentService {
     if (!userFound || userFound.role.toString() !== 'PATIENT') {
       throw new BadRequestException('No patient with this id');
     }
-    const start_date = new Date(dto.start_date);
-    const end_date = new Date(dto.end_date);
+    const startDate = new Date(dto.start_date);
+    const endDate = new Date(dto.end_date);
     if (
-      start_date.toString() === 'Invalid Date' ||
-      end_date.toString() === 'Invalid Date'
+      startDate.toString() === 'Invalid Date' ||
+      endDate.toString() === 'Invalid Date'
     ) {
       throw new BadRequestException(
         'start_date and/or end_date are not a correct time',
@@ -47,9 +44,9 @@ export class AppointmentService {
     const appoinment = await this.appointmentModel.create({
       patient_id: dto.patient_id,
       title: dto.title,
-      start_date: start_date,
-      end_date: end_date,
-      doctor_id: doctor_id,
+      start_date: startDate,
+      end_date: endDate,
+      doctor_id,
       status: 'CREATED',
       paymentInfo: dto.paymentInfo,
     });
@@ -67,7 +64,7 @@ export class AppointmentService {
     }
     const appointment: Appointment = await this.appointmentModel.findOne({
       _id: appointment_id,
-      patient_id: patient_id,
+      patient_id,
     });
     if (!appointment) {
       throw new BadRequestException('No appointment for this patient');
@@ -130,14 +127,14 @@ export class AppointmentService {
   async complete_appointment(
     doctor_id: string,
     appointment_id: string,
-    dto: paymentInfoDto,
+    dto: PaymentInfo,
   ): Promise<{ msg: string }> {
     if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
       throw new BadRequestException('Id is not in valid format');
     }
     const appointment: Appointment = await this.appointmentModel.findOne({
       _id: appointment_id,
-      doctor_id: doctor_id,
+      doctor_id,
     });
     if (!appointment) {
       throw new BadRequestException('No appointment for this doctor');
@@ -167,7 +164,7 @@ export class AppointmentService {
     }
     const appointment: Appointment = await this.appointmentModel.findOne({
       _id: appointment_id,
-      doctor_id: doctor_id,
+      doctor_id,
     });
     if (!appointment) {
       throw new NotFoundException('Appointment Not Found');
@@ -193,36 +190,38 @@ export class AppointmentService {
     page,
   ): Promise<PaginateResult<GetpaymentInfoDto>> {
     const options = {
-      page: page,
+      page,
       limit: 25,
       select: 'patient_id paymentInfo',
       sort: { createdAt: -1 },
     };
     const paymentInfo: PaginateResult<GetpaymentInfoDto> =
       await this.appointmentModel.paginate(
-        { doctor_id: doctor_id, status: 'DONE' },
+        { doctor_id, status: 'DONE' },
         options,
       );
-    const resp: GetpaymentInfoDto[] = [];
-    for (const index in paymentInfo.docs) {
-      const patient_id = paymentInfo.docs[index].patient_id;
-      const patient: User = await this.authService.getPatientProfile(
-        patient_id,
-      );
-      paymentInfo.docs[index].fullName = patient.fullName;
-      const result: GetpaymentInfoDto = {
-        _id: paymentInfo.docs[index]._id.toString(),
-        patient_id: patient_id,
-        fullName: patient.fullName,
-        image: patient.image,
-        email: patient.email,
-        paymentInfo: paymentInfo.docs[index].paymentInfo,
-      };
-      resp.push(result);
-    }
-    paymentInfo.docs = resp;
-    this.logger.log(`Payment Info for ${doctor_id} retrieved`);
-    return paymentInfo;
+    const resp = await Promise.all(
+      paymentInfo.docs.map(async (appoinment) => {
+        const patientId = appoinment.patient_id;
+        const patient: User = await this.authService.getPatientProfile(
+          patientId,
+        );
+        const result: GetpaymentInfoDto = {
+          _id: appoinment._id.toString(),
+          patient_id: patientId,
+          fullName: patient.fullName,
+          image: patient.image,
+          email: patient.email,
+          paymentInfo: appoinment.paymentInfo,
+        };
+        return result;
+      }),
+    );
+
+    return {
+      ...paymentInfo,
+      docs: resp,
+    };
   }
 
   async edit_amount(
@@ -235,7 +234,7 @@ export class AppointmentService {
     }
     const appointment: Appointment = await this.appointmentModel.findOne({
       _id: appointment_id,
-      doctor_id: doctor_id,
+      doctor_id,
     });
     if (!appointment) {
       throw new NotFoundException('Appointment Not Found');
@@ -254,12 +253,12 @@ export class AppointmentService {
     page,
   ): Promise<PaginateResult<Appointment>> {
     const options = {
-      page: page,
+      page,
       limit: 25,
       sort: { createdAt: -1 },
     };
     const resp: PaginateResult<Appointment> =
-      await this.appointmentModel.paginate({ patient_id: patient_id }, options);
+      await this.appointmentModel.paginate({ patient_id }, options);
     this.logger.log(`Appointments for ${patient_id} retrieved`);
 
     return resp;
@@ -270,14 +269,11 @@ export class AppointmentService {
     page,
   ): Promise<PaginateResult<Appointment>> {
     const options = {
-      page: page,
+      page,
       limit: 25,
       sort: { createdAt: -1 },
     };
-    const resp = await this.appointmentModel.paginate(
-      { doctor_id: doctor_id },
-      options,
-    );
+    const resp = await this.appointmentModel.paginate({ doctor_id }, options);
     this.logger.log(`Appointments for ${doctor_id} retrieved`);
 
     return resp;

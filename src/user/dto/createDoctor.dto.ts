@@ -1,21 +1,6 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-
-export class ClinicInfoDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  phone: string;
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  location: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-}
+import { ClinicInfo } from 'src/auth/schema';
 
 export class CreateDoctorDto {
   @ApiProperty()
@@ -47,6 +32,6 @@ export class CreateDoctorDto {
   phone: string;
 
   @IsNotEmpty()
-  @ApiProperty({ type: ClinicInfoDto })
-  clinicInfo: ClinicInfoDto;
+  @ApiProperty({ type: ClinicInfo })
+  clinicInfo: ClinicInfo;
 }

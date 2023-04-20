@@ -8,7 +8,6 @@ import {
   Post,
 } from '@nestjs/common';
 import mongoose from 'mongoose';
-import { Public, GetCurrentUserId } from '../common/decorators/index';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -20,6 +19,8 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { UnauthorizedException } from '@nestjs/common/exceptions';
+import { Public, GetCurrentUserId } from '../common/decorators/index';
 
 import { AuthService } from './auth.service';
 import {
@@ -29,7 +30,6 @@ import {
   AuthDto,
 } from './dto/index';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { UnauthorizedException } from '@nestjs/common/exceptions';
 import { RefreshDto } from './dto/refresh.dto';
 
 import {
@@ -40,6 +40,7 @@ import {
   SwaggerSignInReq,
   SwaggerUnauthorizedResponseMessage,
 } from '../common/swagger';
+
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -67,10 +68,11 @@ export class AuthController {
   @Public()
   @Post('signup')
   async signupLocal(@Body() dto: CreateUserDto) {
+    const dtoCopy = { ...dto };
     if (dto.image) {
-      dto.image = (await this.cloudinaryService.upload(dto.image)).url;
+      dtoCopy.image = (await this.cloudinaryService.upload(dto.image)).url;
     }
-    return this.authService.signupLocal(dto);
+    return this.authService.signupLocal(dtoCopy);
   }
 
   @HttpCode(HttpStatus.OK)

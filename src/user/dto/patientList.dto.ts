@@ -1,11 +1,13 @@
-export class patientInfo {
+export class PatientInfo {
   firstName: string;
+
   lastName: string;
+
   email: string;
+
   image?: string;
+
   nextAppointment?: any;
+
   lastAppointment?: any;
-}
-export class patientList {
-  list: patientInfo[];
 }

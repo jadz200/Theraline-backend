@@ -34,7 +34,7 @@ export function SwaggerBadResponseMessage(message) {
   return {
     value: {
       statusCode: 400,
-      message: message,
+      message,
       error: 'Bad Request',
     },
   };
@@ -43,7 +43,7 @@ export function SwaggerUnauthorizedResponseMessage(message) {
   return {
     value: {
       statusCode: 401,
-      message: message,
+      message,
       error: 'Unauthorized',
     },
   };

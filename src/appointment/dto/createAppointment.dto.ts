@@ -1,25 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
-import { PaymentMethod, PaymentStatus } from '../schema/appointment.schema';
-
-export class paymentInfoDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  amount: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  status: PaymentStatus;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  method: PaymentMethod;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @Matches(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/)
-  date: string | Date;
-}
+import { PaymentInfo } from '../schema';
 
 export class CreateAppointmentDto {
   @ApiProperty()
@@ -44,5 +25,5 @@ export class CreateAppointmentDto {
 
   @ApiProperty({ required: true })
   @IsOptional()
-  paymentInfo?: paymentInfoDto;
+  paymentInfo?: PaymentInfo;
 }
