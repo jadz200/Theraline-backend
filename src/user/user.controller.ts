@@ -7,6 +7,8 @@ import {
   Post,
   Put,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -48,6 +50,7 @@ export class UserController {
   )
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @UsePipes(ValidationPipe)
   async create_doctor(@Body() dto: CreateDoctorDto) {
     const dtoCopy = { ...dto };
     if (dto.image) {
@@ -75,6 +78,7 @@ export class UserController {
   @Put('edit_doctor_info')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
+  @UsePipes(ValidationPipe)
   @Roles('DOCTOR')
   async editDoctorInfo(
     @GetCurrentUserId() doctor_id,

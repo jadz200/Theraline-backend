@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PaginateResult } from 'mongoose';
 import { Roles } from 'src/common/decorators';
@@ -27,6 +36,7 @@ export class ArticlesController {
   @ApiBearerAuth()
   @Roles('DOCTOR')
   @Patch('post')
+  @UsePipes(ValidationPipe)
   @UseGuards(RolesGuard)
   async post_article(@Body() dto: CreateArticleDto): Promise<{ msg: string }> {
     return this.articleService.post_article(dto);

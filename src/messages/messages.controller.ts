@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -62,6 +71,7 @@ export class MessageController {
   })
   @ApiOperation({ summary: 'Sends a Message to a specific Group' })
   @ApiBearerAuth()
+  @UsePipes(ValidationPipe)
   @Post('/:chat_id/send_message')
   async send_chat_message(
     @GetCurrentUserId() user_id,

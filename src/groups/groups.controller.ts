@@ -1,5 +1,12 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  ValidationPipe,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -55,6 +62,7 @@ export class GroupsController {
       },
     },
   })
+  @UsePipes(ValidationPipe)
   @ApiCreatedResponse(SwaggerResponseSuccessfulWithMessage('Created convo'))
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   create_convo(
@@ -87,6 +95,7 @@ export class GroupsController {
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiCreatedResponse(SwaggerResponseSuccessfulWithMessage('Created Group'))
+  @UsePipes(ValidationPipe)
   async create_group(
     @Body() dto: CreateGroupDto,
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,

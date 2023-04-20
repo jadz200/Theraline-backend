@@ -6,6 +6,8 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import mongoose from 'mongoose';
 import {
@@ -64,6 +66,7 @@ export class AuthController {
       },
     },
   })
+  @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Create patient user' })
   @Public()
   @Post('signup')
@@ -98,6 +101,7 @@ export class AuthController {
     type: AuthDto,
     examples: SwaggerSignInReq,
   })
+  @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Sign in and get access and refresh tokens' })
   @Public()
   @Post('signin')

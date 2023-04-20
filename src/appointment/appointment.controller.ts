@@ -1,5 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { Get, Param, Patch, Query, UseGuards } from '@nestjs/common/decorators';
+import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import {
+  Get,
+  Param,
+  Patch,
+  Query,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common/decorators';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -79,6 +86,7 @@ export class AppointementController {
       },
     },
   })
+  @UsePipes(ValidationPipe)
   async create_appointment(
     @Body() dto: CreateAppointmentDto,
     @GetCurrentUserId() doctorId: mongoose.Types.ObjectId,
@@ -204,6 +212,7 @@ export class AppointementController {
   @ApiOperation({
     summary: 'Marks the appointment completed and adds Payment Info',
   })
+  @UsePipes(ValidationPipe)
   async complete_appointment(
     @GetCurrentUserId() doctor_id,
     @Param('appointment_id') appointment_id: string,
@@ -334,6 +343,7 @@ export class AppointementController {
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @Roles('DOCTOR')
   @UseGuards(RolesGuard)
+  @UsePipes(ValidationPipe)
   @ApiBearerAuth()
   @Patch(':appointment_id/edit_amount')
   async edit_payment_info(
