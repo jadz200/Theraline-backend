@@ -184,9 +184,7 @@ export class AuthService {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Id is not in valid format');
     }
-    const user = await this.userModel
-      .findOne({ _id: id })
-      .select('firstName lastName ');
-    return user.firstName + ' ' + user.lastName;
+    const user = await this.userModel.findOne({ _id: id });
+    return user.fullName;
   }
 }

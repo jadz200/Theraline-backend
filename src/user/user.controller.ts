@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -17,12 +18,12 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
-import { CreateDoctorDto, User } from '../auth/dto';
+import { User } from '../auth/dto';
 import { Roles, GetCurrentUserId } from '../common/decorators';
 import { RolesGuard } from '../common/guards';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UserService } from './user.service';
-import { UserDetail } from './dto';
+import { CreateDoctorDto, EditDoctoInfoDto, UserDetail } from './dto';
 import {
   SwaggerForbiddenResponse,
   SwaggerResponseSuccessfulWithMessage,
@@ -70,7 +71,18 @@ export class UserController {
     return await this.userService.getPatientList(id.toString());
   }
 
-  @Delete('/delete/:user_id/user')
+  @Put('edit_doctor_info')
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @Roles('DOCTOR')
+  async editDoctorInfo(
+    @GetCurrentUserId() doctor_id,
+    @Body() dto: EditDoctoInfoDto,
+  ) {
+    return this.userService.edit_doctor(dto, doctor_id);
+  }
+
+  @Delete(':user_id/delete/')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')

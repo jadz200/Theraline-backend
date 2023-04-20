@@ -38,9 +38,13 @@ export class CreateDoctorDto {
   @IsString()
   password: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @ApiProperty()
-  image?: string;
+  image: string;
+
+  @IsNotEmpty()
+  @IsOptional()
+  phone: string;
 
   @IsNotEmpty()
   @ApiProperty({ type: ClinicInfoDto })

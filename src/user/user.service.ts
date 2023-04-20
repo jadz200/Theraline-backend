@@ -1,12 +1,22 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { PaginateModel } from 'mongoose';
-import { Appointment, AppointmentDocument } from 'src/appointment/schema';
-import { AuthService } from 'src/auth/auth.service';
-import { CreateDoctorDto, User } from 'src/auth/dto';
-import { UserDocument } from 'src/auth/schema/user.schema';
+import mongoose, { PaginateModel } from 'mongoose';
+import { Appointment, AppointmentDocument } from '../appointment/schema';
+import { AuthService } from '../auth/auth.service';
+import { User } from '../auth/dto';
+import { UserDocument } from '../auth/schema/user.schema';
 import * as argon from 'argon2';
-import { UserDetail, patientInfo } from './dto';
+import {
+  UserDetail,
+  patientInfo,
+  EditDoctoInfoDto,
+  CreateDoctorDto,
+} from './dto';
 
 @Injectable()
 export class UserService {
@@ -34,14 +44,31 @@ export class UserService {
       groups: [],
       clinicInfo: dto.clinicInfo,
       image: dto.image,
+      phone: dto.phone,
     });
     this.logger.log(`Created new user ${user.id} as a ${user.role}`);
 
     return { msg: 'Created Doctor Account' };
   }
 
+  async edit_doctor(dto: EditDoctoInfoDto, doctor_id) {
+    if (!mongoose.Types.ObjectId.isValid(doctor_id)) {
+      throw new BadRequestException('Id is not in valid format');
+    }
+
+    const doctor: User = await this.userModel.findOne({ _id: doctor_id });
+
+    if (!doctor) {
+      throw new NotFoundException('Doctor Not Found');
+    }
+
+    await this.userModel.updateOne(doctor, {});
+    this.logger.log(`Doctor ${doctor._id} has been edited`);
+    return { msg: 'Doctor changed info' };
+  }
+
   async deleteUser(user_id: string) {
-    this.userModel.deleteOne({ _id: user_id });
+    await this.userModel.deleteOne({ _id: user_id });
   }
 
   async getClinicInfo(id: string) {

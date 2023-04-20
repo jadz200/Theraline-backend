@@ -8,7 +8,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { PaginateModel, PaginateResult } from 'mongoose';
 import { User } from 'src/auth/schema/user.schema';
 import { AuthService } from '../auth/auth.service';
-import { CreateAppointmentDto, paymentInfoDto } from './dto/index';
+import {
+  CreateAppointmentDto,
+  GetpaymentInfoDto,
+  paymentInfoDto,
+} from './dto/index';
 import { Appointment, AppointmentDocument } from './schema/index';
 
 @Injectable()
@@ -177,41 +181,31 @@ export class AppointmentService {
       select: 'patient_id paymentInfo',
       sort: { createdAt: -1 },
     };
-    const paymentInfo: PaginateResult<Appointment> =
+    const paymentInfo: PaginateResult<GetpaymentInfoDto> =
       await this.appointmentModel.paginate(
         { doctor_id: doctor_id, status: 'DONE' },
         options,
       );
-
+    const resp: GetpaymentInfoDto[] = [];
     for (const index in paymentInfo.docs) {
       const patient_id = paymentInfo.docs[index].patient_id;
       const patient: User = await this.authService.getPatientProfile(
         patient_id,
       );
-      console.log(patient.fullName);
-      const test = { ...patient, ...paymentInfo.docs[index].paymentInfo };
-      // paymentInfo.docs[index] = test;
-      console.log(test);
-      // temp[i] = { firstName: patient.firstName };
+      paymentInfo.docs[index].fullName = patient.fullName;
+      const result: GetpaymentInfoDto = {
+        _id: paymentInfo.docs[index]._id.toString(),
+        patient_id: patient_id,
+        fullName: patient.fullName,
+        image: patient.image,
+        email: patient.email,
+        paymentInfo: paymentInfo.docs[index].paymentInfo,
+      };
+      resp.push(result);
     }
+    paymentInfo.docs = resp;
     this.logger.log(`Payment Info for ${doctor_id} retrieved`);
     return paymentInfo;
-  }
-
-  async get_patient_appointment(
-    patient_id,
-    page,
-  ): Promise<PaginateResult<Appointment>> {
-    const options = {
-      page: page,
-      limit: 25,
-      sort: { createdAt: -1 },
-    };
-    const resp: PaginateResult<Appointment> =
-      await this.appointmentModel.paginate({ patient_id: patient_id }, options);
-    this.logger.log(`Appointments for ${patient_id} retrieved`);
-
-    return resp;
   }
 
   async edit_amount(
@@ -236,6 +230,22 @@ export class AppointmentService {
       `Appointment ${appointment._id} has now an amount of ${amount}`,
     );
     return { msg: 'Payment info for appointment has been  edited' };
+  }
+
+  async get_patient_appointment(
+    patient_id,
+    page,
+  ): Promise<PaginateResult<Appointment>> {
+    const options = {
+      page: page,
+      limit: 25,
+      sort: { createdAt: -1 },
+    };
+    const resp: PaginateResult<Appointment> =
+      await this.appointmentModel.paginate({ patient_id: patient_id }, options);
+    this.logger.log(`Appointments for ${patient_id} retrieved`);
+
+    return resp;
   }
 
   async get_doctor_appointment(

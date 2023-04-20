@@ -30,8 +30,6 @@ export class User {
   @Prop()
   phone?: string;
   @Prop()
-  birthday?: Date;
-  @Prop()
   gender?: string;
   @Prop({ required: true })
   role: UserRole;
@@ -45,6 +43,8 @@ export class User {
   image?: string;
   @Prop()
   expoToken?: string;
+
+  //virtuals
   fullName: string;
 }
 

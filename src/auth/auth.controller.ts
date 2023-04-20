@@ -27,7 +27,6 @@ import {
   RetrieveUserDTO,
   CreateUserDto,
   AuthDto,
-  TokenDto,
 } from './dto/index';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
@@ -77,7 +76,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     description: 'Successful Response',
-    type: TokenDto,
+    type: AuthDto,
   })
   @ApiResponse({
     status: 400,
