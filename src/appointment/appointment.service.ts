@@ -290,7 +290,6 @@ export class AppointmentService {
   }
 
   async get_payment_stats(doctorId) {
-    // await Promise.all(this.appointmentModel.);
     const currentDate = new Date();
     const startOfMonth = new Date(
       currentDate.getFullYear(),
@@ -321,7 +320,7 @@ export class AppointmentService {
       999,
     );
 
-    const monthlyAppoinments = await this.appointmentModel.find({
+    const monthlyAppointmentsPromise = this.appointmentModel.find({
       doctor_id: doctorId,
       start_date: {
         $gte: startOfMonth,
@@ -329,7 +328,8 @@ export class AppointmentService {
       },
       'paymentInfo.status': 'PAID',
     });
-    const weeklyAppoinments = await this.appointmentModel.find({
+
+    const weeklyAppointmentsPromise = this.appointmentModel.find({
       doctor_id: doctorId,
       start_date: {
         $gte: startOfWeek,
@@ -338,25 +338,170 @@ export class AppointmentService {
       'paymentInfo.status': 'PAID',
     });
 
-    const allAppoinments = await this.appointmentModel.find({
+    const allAppointmentsPromise = this.appointmentModel.find({
       doctor_id: doctorId,
-
       'paymentInfo.status': 'PAID',
     });
-    const monthlyAmount = monthlyAppoinments.reduce(
-      (sum, appoinment) => sum + appoinment.paymentInfo.amount,
-      0,
-    );
 
-    const weeklyAmount = weeklyAppoinments.reduce(
+    const [monthlyAppointments, weeklyAppointments, allAppointments] =
+      await Promise.all([
+        monthlyAppointmentsPromise,
+        weeklyAppointmentsPromise,
+        allAppointmentsPromise,
+      ]);
+
+    const monthlyAmount = monthlyAppointments.reduce(
       (sum, appoinment) => sum + appoinment.paymentInfo.amount,
       0,
     );
-    const allAmount = allAppoinments.reduce(
+    const weeklyAmount = weeklyAppointments.reduce(
+      (sum, appoinment) => sum + appoinment.paymentInfo.amount,
+      0,
+    );
+    const allAmount = allAppointments.reduce(
       (sum, appoinment) => sum + appoinment.paymentInfo.amount,
       0,
     );
 
     return { week: weeklyAmount, month: monthlyAmount, all: allAmount };
+  }
+
+  async get_appointments_chart(doctorId) {
+    const currentDate = new Date();
+    const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
+    const endOfYear = new Date(
+      currentDate.getFullYear(),
+      11,
+      31,
+      23,
+      59,
+      59,
+      999,
+    );
+    const startOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1,
+    );
+    const endOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+      999,
+    );
+    const startOfWeek = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate() - currentDate.getDay(),
+    );
+    const endOfWeek = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate() + (6 - currentDate.getDay()),
+      23,
+      59,
+      59,
+      999,
+    );
+
+    const getAppointmentsByStatus = (status, startDate, endDate) => {
+      return this.appointmentModel
+        .find({
+          doctor_id: doctorId,
+          start_date: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+          status,
+        })
+        .sort({ start_date: 1 });
+    };
+
+    const [
+      monthlyAppointmentsDone,
+      weeklyAppointmentsDone,
+      yearlyAppointmentsDone,
+    ] = await Promise.all([
+      getAppointmentsByStatus('DONE', startOfMonth, endOfMonth),
+      getAppointmentsByStatus('DONE', startOfWeek, endOfWeek),
+      getAppointmentsByStatus('DONE', startOfYear, endOfYear),
+    ]);
+
+    const [
+      monthlyAppointmentsCanceled,
+      weeklyAppointmentsCanceled,
+      yearlyAppointmentsCanceled,
+    ] = await Promise.all([
+      getAppointmentsByStatus('CANCELED', startOfMonth, endOfMonth),
+      getAppointmentsByStatus('CANCELED', startOfWeek, endOfWeek),
+      getAppointmentsByStatus('CANCELED', startOfYear, endOfYear),
+    ]);
+
+    const divideAppointmentsByPeriod = (appointments, period) => {
+      const counts = {};
+      let dateKey = '';
+
+      if (period.type === 'WEEK') dateKey = 'getDay';
+      else if (period.type === 'MONTH') {
+        dateKey = 'getDate';
+      } else {
+        dateKey = 'getMonth';
+      }
+      appointments.forEach((appointment) => {
+        const day = appointment.start_date[dateKey]();
+
+        if (counts[day]) {
+          counts[day] += 1;
+        } else {
+          counts[day] = 1;
+        }
+      });
+      return counts;
+    };
+    const appointmentsByDayOfWeekDone = divideAppointmentsByPeriod(
+      weeklyAppointmentsDone,
+      { type: 'WEEK' },
+    );
+    const appointmentsByDayOfWeekCanceled = divideAppointmentsByPeriod(
+      weeklyAppointmentsCanceled,
+      { type: 'WEEK' },
+    );
+
+    const appointmentsByDayOfMonthDone = divideAppointmentsByPeriod(
+      monthlyAppointmentsDone,
+      { type: 'MONTH' },
+    );
+    const appointmentsByDayOfMonthCanceled = divideAppointmentsByPeriod(
+      monthlyAppointmentsCanceled,
+      { type: 'MONTH' },
+    );
+
+    const appointmentsByMonthOfYearDone = divideAppointmentsByPeriod(
+      yearlyAppointmentsDone,
+      { type: 'YEAR' },
+    );
+
+    const appointmentsByMonthOfYearCanceled = divideAppointmentsByPeriod(
+      yearlyAppointmentsCanceled,
+      { type: 'YEAR' },
+    );
+
+    return {
+      week: {
+        done: appointmentsByDayOfWeekDone,
+        canceled: appointmentsByDayOfWeekCanceled,
+      },
+      month: {
+        done: appointmentsByDayOfMonthDone,
+        canceled: appointmentsByDayOfMonthCanceled,
+      },
+      year: {
+        done: appointmentsByMonthOfYearDone,
+        canceled: appointmentsByMonthOfYearCanceled,
+      },
+    };
   }
 }

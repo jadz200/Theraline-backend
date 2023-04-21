@@ -40,6 +40,7 @@ import {
   SwaggerGetPaymentInfoResp,
 } from '../common/swagger';
 import { Appointment } from './schema';
+import { PaymentStatsDto } from './dto/paymentStats.dto';
 
 @ApiTags('Appointment')
 @Controller('appointment')
@@ -361,11 +362,23 @@ export class AppointementController {
 
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiOkResponse({ type: PaymentStatsDto })
   @Roles('DOCTOR')
   @UseGuards(RolesGuard)
   @ApiBearerAuth()
   @Get('payment_stats')
   async get_payment_stats(@GetCurrentUserId() doctorId) {
     return this.appointmentService.get_payment_stats(doctorId);
+  }
+
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  // @ApiOkResponse({ type: PaymentStatsDto })
+  @Roles('DOCTOR')
+  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
+  @Get('appointment_stats')
+  async get_appointment_stats(@GetCurrentUserId() doctorId) {
+    return this.appointmentService.get_appointments_chart(doctorId);
   }
 }
