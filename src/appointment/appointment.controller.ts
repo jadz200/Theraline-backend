@@ -29,6 +29,7 @@ import {
   CreateAppointmentDto,
   EditAmountDto,
   GetpaymentInfoDto,
+  PaymentInfoDto,
 } from './dto/index';
 import {
   SwaggerResponseSuccessfulWithMessage,
@@ -38,7 +39,7 @@ import {
   SwaggerGetAppointmentResp,
   SwaggerGetPaymentInfoResp,
 } from '../common/swagger';
-import { Appointment, PaymentInfo } from './schema';
+import { Appointment } from './schema';
 
 @ApiTags('Appointment')
 @Controller('appointment')
@@ -167,7 +168,7 @@ export class AppointementController {
     ),
   )
   @ApiBody({
-    type: PaymentInfo,
+    type: PaymentInfoDto,
     examples: {
       example1: {
         value: {
@@ -216,7 +217,7 @@ export class AppointementController {
   async complete_appointment(
     @GetCurrentUserId() doctor_id,
     @Param('appointment_id') appointment_id: string,
-    @Body() dto: PaymentInfo,
+    @Body() dto: PaymentInfoDto,
   ): Promise<{ msg: string }> {
     return this.appointmentService.complete_appointment(
       doctor_id,

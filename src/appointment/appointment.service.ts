@@ -12,8 +12,9 @@ import {
   CreateAppointmentDto,
   EditAmountDto,
   GetpaymentInfoDto,
+  PaymentInfoDto,
 } from './dto/index';
-import { Appointment, AppointmentDocument, PaymentInfo } from './schema/index';
+import { Appointment, AppointmentDocument } from './schema/index';
 
 @Injectable()
 export class AppointmentService {
@@ -133,7 +134,7 @@ export class AppointmentService {
   async complete_appointment(
     doctor_id: string,
     appointment_id: string,
-    dto: PaymentInfo,
+    dto: PaymentInfoDto,
   ): Promise<{ msg: string }> {
     if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
       throw new BadRequestException('Id is not in valid format');
@@ -305,20 +306,57 @@ export class AppointmentService {
       59,
       999,
     );
+    const startOfWeek = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate() - currentDate.getDay(),
+    );
+    const endOfWeek = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate() + (6 - currentDate.getDay()),
+      23,
+      59,
+      59,
+      999,
+    );
 
-    const paymentInfos = await this.appointmentModel.find({
+    const monthlyAppoinments = await this.appointmentModel.find({
       doctor_id: doctorId,
-      'paymentInfo.date': {
+      start_date: {
         $gte: startOfMonth,
         $lte: endOfMonth,
       },
+      'paymentInfo.status': 'PAID',
+    });
+    const weeklyAppoinments = await this.appointmentModel.find({
+      doctor_id: doctorId,
+      start_date: {
+        $gte: startOfWeek,
+        $lte: endOfWeek,
+      },
+      'paymentInfo.status': 'PAID',
     });
 
-    const totalAmount = paymentInfos.reduce(
-      (sum, paymentInfo) => sum + paymentInfo.paymentInfo.amount,
+    const allAppoinments = await this.appointmentModel.find({
+      doctor_id: doctorId,
+
+      'paymentInfo.status': 'PAID',
+    });
+    const monthlyAmount = monthlyAppoinments.reduce(
+      (sum, appoinment) => sum + appoinment.paymentInfo.amount,
       0,
     );
 
-    return totalAmount;
+    const weeklyAmount = weeklyAppoinments.reduce(
+      (sum, appoinment) => sum + appoinment.paymentInfo.amount,
+      0,
+    );
+    const allAmount = allAppoinments.reduce(
+      (sum, appoinment) => sum + appoinment.paymentInfo.amount,
+      0,
+    );
+
+    return { week: weeklyAmount, month: monthlyAmount, all: allAmount };
   }
 }
