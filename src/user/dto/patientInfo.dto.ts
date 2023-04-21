@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsObject, IsOptional, IsString } from 'class-validator';
-import { Appointment } from 'src/appointment/schema';
+import { Appointment } from '../../appointment/schema';
 
 export class PatientInfo {
   @ApiProperty()

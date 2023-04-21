@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ClinicInfo } from 'src/auth/schema';
+import { ClinicInfo } from '../../auth/schema';
 
 export class EditDoctoInfoDto {
   @ApiProperty()

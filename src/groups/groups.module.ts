@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from 'src/auth/auth.module';
-import { Appointment, AppointmentSchema } from 'src/appointment/schema';
 import { JwtModule } from '@nestjs/jwt';
+import { Appointment, AppointmentSchema } from '../appointment/schema';
+import { AuthModule } from '../auth/auth.module';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { Message, MessageSchema } from '../messages/schema/message.schema';
 import { User, UserSchema } from '../auth/schema/user.schema';

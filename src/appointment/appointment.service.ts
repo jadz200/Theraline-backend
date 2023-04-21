@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { PaginateModel, PaginateResult } from 'mongoose';
-import { User } from 'src/auth/schema/user.schema';
+import { User } from '../auth/schema/user.schema';
 import { AuthService } from '../auth/auth.service';
 import {
   CreateAppointmentDto,
@@ -284,5 +284,39 @@ export class AppointmentService {
     this.logger.log(`Appointments for ${doctor_id} retrieved`);
 
     return resp;
+  }
+
+  async get_payment_stats(doctorId) {
+    // await Promise.all(this.appointmentModel.);
+    const currentDate = new Date();
+    const startOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1,
+    );
+    const endOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+      999,
+    );
+
+    const paymentInfos = await this.appointmentModel.find({
+      doctor_id: doctorId,
+      'paymentInfo.date': {
+        $gte: startOfMonth,
+        $lte: endOfMonth,
+      },
+    });
+
+    const totalAmount = paymentInfos.reduce(
+      (sum, paymentInfo) => sum + paymentInfo.paymentInfo.amount,
+      0,
+    );
+
+    return totalAmount;
   }
 }

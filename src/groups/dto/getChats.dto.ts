@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { MessageDto } from 'src/messages/dto/message.dto';
+import { MessageDto } from '../../messages/dto/message.dto';
 import { GroupType } from '../schema/group.schema';
 
 export class Chat {

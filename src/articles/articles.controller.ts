@@ -15,9 +15,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PaginateResult } from 'mongoose';
-import { Roles } from 'src/common/decorators';
-import { RolesGuard } from 'src/common/guards';
-import { SwaggerResponseSuccessfulWithMessage } from 'src/common/swagger';
+import { Roles } from '../common/decorators';
+import { RolesGuard } from '../common/guards';
+import { SwaggerResponseSuccessfulWithMessage } from '../common/swagger';
 import { ArticlesService } from './articles.service';
 import { ArticleDto } from './dto/article.dto';
 import { ArticleListDto } from './dto/articleList.dto';

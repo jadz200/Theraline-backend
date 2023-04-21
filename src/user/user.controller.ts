@@ -24,7 +24,7 @@ import {
   SwaggerForbiddenResponse,
   SwaggerResponseSuccessfulWithMessage,
   SwaggerUnauthorizedResponse,
-} from 'src/common/swagger/general.swagger';
+} from '../common/swagger/general.swagger';
 import { User } from '../auth/dto';
 import { Roles, GetCurrentUserId } from '../common/decorators';
 import { RolesGuard } from '../common/guards';

@@ -16,8 +16,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PaginateResult } from 'mongoose';
-import { getChatMessagesResp } from 'src/common/swagger/message.swager';
-import { SwaggerBadResponseMessage } from 'src/common/swagger/general.swagger';
+import { getChatMessagesResp } from '../common/swagger/message.swager';
+import { SwaggerBadResponseMessage } from '../common/swagger/general.swagger';
 import { GetCurrentUserId } from '../common/decorators';
 import { PaginationParams } from '../common/dto/paginationParams.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';

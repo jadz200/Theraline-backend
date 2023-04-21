@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { ClinicInfo } from 'src/auth/schema';
 import { Type } from 'class-transformer';
+import { ClinicInfo } from '../../auth/schema';
 import { ClinicInfoDto } from './clinicInfo.dto';
 
 export class CreateDoctorDto {

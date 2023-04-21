@@ -357,4 +357,14 @@ export class AppointementController {
       dto,
     );
   }
+
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @Roles('DOCTOR')
+  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
+  @Get('payment_stats')
+  async get_payment_stats(@GetCurrentUserId() doctorId) {
+    return this.appointmentService.get_payment_stats(doctorId);
+  }
 }

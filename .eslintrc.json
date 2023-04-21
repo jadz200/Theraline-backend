@@ -7,7 +7,9 @@
     "airbnb",
     "airbnb-typescript",
     "eslint:recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:nestjs/recommended",
+    "plugin:@darraghor/nestjs-typed/recommended"
   ],
   "overrides": [],
   "parserOptions": {
@@ -15,7 +17,7 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": [],
+  "plugins": ["nestjs", "promise", "@darraghor/nestjs-typed"],
   "rules": {
     "import/prefer-default-export": "off",
     "react/jsx-props-no-spreading": "off",
