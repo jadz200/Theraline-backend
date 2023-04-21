@@ -44,7 +44,9 @@ export class AppointmentService {
         'start_date and/or end_date are not a correct time',
       );
     }
-
+    if (startDate > endDate) {
+      throw new BadRequestException('start_date cannot be after the end_date');
+    }
     const appoinment = await this.appointmentModel.create({
       patient_id: dto.patient_id,
       title: dto.title,
