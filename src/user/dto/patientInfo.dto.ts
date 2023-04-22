@@ -26,6 +26,11 @@ export class PatientInfo {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsString()
+  phone?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsObject()
   nextAppointment?: Appointment;
 

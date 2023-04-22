@@ -31,4 +31,9 @@ export class RetrieveUserDTO {
   @IsString()
   @IsOptional()
   phone?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  image?: string;
 }

@@ -88,7 +88,7 @@ export class UserService {
       patientIds.map(async (patient_id) => {
         const patient = await this.userModel
           .findOne({ _id: patient_id })
-          .select('_id firstName lastName email image');
+          .select('_id firstName lastName email image phone');
 
         const latestAppoinments = await this.appointmentModel
           .find({ patient_id })
@@ -102,6 +102,7 @@ export class UserService {
             lastName: patient.lastName,
             email: patient.email,
             image: patient.image,
+            phone: patient.phone,
             lastAppointment: latestAppoinments[0],
           };
         } else {
