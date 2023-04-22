@@ -157,13 +157,14 @@ export class AuthService {
   ): Promise<RetrieveUserDTO> {
     const user = await this.userModel
       .findOne({ _id: id })
-      .select('_id email firstName lastName');
+      .select('_id email firstName lastName phone');
     this.logger.log(`retrieved user ${user._id} information`);
     return {
       _id: user._id.toString(),
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      phone: user.phone,
     };
   }
 

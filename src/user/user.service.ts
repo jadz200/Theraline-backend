@@ -97,6 +97,7 @@ export class UserService {
         let patientInfo: PatientInfo;
         if (latestAppoinments[0].status === 'DONE') {
           patientInfo = {
+            _id: patient._id,
             firstName: patient.firstName,
             lastName: patient.lastName,
             email: patient.email,
@@ -105,6 +106,7 @@ export class UserService {
           };
         } else {
           patientInfo = {
+            _id: patient._id,
             firstName: patient.firstName,
             lastName: patient.lastName,
             email: patient.email,

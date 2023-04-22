@@ -442,16 +442,19 @@ export class AppointmentService {
 
     const divideAppointmentsByPeriod = (appointments, period) => {
       const counts = {};
-      let dateKey = '';
+      let dateKey;
 
-      if (period.type === 'WEEK') dateKey = 'getDay';
-      else if (period.type === 'MONTH') {
-        dateKey = 'getDate';
+      if (period.type === 'WEEK') {
+        dateKey = (appointment) =>
+          appointment.start_date.toLocaleString('default', { weekday: 'long' });
+      } else if (period.type === 'MONTH') {
+        dateKey = (appointment) => appointment.start_date.getDate();
       } else {
-        dateKey = 'getMonth';
+        dateKey = (appointment) =>
+          appointment.start_date.toLocaleString('default', { month: 'long' });
       }
       appointments.forEach((appointment) => {
-        const day = appointment.start_date[dateKey]();
+        const day = dateKey(appointment);
 
         if (counts[day]) {
           counts[day] += 1;

@@ -1,5 +1,11 @@
-import { IsDefined, IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsDefined,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class RetrieveUserDTO {
   @ApiProperty()
@@ -20,4 +26,9 @@ export class RetrieveUserDTO {
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  phone?: string;
 }

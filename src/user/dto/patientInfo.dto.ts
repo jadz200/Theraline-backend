@@ -5,6 +5,10 @@ import { Appointment } from '../../appointment/schema';
 export class PatientInfo {
   @ApiProperty()
   @IsString()
+  _id: string;
+
+  @ApiProperty()
+  @IsString()
   firstName: string;
 
   @ApiProperty()
