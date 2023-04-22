@@ -163,7 +163,7 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
-  @Get('/patient_details/:email')
+  @Get('/patient_details_email/:email')
   @ApiOperation({ summary: 'Gets patient details using that patient email' })
   async get_patient_details_email(
     @Param('email') email: string,
