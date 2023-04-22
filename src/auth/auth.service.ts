@@ -155,7 +155,9 @@ export class AuthService {
   async retrieveUserInfo(
     id: mongoose.Types.ObjectId,
   ): Promise<RetrieveUserDTO> {
-    const user = await this.findById(id.toString());
+    const user = await this.userModel
+      .findOne({ _id: id })
+      .select('_id email firstName lastName');
     this.logger.log(`retrieved user ${user._id} information`);
     return {
       _id: user._id.toString(),
