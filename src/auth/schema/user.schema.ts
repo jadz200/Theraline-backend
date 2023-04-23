@@ -2,8 +2,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 import * as mongoosePaginate from 'mongoose-paginate-v2';
-import { ClinicInfo } from './clinicInfo.schema';
-import { UserRole } from './userRole.schema';
+import { Notes } from 'src/user/schema/notes.schema';
+import { ClinicInfo } from '../../user/schema/clinicInfo.schema';
+import { Gender, UserRole } from './userRole.schema';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const aggregatePaginate = require('mongoose-paginate-v2');
 
@@ -29,7 +30,7 @@ export class User {
   phone?: string;
 
   @Prop()
-  gender?: string;
+  gender: Gender;
 
   @Prop({ required: true })
   role: UserRole;
@@ -48,6 +49,9 @@ export class User {
 
   @Prop()
   expoToken?: string;
+
+  @Prop()
+  notes?: Notes[];
 
   // virtuals
   fullName: string;

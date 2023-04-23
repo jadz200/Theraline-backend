@@ -9,14 +9,15 @@ import mongoose, { PaginateModel } from 'mongoose';
 import * as argon from 'argon2';
 import { Appointment, AppointmentDocument } from '../appointment/schema';
 import { AuthService } from '../auth/auth.service';
-import { User } from '../auth/dto';
-import { UserDocument } from '../auth/schema/user.schema';
+import { User, UserDocument } from '../auth/schema/user.schema';
 import {
   PatientDetail,
   PatientInfo,
   EditDoctoInfoDto,
   CreateDoctorDto,
+  CreateNotesDto,
 } from './dto';
+import { Notes } from './schema/notes.schema';
 
 @Injectable()
 export class UserService {
@@ -155,16 +156,17 @@ export class UserService {
     return resp;
   }
 
-  async get_patient_details_id(id: string): Promise<PatientDetail> {
+  async get_patient_details_id(patientId, doctorId): Promise<PatientDetail> {
     const user: User = await this.userModel
-      .findOne({ _id: id })
-      .select('firstName lastName email gender phone birthday');
+      .findOne({ _id: patientId })
+      .select('firstName lastName email gender phone birthday notes');
     const doctorsId: string[] = await this.appointmentModel.distinct(
       'patient_id',
       {
         patient_id: user._id,
       },
     );
+    const filteredNotes = user.notes.filter((note) => note.author === doctorId);
     const resp: PatientDetail = {
       _id: user._id.toString(),
       firstName: user.firstName,
@@ -175,9 +177,23 @@ export class UserService {
       gender: user.gender,
       groups: user.groups,
       doctors: doctorsId,
+      notes: filteredNotes,
     };
 
     return resp;
+  }
+
+  async add_note(doctorId, dto: CreateNotesDto) {
+    if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+      throw new BadRequestException('Id is not in valid format');
+    }
+    const user: User = await this.userModel.findOne({ _id: dto.user_id });
+    const note: Notes = { title: dto.title, body: dto.body, author: doctorId };
+    await this.userModel.updateOne(
+      { _id: user._id },
+      { $push: { notes: note } },
+    );
+    return { msg: 'added a note' };
   }
 
   async find_by_email(email: string): Promise<User> {

@@ -20,12 +20,12 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
+import { User } from 'src/auth/schema/user.schema';
 import {
   SwaggerForbiddenResponse,
   SwaggerResponseSuccessfulWithMessage,
   SwaggerUnauthorizedResponse,
 } from '../common/swagger/general.swagger';
-import { User } from '../auth/dto';
 import { Roles, GetCurrentUserId } from '../common/decorators';
 import { RolesGuard } from '../common/guards';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
@@ -35,6 +35,7 @@ import {
   EditDoctoInfoDto,
   PatientInfo,
   PatientDetail,
+  CreateNotesDto,
 } from './dto';
 import { ClinicInfoDto } from './dto/clinicInfo.dto';
 
@@ -190,8 +191,21 @@ export class UserController {
   @Get('/patient_details/:id')
   @ApiOperation({ summary: 'Gets patient details using that patient _id' })
   async get_patient_details_id(
-    @Param('id') id: string,
+    @Param('id') patientId: string,
+    @GetCurrentUserId() doctorId,
   ): Promise<PatientDetail> {
-    return this.userService.get_patient_details_id(id);
+    return this.userService.get_patient_details_id(patientId, doctorId);
+  }
+
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @UsePipes(ValidationPipe)
+  @Roles('DOCTOR')
+  @ApiOperation({ summary: 'Gets patient details using that patient _id' })
+  @Post('add_note')
+  async add_note(@GetCurrentUserId() doctorId, @Body() dto: CreateNotesDto) {
+    return this.userService.add_note(doctorId, dto);
   }
 }

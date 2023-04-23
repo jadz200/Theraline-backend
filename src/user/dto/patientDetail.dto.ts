@@ -1,3 +1,5 @@
+import { Notes } from '../schema/notes.schema';
+
 export class PatientDetail {
   _id: string;
 
@@ -16,4 +18,6 @@ export class PatientDetail {
   groups?: string[];
 
   doctors?: string[];
+
+  notes?: Notes[];
 }

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import { ClinicInfo } from '../schema';
+import { Notes } from 'src/user/schema/notes.schema';
+import { ClinicInfo, Gender } from '../schema';
 import { UserRole } from '../schema/user.schema';
 
 export class User {
@@ -23,7 +24,9 @@ export class User {
 
   birthday?: Date;
 
-  gender?: string;
+  gender: Gender;
+
+  notes: Notes[];
 
   groups: string[];
 
