@@ -226,7 +226,7 @@ export class GroupsService {
       resp.users.map((userId) => {
         return this.userModel
           .findOne({ _id: userId })
-          .select('firstName lastName role');
+          .select('firstName lastName role image');
       }),
     );
     return users;
