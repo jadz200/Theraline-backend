@@ -74,6 +74,7 @@ export class GroupsService {
         });
       }),
     );
+    this.logger.log(`Got all chats for ${user_id}`);
     return resp;
   }
 
@@ -214,6 +215,18 @@ export class GroupsService {
           .findOne({ _id: patient_id })
           .select('_id firstName lastName email image');
         return patient;
+      }),
+    );
+    return users;
+  }
+
+  async get_chat_users(groupId) {
+    const resp = await this.groupModel.findOne({ _id: groupId });
+    const users = Promise.all(
+      resp.users.map((userId) => {
+        return this.userModel
+          .findOne({ _id: userId })
+          .select('firstName lastName role');
       }),
     );
     return users;

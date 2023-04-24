@@ -220,7 +220,7 @@ export class UserService {
       {
         $project: {
           _id: 0,
-          use_id: '$_id',
+          patient_id: '$_id',
           fullName: { $concat: ['$firstName', ' ', '$lastName'] },
           title: '$notes.title',
           body: '$notes.body',

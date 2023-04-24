@@ -6,6 +6,7 @@ import {
   ValidationPipe,
   UseGuards,
   UsePipes,
+  Param,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -161,5 +162,13 @@ export class GroupsController {
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ) {
     return this.groupService.get_users_to_create_group(userId);
+  }
+
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiOkResponse()
+  @ApiBearerAuth()
+  @Get('/users/:group_id')
+  async get_users(@Param('group_id') groupId: string) {
+    return this.groupService.get_chat_users(groupId);
   }
 }
