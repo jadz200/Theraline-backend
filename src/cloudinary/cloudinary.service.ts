@@ -3,6 +3,7 @@ import { v2 as cloudinary } from 'cloudinary';
 
 @Injectable()
 export class CloudinaryService {
+  // eslint-disable-next-line class-methods-use-this
   async upload(file: string) {
     let url;
     try {

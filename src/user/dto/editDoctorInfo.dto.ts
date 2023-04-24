@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ClinicInfo } from '../../auth/schema';
 
 export class EditDoctoInfoDto {
   @ApiProperty()
@@ -13,7 +12,4 @@ export class EditDoctoInfoDto {
 
   @ApiProperty()
   phone: string;
-
-  @ApiProperty()
-  clinicInfo: ClinicInfo;
 }

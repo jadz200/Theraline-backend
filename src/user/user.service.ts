@@ -18,6 +18,7 @@ import {
   CreateNotesDto,
 } from './dto';
 import { Notes } from './schema/notes.schema';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class UserService {
@@ -25,6 +26,7 @@ export class UserService {
 
   constructor(
     private readonly authService: AuthService,
+    private readonly cloudinaryService: CloudinaryService,
     @InjectModel(Appointment.name)
     private appointmentModel: PaginateModel<AppointmentDocument>,
     @InjectModel(User.name) private userModel: PaginateModel<UserDocument>,
@@ -54,18 +56,30 @@ export class UserService {
     return { msg: 'Created Doctor Account' };
   }
 
-  async edit_doctor(dto: EditDoctoInfoDto, doctor_id) {
-    if (!mongoose.Types.ObjectId.isValid(doctor_id)) {
+  async edit_doctor(dto: EditDoctoInfoDto, doctorId) {
+    if (!mongoose.Types.ObjectId.isValid(doctorId)) {
       throw new BadRequestException('Id is not in valid format');
     }
 
-    const doctor: User = await this.userModel.findOne({ _id: doctor_id });
+    const doctor: User = await this.userModel.findOne({ _id: doctorId });
 
     if (!doctor) {
       throw new NotFoundException('Doctor Not Found');
     }
+    const newimage = (await this.cloudinaryService.upload(dto.image)).url;
 
-    await this.userModel.updateOne(doctor, {});
+    await this.userModel.updateOne(
+      { _id: doctorId },
+      {
+        firstName: dto.firstName,
+        lastName: dto.lastName,
+        phone: dto.phone,
+        image: newimage,
+      },
+    );
+    const doctoredited: User = await this.userModel.findOne({ _id: doctorId });
+
+    console.log(doctoredited);
     this.logger.log(`Doctor ${doctor._id} has been edited`);
     return { msg: 'Doctor changed info' };
   }
