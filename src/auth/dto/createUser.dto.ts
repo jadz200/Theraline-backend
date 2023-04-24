@@ -41,7 +41,7 @@ export class CreateUserDto {
   @IsOptional()
   expoToken?: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  birthday?: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  birthday: string;
 }

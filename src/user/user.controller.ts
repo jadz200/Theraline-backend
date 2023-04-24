@@ -203,9 +203,21 @@ export class UserController {
   @UseGuards(RolesGuard)
   @UsePipes(ValidationPipe)
   @Roles('DOCTOR')
-  @ApiOperation({ summary: 'Gets patient details using that patient _id' })
+  @ApiOperation({ summary: 'Adds a note doctor to a patient' })
   @Post('add_note')
   async add_note(@GetCurrentUserId() doctorId, @Body() dto: CreateNotesDto) {
     return this.userService.add_note(doctorId, dto);
+  }
+
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @UsePipes(ValidationPipe)
+  @Roles('DOCTOR')
+  @ApiOperation({ summary: 'Get all the notes written by a doctor' })
+  @Get('get_notes')
+  async get_notes(@GetCurrentUserId() doctorId) {
+    return this.userService.get_notes(doctorId);
   }
 }

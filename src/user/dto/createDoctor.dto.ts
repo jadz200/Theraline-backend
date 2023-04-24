@@ -1,8 +1,19 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  Allow,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { ClinicInfo } from '../../auth/schema';
 import { ClinicInfoDto } from './clinicInfo.dto';
+
+export enum Gender {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  OTHER = 'OTHER',
+}
 
 export class CreateDoctorDto {
   @ApiProperty()
@@ -25,6 +36,18 @@ export class CreateDoctorDto {
   @IsString()
   password: string;
 
+  @ApiProperty({
+    enum: Gender,
+    enumName: 'Gender',
+  })
+  @Allow()
+  gender: Gender;
+
+  @ApiProperty()
+  @Allow()
+  @Type(() => Date)
+  birthday: Date;
+
   @IsNotEmpty()
   @ApiProperty()
   image: string;
@@ -33,8 +56,10 @@ export class CreateDoctorDto {
   @IsOptional()
   phone: string;
 
-  @IsNotEmpty()
-  @ApiProperty({ type: ClinicInfo })
+  @ApiProperty({
+    type: ClinicInfoDto,
+  })
   @Type(() => ClinicInfoDto)
+  @IsNotEmpty()
   clinicInfo: ClinicInfoDto;
 }

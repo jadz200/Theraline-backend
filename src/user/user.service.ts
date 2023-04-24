@@ -43,6 +43,8 @@ export class UserService {
       firstName: dto.firstName,
       lastName: dto.lastName,
       groups: [],
+      gender: dto.gender,
+      birthday: dto.birthday,
       clinicInfo: dto.clinicInfo,
       image: dto.image,
       phone: dto.phone,
@@ -149,6 +151,7 @@ export class UserService {
       image: user.image,
       phone: user.phone,
       gender: user.gender,
+      birthday: user.birthday,
       groups: user.groups,
       doctors: doctorsId,
     };
@@ -166,7 +169,9 @@ export class UserService {
         patient_id: user._id,
       },
     );
-    const filteredNotes = user.notes.filter((note) => note.author === doctorId);
+    const filteredNotes: Notes[] = user.notes.filter(
+      (note) => note.author === doctorId,
+    );
     const resp: PatientDetail = {
       _id: user._id.toString(),
       firstName: user.firstName,
@@ -175,6 +180,7 @@ export class UserService {
       image: user.image,
       phone: user.phone,
       gender: user.gender,
+      birthday: user.birthday,
       groups: user.groups,
       doctors: doctorsId,
       notes: filteredNotes,
@@ -194,6 +200,34 @@ export class UserService {
       { $push: { notes: note } },
     );
     return { msg: 'added a note' };
+  }
+
+  async get_notes(doctorId) {
+    if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+      throw new BadRequestException('Id is not in valid format');
+    }
+
+    const resp: Notes[] = await this.userModel.aggregate([
+      // Match all users with notes that have the same author
+      { $match: { 'notes.author': doctorId } },
+
+      // Unwind the notes array
+      { $unwind: '$notes' },
+
+      // Match notes with the same author
+      { $match: { 'notes.author': doctorId } },
+
+      {
+        $project: {
+          _id: 0,
+          use_id: '$_id',
+          fullName: { $concat: ['$firstName', ' ', '$lastName'] },
+          title: '$notes.title',
+          body: '$notes.body',
+        },
+      },
+    ]);
+    return resp;
   }
 
   async find_by_email(email: string): Promise<User> {

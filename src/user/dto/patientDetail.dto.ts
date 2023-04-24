@@ -13,7 +13,9 @@ export class PatientDetail {
 
   phone?: string;
 
-  gender?: string;
+  gender: string;
+
+  birthday: Date;
 
   groups?: string[];
 
