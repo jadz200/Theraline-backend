@@ -1,6 +1,10 @@
 import { Prop } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 
 export class Notes {
+  @Prop()
+  _id: mongoose.Types.ObjectId;
+
   @Prop()
   author: string;
 

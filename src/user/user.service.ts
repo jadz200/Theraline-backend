@@ -208,7 +208,12 @@ export class UserService {
       throw new BadRequestException('Id is not in valid format');
     }
     const user: User = await this.userModel.findOne({ _id: dto.user_id });
-    const note: Notes = { title: dto.title, body: dto.body, author: doctorId };
+    const note = {
+      _id: new mongoose.Types.ObjectId(),
+      title: dto.title,
+      body: dto.body,
+      author: doctorId,
+    };
     await this.userModel.updateOne(
       { _id: user._id },
       { $push: { notes: note } },
@@ -216,32 +221,30 @@ export class UserService {
     return { msg: 'added a note' };
   }
 
-  async get_notes(doctorId) {
-    if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+  async get_notes(doctorId, patientId) {
+    if (!mongoose.Types.ObjectId.isValid(patientId)) {
       throw new BadRequestException('Id is not in valid format');
     }
 
-    const resp: Notes[] = await this.userModel.aggregate([
-      // Match all users with notes that have the same author
-      { $match: { 'notes.author': doctorId } },
+    const user: User = await this.userModel.findOne({ _id: patientId });
+    const filteredNotes = user.notes
+      .filter((note) => note.author === doctorId)
+      .map((note) => {
+        return { _id: note._id, title: note.title, body: note.body };
+      });
+    return filteredNotes;
+  }
 
-      // Unwind the notes array
-      { $unwind: '$notes' },
+  async update_note(doctorId, notesId) {
+    if (!mongoose.Types.ObjectId.isValid(notesId)) {
+      throw new BadRequestException('Id is not in valid format');
+    }
+    const note = await this.userModel.findOne({
+      notes: { $in: [notesId] },
+    });
+    console.log(note);
 
-      // Match notes with the same author
-      { $match: { 'notes.author': doctorId } },
-
-      {
-        $project: {
-          _id: 0,
-          patient_id: '$_id',
-          fullName: { $concat: ['$firstName', ' ', '$lastName'] },
-          title: '$notes.title',
-          body: '$notes.body',
-        },
-      },
-    ]);
-    return resp;
+    return { msg: 'note updated' };
   }
 
   async find_by_email(email: string): Promise<User> {

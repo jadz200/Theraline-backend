@@ -93,10 +93,10 @@ export class UserController {
   @UsePipes(ValidationPipe)
   @Roles('DOCTOR')
   async editDoctorInfo(
-    @GetCurrentUserId() doctor_id,
+    @GetCurrentUserId() doctorId,
     @Body() dto: EditDoctoInfoDto,
   ) {
-    return this.userService.edit_doctor(dto, doctor_id);
+    return this.userService.edit_doctor(dto, doctorId);
   }
 
   @ApiOkResponse(SwaggerResponseSuccessfulWithMessage('User deleted'))
@@ -215,9 +215,29 @@ export class UserController {
   @UseGuards(RolesGuard)
   @UsePipes(ValidationPipe)
   @Roles('DOCTOR')
+  @ApiOperation({
+    summary: 'Get all the notes for a patient written by a doctor',
+  })
+  @Get('get_notes/:patient_id')
+  async get_notes(
+    @GetCurrentUserId() doctorId,
+    @Param('patient_id') patientId: string,
+  ) {
+    return this.userService.get_notes(doctorId, patientId);
+  }
+
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @UsePipes(ValidationPipe)
+  @Roles('DOCTOR')
   @ApiOperation({ summary: 'Get all the notes written by a doctor' })
-  @Get('get_notes')
-  async get_notes(@GetCurrentUserId() doctorId) {
-    return this.userService.get_notes(doctorId);
+  @Put('update_note/:note_id')
+  async update_notes(
+    @GetCurrentUserId() doctorId,
+    @Param('note_id') noteId: string,
+  ) {
+    return this.userService.update_note(doctorId, noteId);
   }
 }
