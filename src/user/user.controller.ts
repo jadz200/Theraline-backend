@@ -47,17 +47,17 @@ export class UserController {
     private cloudinaryService: CloudinaryService,
   ) {}
 
-  @Roles('ADMIN')
-  @ApiBearerAuth()
-  @UseGuards(RolesGuard)
   @ApiOperation({ summary: 'Creates a doctor' })
-  @Post('/create_doctor')
   @ApiCreatedResponse(
     SwaggerResponseSuccessfulWithMessage('Created Doctor Account'),
   )
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @UsePipes(ValidationPipe)
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth()
+  @Post('/create_doctor')
   async create_doctor(@Body() dto: CreateDoctorDto) {
     const dtoCopy = { ...dto };
     if (dto.image) {
@@ -68,6 +68,7 @@ export class UserController {
 
   @ApiOkResponse({ type: ClinicInfoDto })
   @Get('/get_clinic_info')
+  @ApiOperation({ summary: 'Gets a doctor clinic info' })
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
@@ -76,10 +77,14 @@ export class UserController {
   }
 
   @ApiOkResponse({ type: PatientInfo })
-  @Get('/patient_list')
-  @ApiBearerAuth()
+  @ApiOperation({
+    summary:
+      'Gets the list of patients that have had an appointments with the doctor',
+  })
   @UseGuards(RolesGuard)
+  @ApiBearerAuth()
   @Roles('DOCTOR')
+  @Get('/patient_list')
   async getPatientList(
     @GetCurrentUserId() id: mongoose.Types.ObjectId,
   ): Promise<PatientInfo[]> {
@@ -87,11 +92,12 @@ export class UserController {
   }
 
   @ApiOkResponse(SwaggerResponseSuccessfulWithMessage('Doctor changed info'))
-  @Put('edit_doctor_info')
-  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Edit Doctor info' })
   @UseGuards(RolesGuard)
   @UsePipes(ValidationPipe)
   @Roles('DOCTOR')
+  @ApiBearerAuth()
+  @Put('edit_doctor_info')
   async editDoctorInfo(
     @GetCurrentUserId() doctorId,
     @Body() dto: EditDoctoInfoDto,
@@ -100,10 +106,10 @@ export class UserController {
   }
 
   @ApiOkResponse(SwaggerResponseSuccessfulWithMessage('User deleted'))
-  @Delete(':user_id/delete/')
-  @ApiBearerAuth()
   @UseGuards(RolesGuard)
+  @ApiBearerAuth()
   @Roles('DOCTOR')
+  @Delete(':user_id/delete/')
   async deleteUser(@Param('user_id') id) {
     return this.userService.deleteUser(id);
   }
@@ -139,11 +145,11 @@ export class UserController {
   })
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
-  @Get('/patients')
-  @ApiOperation({ summary: 'Gets a list of all the patients' })
-  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Gets a list of all the patients in the database' })
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
+  @ApiBearerAuth()
+  @Get('/patients')
   async get_patients(): Promise<User[]> {
     return this.userService.get_all_patients();
   }
@@ -161,9 +167,9 @@ export class UserController {
   })
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
-  @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
+  @ApiBearerAuth()
   @Get('/patient_details_email/:email')
   @ApiOperation({ summary: 'Gets patient details using that patient email' })
   async get_patient_details_email(
@@ -185,11 +191,11 @@ export class UserController {
   })
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
-  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Gets patient details using that patient _id' })
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
+  @ApiBearerAuth()
   @Get('/patient_details/:id')
-  @ApiOperation({ summary: 'Gets patient details using that patient _id' })
   async get_patient_details_id(
     @Param('id') patientId: string,
     @GetCurrentUserId() doctorId,
@@ -199,11 +205,11 @@ export class UserController {
 
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
-  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Adds a note doctor to a patient' })
   @UseGuards(RolesGuard)
   @UsePipes(ValidationPipe)
   @Roles('DOCTOR')
-  @ApiOperation({ summary: 'Adds a note doctor to a patient' })
+  @ApiBearerAuth()
   @Post('add_note')
   async add_note(@GetCurrentUserId() doctorId, @Body() dto: CreateNotesDto) {
     return this.userService.add_note(doctorId, dto);
@@ -211,13 +217,13 @@ export class UserController {
 
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
-  @ApiBearerAuth()
-  @UseGuards(RolesGuard)
-  @UsePipes(ValidationPipe)
-  @Roles('DOCTOR')
   @ApiOperation({
     summary: 'Get all the notes for a patient written by a doctor',
   })
+  @UseGuards(RolesGuard)
+  @UsePipes(ValidationPipe)
+  @Roles('DOCTOR')
+  @ApiBearerAuth()
   @Get('get_notes/:patient_id')
   async get_notes(
     @GetCurrentUserId() doctorId,
@@ -228,11 +234,11 @@ export class UserController {
 
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
-  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Updates a note' })
   @UseGuards(RolesGuard)
   @UsePipes(ValidationPipe)
   @Roles('DOCTOR')
-  @ApiOperation({ summary: 'Get all the notes written by a doctor' })
+  @ApiBearerAuth()
   @Put('update_note/:note_id')
   async update_notes(
     @GetCurrentUserId() doctorId,

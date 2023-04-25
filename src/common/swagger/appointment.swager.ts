@@ -67,3 +67,8 @@ export const SwaggerGetPaymentInfoResp = {
   prevPage: null,
   nextPage: null,
 };
+
+export const SwaggerGetMonthlyPaymentCountResp = {
+  April: 1,
+  November: 1,
+};

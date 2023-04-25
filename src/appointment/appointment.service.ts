@@ -507,4 +507,48 @@ export class AppointmentService {
       },
     };
   }
+
+  async get_monthly_payment_count(doctorId) {
+    const currentDate = new Date();
+    const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
+    const endOfYear = new Date(
+      currentDate.getFullYear(),
+      11,
+      31,
+      23,
+      59,
+      59,
+      999,
+    );
+
+    const divideAppointmentsByPeriod = (appointments) => {
+      const counts = {};
+
+      appointments.forEach((appointment) => {
+        const day = appointment.start_date.toLocaleString('default', {
+          month: 'long',
+        });
+
+        if (counts[day]) {
+          counts[day] += 1;
+        } else {
+          counts[day] = 1;
+        }
+      });
+      return counts;
+    };
+    const appointments: Appointment[] = await this.appointmentModel
+      .find({
+        doctor_id: doctorId,
+        start_date: {
+          $gte: startOfYear,
+          $lte: endOfYear,
+        },
+        'paymentInfo.status': 'PAID',
+      })
+      .sort({ start_date: 1 });
+
+    const payments = divideAppointmentsByPeriod(appointments);
+    return payments;
+  }
 }

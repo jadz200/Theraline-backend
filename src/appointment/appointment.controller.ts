@@ -38,9 +38,11 @@ import {
   SwaggerBadResponseMessage,
   SwaggerGetAppointmentResp,
   SwaggerGetPaymentInfoResp,
+  SwaggerGetMonthlyPaymentCountResp,
 } from '../common/swagger';
 import { Appointment } from './schema';
 import { PaymentStatsDto } from './dto/paymentStats.dto';
+import { AppointmentStatsDto } from './dto/appointmentsStats.dto';
 
 @ApiTags('Appointment')
 @Controller('appointment')
@@ -341,6 +343,7 @@ export class AppointementController {
       'Payment info for appointment has been  edited',
     ),
   )
+  @ApiOperation({ summary: 'Edit Payment Info' })
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @Roles('DOCTOR')
@@ -363,6 +366,9 @@ export class AppointementController {
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiOkResponse({ type: PaymentStatsDto })
+  @ApiOperation({
+    summary: 'Gets the total amount made from payment each week/month/alltime',
+  })
   @Roles('DOCTOR')
   @UseGuards(RolesGuard)
   @ApiBearerAuth()
@@ -373,12 +379,32 @@ export class AppointementController {
 
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
-  // @ApiOkResponse({ type: PaymentStatsDto })
+  @ApiOkResponse({ type: AppointmentStatsDto })
+  @ApiOperation({
+    summary:
+      'Gets the number of appointment completed and canceled  each week/month/year',
+  })
   @Roles('DOCTOR')
   @UseGuards(RolesGuard)
   @ApiBearerAuth()
   @Get('appointment_stats')
   async get_appointment_stats(@GetCurrentUserId() doctorId) {
     return this.appointmentService.get_appointments_chart(doctorId);
+  }
+
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  @ApiOkResponse({
+    schema: {
+      example: SwaggerGetMonthlyPaymentCountResp,
+    },
+  })
+  @ApiOperation({ summary: 'Gets the number of payment made each month' })
+  @Roles('DOCTOR')
+  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
+  @Get('monthly_payment_count')
+  async get_monthly_payment_count(@GetCurrentUserId() doctorId) {
+    return this.appointmentService.get_monthly_payment_count(doctorId);
   }
 }
