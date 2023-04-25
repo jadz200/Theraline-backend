@@ -15,6 +15,7 @@ import {
   PaymentInfoDto,
 } from './dto/index';
 import { Appointment, AppointmentDocument } from './schema/index';
+import { getDaysInMonth } from '../common/util/getDaysInMonth';
 
 @Injectable()
 export class AppointmentService {
@@ -492,14 +493,41 @@ export class AppointmentService {
 
     return {
       week: {
+        label: [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
+        ],
         done: appointmentsByDayOfWeekDone,
         canceled: appointmentsByDayOfWeekCanceled,
       },
       month: {
+        label: getDaysInMonth(
+          currentDate.getFullYear(),
+          currentDate.getMonth() + 1,
+        ),
         done: appointmentsByDayOfMonthDone,
         canceled: appointmentsByDayOfMonthCanceled,
       },
       year: {
+        label: [
+          'January',
+          'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+          'August',
+          'September',
+          'October',
+          'November',
+          'December',
+        ],
         done: appointmentsByMonthOfYearDone,
         canceled: appointmentsByMonthOfYearCanceled,
       },

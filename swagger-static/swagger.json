@@ -2859,7 +2859,7 @@
       }
     },
     "/articles/post": {
-      "patch": {
+      "post": {
         "operationId": "ArticlesController_post_article",
         "summary": "Post an article",
         "parameters": [],

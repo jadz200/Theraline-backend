@@ -3,7 +3,7 @@ import {
   Controller,
   Get,
   Param,
-  Patch,
+  Post,
   Query,
   UseGuards,
   UsePipes,
@@ -65,7 +65,7 @@ export class ArticlesController {
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
   @ApiBearerAuth()
-  @Patch('post')
+  @Post('post')
   async post_article(@Body() dto: CreateArticleDto): Promise<{ msg: string }> {
     return this.articleService.post_article(dto);
   }
