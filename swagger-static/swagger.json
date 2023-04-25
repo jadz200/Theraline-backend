@@ -1,0 +1,3327 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_healthcheck",
+        "summary": "Health check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Hello World"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Main"
+        ]
+      }
+    },
+    "/doctor": {
+      "get": {
+        "operationId": "AppController_doctor",
+        "summary": "Checking doctor permission",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Hello doctors"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Main"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/patient": {
+      "get": {
+        "operationId": "AppController_patient",
+        "summary": "Checking patient permission",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Hello patient"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Main"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/auth/signup": {
+      "post": {
+        "operationId": "AuthController_signupLocal",
+        "summary": "Create patient user",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              },
+              "examples": {
+                "Required_Fields": {
+                  "value": {
+                    "firstName": "string",
+                    "lastName": "string",
+                    "email": "string@gmail.com",
+                    "password": "string",
+                    "gender": "MALE",
+                    "birthday": "2000-01-01"
+                  },
+                  "summary": "Required field"
+                },
+                "ExpoToken": {
+                  "value": {
+                    "firstName": "string",
+                    "lastName": "string",
+                    "email": "string@gmail.com",
+                    "password": "string",
+                    "birthday": "2000-01-01",
+                    "gender": "MALE",
+                    "expoToken": "string"
+                  },
+                  "summary": "Required field + Expo Token"
+                },
+                "Image": {
+                  "value": {
+                    "firstName": "string",
+                    "lastName": "string",
+                    "email": "string@gmail.com",
+                    "gender": "MALE",
+                    "birthday": "2000-01-01",
+                    "password": "string",
+                    "image": "string"
+                  },
+                  "summary": "Required field + Image Base64"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Created account"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 400,
+                    "message": "string",
+                    "error": "Bad Request"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/signin": {
+      "post": {
+        "operationId": "AuthController_signinLocal",
+        "summary": "Sign in and get access and refresh tokens",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthDto"
+              },
+              "examples": {
+                "patient": {
+                  "value": {
+                    "email": "new@gmail.com",
+                    "password": "string"
+                  },
+                  "summary": "Patient login"
+                },
+                "doctor": {
+                  "value": {
+                    "email": "doctor@gmail.com",
+                    "password": "string"
+                  },
+                  "summary": "Doctor login"
+                },
+                "expotoken": {
+                  "value": {
+                    "email": "doctor@gmail.com",
+                    "password": "string",
+                    "expoToken": "string"
+                  },
+                  "summary": "Login expo Token example"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Incorrect_Password": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Incorrect password",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "No_User_with_email": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "No user with current email adress",
+                      "error": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refreshTokens",
+        "summary": "Use Refresh token",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "No_Refresh_Token": {
+                    "value": {
+                      "statusCode": 401,
+                      "message": "No Refresh token",
+                      "error": "Unauthorized"
+                    }
+                  },
+                  "Incorrect_Refresh_Token_Format": {
+                    "value": {
+                      "statusCode": 401,
+                      "message": "Wrong Refresh Token format",
+                      "error": "Unauthorized"
+                    }
+                  },
+                  "No_User": {
+                    "value": {
+                      "statusCode": 401,
+                      "message": "No user with this token",
+                      "error": "Unauthorized"
+                    }
+                  },
+                  "No_Match": {
+                    "value": {
+                      "statusCode": 401,
+                      "message": "Incorrect Refresh token",
+                      "error": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "AuthController_retrieveUserInfo",
+        "summary": "Use Access token get user info",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "email": "string@email.com",
+                    "firstName": "string",
+                    "lastName": "string"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/upload/post_image": {
+      "post": {
+        "operationId": "UploadController_uploadImage",
+        "summary": "Upload an image base64",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/upload/post_pdf": {
+      "post": {
+        "operationId": "UploadController_uploadPdf",
+        "summary": "Upload an pdf base64",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/groups/create_convo": {
+      "post": {
+        "operationId": "GroupsController_create_convo",
+        "summary": "Create personal conversation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateConvoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Created convo"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Invalid_id": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Id is not in valid format",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "User_Doesnt_Exist": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "User does not exists",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Already_Exists": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Conv already exists",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "No_Self_Conv": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "You can't create a conversation with yourself",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "More_than_2_users": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "More than 2 users in this conversation",
+                      "error": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/groups/create_group": {
+      "post": {
+        "operationId": "GroupsController_create_group",
+        "summary": "Create group",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Created Group"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Invalid_id": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Id is not in valid format",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "User_Doesnt_Exist": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "User does not exists",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Cannot_Upload_Image": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Cannot upload image",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Duplicate_Entries": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Duplicate entries",
+                      "error": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/groups/get_chats": {
+      "get": {
+        "operationId": "GroupsController_get_all_chats",
+        "summary": "Get all groups for a user",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "chats": [
+                      {
+                        "_id": "string",
+                        "name": "Super cool group",
+                        "groupType": [
+                          "GROUP"
+                        ],
+                        "latestMessage": {
+                          "_id": "string",
+                          "send_at": "2023-03-20T19:44:19.883Z",
+                          "user_id": "string",
+                          "text": "Hello!"
+                        }
+                      },
+                      {
+                        "_id": "string",
+                        "name": "ADHD",
+                        "groupType": [
+                          "GROUP"
+                        ],
+                        "groupImage": "string",
+                        "latestMessage": {
+                          "_id": "string",
+                          "send_at": "2023-04-04T08:19:08.508Z",
+                          "user_id": "string",
+                          "text": "testing time!"
+                        }
+                      },
+                      {
+                        "_id": "string",
+                        "name": "Jad Zarzour",
+                        "groupType": [
+                          "PRIVATE"
+                        ],
+                        "groupImage": "string",
+                        "latestMessage": {
+                          "_id": "string",
+                          "send_at": "2023-04-13T05:53:33.190Z",
+                          "user_id": "string",
+                          "text": "hi"
+                        }
+                      },
+                      {
+                        "_id": "string",
+                        "name": "Very cool",
+                        "groupImage": "string",
+                        "groupType": [
+                          "GROUP"
+                        ]
+                      },
+                      {
+                        "_id": "string",
+                        "name": "string string",
+                        "groupType": [
+                          "PRIVATE"
+                        ]
+                      },
+                      {
+                        "_id": "string",
+                        "name": "string string",
+                        "groupImage": null,
+                        "groupType": [
+                          "PRIVATE"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/groups/user_convo": {
+      "get": {
+        "operationId": "GroupsController_get_users_to_create_convo",
+        "summary": "Gets all the users that a user can create a convo with",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "users": [
+                      {
+                        "_id": "string",
+                        "email": "string",
+                        "firstName": "Jhon",
+                        "lastName": "Doe"
+                      },
+                      {
+                        "_id": "string",
+                        "email": "string",
+                        "firstName": "Mart",
+                        "lastName": "Slavin"
+                      },
+                      {
+                        "_id": "string",
+                        "email": "string",
+                        "firstName": "string",
+                        "lastName": "string"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/groups/user_group": {
+      "get": {
+        "operationId": "GroupsController_get_users_to_create_group",
+        "summary": "Gets all the users that a doctor can create a group with",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "users": [
+                      {
+                        "_id": "string",
+                        "email": "string",
+                        "firstName": "Jhon",
+                        "lastName": "Doe"
+                      },
+                      {
+                        "_id": "string",
+                        "email": "string",
+                        "firstName": "Mart",
+                        "lastName": "Slavin"
+                      },
+                      {
+                        "_id": "string",
+                        "email": "string",
+                        "firstName": "string",
+                        "lastName": "string"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/groups/users/{group_id}": {
+      "get": {
+        "operationId": "GroupsController_get_users",
+        "parameters": [
+          {
+            "name": "group_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/message/{chat_id}/chat": {
+      "get": {
+        "operationId": "MessageController_get_chat",
+        "summary": "Get all chat messages for a specific chat id",
+        "parameters": [
+          {
+            "name": "chat_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "docs": [
+                      {
+                        "_id": "string",
+                        "text": "Hello",
+                        "user_id": "string",
+                        "group_id": "string",
+                        "send_at": "2023-04-15T11:48:49.442Z",
+                        "__v": 0,
+                        "sentByMe": "NO"
+                      },
+                      {
+                        "_id": "string",
+                        "text": "string",
+                        "user_id": "string",
+                        "group_id": "string",
+                        "send_at": "2023-04-14T12:12:06.714Z",
+                        "__v": 0,
+                        "sentByMe": "NO"
+                      },
+                      {
+                        "_id": "string",
+                        "text": "jj",
+                        "user_id": "string",
+                        "group_id": "string",
+                        "send_at": "2023-04-13T10:50:33.992Z",
+                        "__v": 0,
+                        "sentByMe": "NO"
+                      }
+                    ],
+                    "totalDocs": 34,
+                    "limit": 30,
+                    "totalPages": 2,
+                    "page": 1,
+                    "pagingCounter": 1,
+                    "hasPrevPage": false,
+                    "hasNextPage": true,
+                    "prevPage": null,
+                    "nextPage": 2
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Invalid_id": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Id is not in valid format",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Invalid_Group_ID": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Group doesn't exist",
+                      "error": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Message"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/message/{chat_id}/send_message": {
+      "post": {
+        "operationId": "MessageController_send_chat_message",
+        "summary": "Sends a Message to a specific Group",
+        "parameters": [
+          {
+            "name": "chat_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMessageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Invalid_id": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Id is not in valid format",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Invalid_Group_ID": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Group doesn't exist",
+                      "error": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Message"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/appointment/create_appointment": {
+      "post": {
+        "operationId": "AppointementController_create_appointment",
+        "summary": "Doctor creates appointment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppointmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Created Appointment"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Invalid_id": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Id is not in valid format",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Date_format": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": [
+                        "start_date and end_date must match /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$/ regular expression"
+                      ],
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Unable_to_cast_date_type": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "start_date and/or end_date are not a correct time",
+                      "error": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/appointment/{appointment_id}/confirm_appointment": {
+      "patch": {
+        "operationId": "AppointementController_confirm_appointment",
+        "summary": "Patient confirm appoinment",
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Appointment confirmed"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Invalid_id": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Id is not in valid format",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "No_appointment_for_this_user": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "No appointment for this patient",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Wrong_status": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Appointment is not in the CREATED status",
+                      "error": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/appointment/{appointment_id}/cancel_appointment": {
+      "patch": {
+        "operationId": "AppointementController_cancel_appointment",
+        "summary": "Patient/Doctor cancel the appoinment",
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Appointment canceled"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Invalid_id": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Id is not in valid format",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "No_appointment_for_this_user": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "No appointment for this patient",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Wrong_status": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Appointment is not in the CONFIRMED or CREATED status",
+                      "error": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/appointment/{appointment_id}/complete_appointment": {
+      "patch": {
+        "operationId": "AppointementController_complete_appointment",
+        "summary": "Marks the appointment completed and adds Payment Info",
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentInfoDto"
+              },
+              "examples": {
+                "example1": {
+                  "value": {
+                    "amount": 0,
+                    "status": "string",
+                    "method": "string",
+                    "date": "2023-11-07T12:30:00"
+                  },
+                  "summary": "An example appointment request "
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Appointment completed with payment info"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Invalid_id": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Id is not in valid format",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "No_appointment_for_this_user": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "No appointment for this doctor",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Must_be_CONFIRMED": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Appointment is not in the CONFIRMED status",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Date_format": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": [
+                        "date must match /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$/ regular expression"
+                      ],
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Unable_to_cast_date_type": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "date are not a correct time",
+                      "error": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/appointment/doctor/appointment": {
+      "get": {
+        "operationId": "AppointementController_get_doctor_appointment",
+        "summary": "Gets all the appointment for a doctor",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "docs": [
+                      {
+                        "_id": "string",
+                        "patient_id": "string",
+                        "doctor_id": "string",
+                        "start_date": "2023-12-07T12:30:00.000Z",
+                        "end_date": "2023-12-07T12:50:00.000Z",
+                        "status": [
+                          "CREATED"
+                        ],
+                        "__v": 0
+                      },
+                      {
+                        "_id": "string",
+                        "patient_id": "string",
+                        "title": "Cool appointment",
+                        "doctor_id": "string",
+                        "start_date": "2023-11-07T10:30:00.000Z",
+                        "end_date": "2023-11-07T10:40:00.000Z",
+                        "status": [
+                          "CREATED"
+                        ],
+                        "__v": 0
+                      },
+                      {
+                        "_id": "string",
+                        "patient_id": "string",
+                        "title": "title",
+                        "doctor_id": "string",
+                        "start_date": "2023-11-07T10:30:00.000Z",
+                        "end_date": "2023-11-07T11:30:00.000Z",
+                        "status": [
+                          "CONFIRMED"
+                        ],
+                        "__v": 0
+                      }
+                    ],
+                    "totalDocs": 3,
+                    "limit": 25,
+                    "totalPages": 1,
+                    "page": 1,
+                    "pagingCounter": 1,
+                    "hasPrevPage": false,
+                    "hasNextPage": false,
+                    "prevPage": null,
+                    "nextPage": null
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/appointment/patient/appointment": {
+      "get": {
+        "operationId": "AppointementController_get_patient_appointment",
+        "summary": "Gets all the appointment for a patient",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "docs": [
+                      {
+                        "_id": "string",
+                        "patient_id": "string",
+                        "doctor_id": "string",
+                        "start_date": "2023-12-07T12:30:00.000Z",
+                        "end_date": "2023-12-07T12:50:00.000Z",
+                        "status": [
+                          "CREATED"
+                        ],
+                        "__v": 0
+                      },
+                      {
+                        "_id": "string",
+                        "patient_id": "string",
+                        "title": "Cool appointment",
+                        "doctor_id": "string",
+                        "start_date": "2023-11-07T10:30:00.000Z",
+                        "end_date": "2023-11-07T10:40:00.000Z",
+                        "status": [
+                          "CREATED"
+                        ],
+                        "__v": 0
+                      },
+                      {
+                        "_id": "string",
+                        "patient_id": "string",
+                        "title": "title",
+                        "doctor_id": "string",
+                        "start_date": "2023-11-07T10:30:00.000Z",
+                        "end_date": "2023-11-07T11:30:00.000Z",
+                        "status": [
+                          "CONFIRMED"
+                        ],
+                        "__v": 0
+                      }
+                    ],
+                    "totalDocs": 3,
+                    "limit": 25,
+                    "totalPages": 1,
+                    "page": 1,
+                    "pagingCounter": 1,
+                    "hasPrevPage": false,
+                    "hasNextPage": false,
+                    "prevPage": null,
+                    "nextPage": null
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/appointment/{appointment_id}/confirm_payment": {
+      "patch": {
+        "operationId": "AppointementController_confirm_payment",
+        "summary": "Change payment status to paid if it isn't yet",
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Appointment  paid"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Invalid_id": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Id is not in valid format",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Appointment_Incomplete": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Appointment isn't complete",
+                      "error": "Bad Request"
+                    }
+                  },
+                  "Already_Paid": {
+                    "value": {
+                      "statusCode": 400,
+                      "message": "Appointment already paid",
+                      "error": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 404,
+                    "message": "Appointment Not Found",
+                    "error": "Bad Request"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/appointment/get_payment_info": {
+      "get": {
+        "operationId": "AppointementController_get_payment_info",
+        "summary": "Gets Payment Info for a doctor",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "docs": [
+                      {
+                        "_id": "string",
+                        "patient_id": "string",
+                        "fullName": "Sam Smith",
+                        "email": "string@gmail.com",
+                        "paymentInfo": {
+                          "amount": 5,
+                          "status": "PAID",
+                          "method": "string",
+                          "date": "2023-11-07T08:30:00.000Z",
+                          "_id": "string"
+                        }
+                      }
+                    ],
+                    "totalDocs": 1,
+                    "limit": 25,
+                    "totalPages": 1,
+                    "page": 1,
+                    "pagingCounter": 1,
+                    "hasPrevPage": false,
+                    "hasNextPage": false,
+                    "prevPage": null,
+                    "nextPage": null
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/appointment/{appointment_id}/edit_payment_info": {
+      "patch": {
+        "operationId": "AppointementController_edit_payment_info",
+        "summary": "Edit Payment Info",
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditAmountDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Payment info for appointment has been  edited"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 404,
+                    "message": "Appointment Not Found",
+                    "error": "Bad Request"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/appointment/payment_stats": {
+      "get": {
+        "operationId": "AppointementController_get_payment_stats",
+        "summary": "Gets the total amount made from payment each week/month/alltime",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentStatsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/appointment/appointment_stats": {
+      "get": {
+        "operationId": "AppointementController_get_appointment_stats",
+        "summary": "Gets the number of appointment completed and canceled  each week/month/year",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentStatsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/appointment/monthly_payment_count": {
+      "get": {
+        "operationId": "AppointementController_get_monthly_payment_count",
+        "summary": "Gets the number of payment made each month",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "April": 1,
+                    "November": 1
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/create_doctor": {
+      "post": {
+        "operationId": "UserController_create_doctor",
+        "summary": "Creates a doctor",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDoctorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Created Doctor Account"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/get_clinic_info": {
+      "get": {
+        "operationId": "UserController_get_clinicInfo",
+        "summary": "Gets a doctor clinic info",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClinicInfoDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/patient_list": {
+      "get": {
+        "operationId": "UserController_getPatientList",
+        "summary": "Gets the list of patients that have had an appointments with the doctor",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatientInfo"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/edit_doctor_info": {
+      "put": {
+        "operationId": "UserController_editDoctorInfo",
+        "summary": "Edit Doctor info",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditDoctoInfoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Doctor changed info"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/{user_id}/delete": {
+      "delete": {
+        "operationId": "UserController_deleteUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "User deleted"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/patients": {
+      "get": {
+        "operationId": "UserController_get_patients",
+        "summary": "Gets a list of all the patients in the database",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "test": [
+                      {
+                        "_id": "string",
+                        "email": "string@gmail.com",
+                        "firstName": "string",
+                        "lastName": "string",
+                        "image": "string"
+                      },
+                      {
+                        "_id": "string",
+                        "email": "string@gmail.com",
+                        "firstName": "string",
+                        "lastName": "string",
+                        "image": "string"
+                      },
+                      {
+                        "_id": "string",
+                        "email": "string@gfr.com",
+                        "firstName": "string",
+                        "lastName": "string",
+                        "image": null
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/patient_details_email/{email}": {
+      "get": {
+        "operationId": "UserController_get_patient_details_email",
+        "summary": "Gets patient details using that patient email",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "_id": "string",
+                    "firstName": "string",
+                    "lastName": "string",
+                    "email": "string@gmail.com",
+                    "doctors_id": [
+                      "string"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/patient_details/{id}": {
+      "get": {
+        "operationId": "UserController_get_patient_details_id",
+        "summary": "Gets patient details using that patient _id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "_id": "string",
+                    "firstName": "string",
+                    "lastName": "string",
+                    "email": "string@gmail.com",
+                    "doctors_id": [
+                      "string"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/add_note": {
+      "post": {
+        "operationId": "UserController_add_note",
+        "summary": "Adds a note doctor to a patient",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNotesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/get_notes/{patient_id}": {
+      "get": {
+        "operationId": "UserController_get_notes",
+        "summary": "Get all the notes for a patient written by a doctor",
+        "parameters": [
+          {
+            "name": "patient_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/user/update_note/{note_id}": {
+      "put": {
+        "operationId": "UserController_update_notes",
+        "summary": "Updates a note",
+        "parameters": [
+          {
+            "name": "note_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/articles/get_articles": {
+      "get": {
+        "operationId": "ArticlesController_get_atricles",
+        "summary": "gets all the article in a paginated responses",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "docs": [
+                      {
+                        "_id": "64478b044db26ae46c8d2389",
+                        "title": "string",
+                        "date": "2023-04-25T08:10:44.480Z",
+                        "content": "string",
+                        "__v": 0
+                      }
+                    ],
+                    "totalDocs": 1,
+                    "offset": 0,
+                    "limit": 10,
+                    "totalPages": 1,
+                    "page": 1,
+                    "pagingCounter": 1,
+                    "hasPrevPage": false,
+                    "hasNextPage": false,
+                    "prevPage": null,
+                    "nextPage": null
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Articles"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/articles/article/{article_id}": {
+      "get": {
+        "operationId": "ArticlesController_get_article",
+        "summary": "Gets a specific article using id",
+        "parameters": [
+          {
+            "name": "article_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Articles"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/articles/post": {
+      "patch": {
+        "operationId": "ArticlesController_post_article",
+        "summary": "Post an article",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateArticleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfull Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Created Article"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Articles"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Theraline endpoints",
+    "description": "",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "expoToken": {
+            "type": "string"
+          },
+          "birthday": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "password",
+          "gender",
+          "birthday"
+        ]
+      },
+      "AuthDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "expoToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "RefreshDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token"
+        ]
+      },
+      "CreateConvoDto": {
+        "type": "object",
+        "properties": {
+          "users_id": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "users_id"
+        ]
+      },
+      "CreateGroupDto": {
+        "type": "object",
+        "properties": {
+          "users_id": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "users_id",
+          "name"
+        ]
+      },
+      "SendMessageDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "CreateAppointmentDto": {
+        "type": "object",
+        "properties": {
+          "patient_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "start_date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "end_date": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "patient_id",
+          "title",
+          "start_date",
+          "end_date"
+        ]
+      },
+      "PaymentInfoDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount",
+          "status",
+          "method",
+          "date"
+        ]
+      },
+      "EditAmountDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount",
+          "status"
+        ]
+      },
+      "PaymentStatsDto": {
+        "type": "object",
+        "properties": {
+          "week": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          },
+          "all": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "week",
+          "month",
+          "all"
+        ]
+      },
+      "AppointmentStatsDto": {
+        "type": "object",
+        "properties": {
+          "week": {
+            "type": "object"
+          },
+          "month": {
+            "type": "object"
+          },
+          "year": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "week",
+          "month",
+          "year"
+        ]
+      },
+      "ClinicInfoDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "phone",
+          "location"
+        ]
+      },
+      "CreateDoctorDto": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "birthday": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "clinicInfo": {
+            "$ref": "#/components/schemas/ClinicInfoDto"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "password",
+          "gender",
+          "birthday",
+          "image",
+          "clinicInfo"
+        ]
+      },
+      "Appointment": {
+        "type": "object",
+        "properties": {}
+      },
+      "PatientInfo": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "nextAppointment": {
+            "$ref": "#/components/schemas/Appointment"
+          },
+          "lastAppointment": {
+            "$ref": "#/components/schemas/Appointment"
+          }
+        },
+        "required": [
+          "_id",
+          "firstName",
+          "lastName",
+          "email"
+        ]
+      },
+      "EditDoctoInfoDto": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "image",
+          "phone"
+        ]
+      },
+      "CreateNotesDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "body",
+          "user_id"
+        ]
+      },
+      "ArticleDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateArticleDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "content"
+        ]
+      }
+    }
+  }
+}

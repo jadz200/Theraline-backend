@@ -8,12 +8,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { ClinicInfoDto } from './clinicInfo.dto';
-
-export enum Gender {
-  MALE = 'MALE',
-  FEMALE = 'FEMALE',
-  OTHER = 'OTHER',
-}
+import { Gender } from '../../auth/schema';
 
 export class CreateDoctorDto {
   @ApiProperty()
@@ -36,10 +31,7 @@ export class CreateDoctorDto {
   @IsString()
   password: string;
 
-  @ApiProperty({
-    enum: Gender,
-    enumName: 'Gender',
-  })
+  @ApiProperty()
   @Allow()
   gender: Gender;
 

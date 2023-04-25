@@ -35,27 +35,25 @@ export class AppointmentService {
     if (!userFound || userFound.role.toString() !== 'PATIENT') {
       throw new BadRequestException('No patient with this id');
     }
-    const startDate = new Date(dto.start_date);
-    const endDate = new Date(dto.end_date);
+
     if (
-      startDate.toString() === 'Invalid Date' ||
-      endDate.toString() === 'Invalid Date'
+      dto.start_date.toString() === 'Invalid Date' ||
+      dto.end_date.toString() === 'Invalid Date'
     ) {
       throw new BadRequestException(
         'start_date and/or end_date are not a correct time',
       );
     }
-    if (startDate > endDate) {
+    if (dto.start_date > dto.end_date) {
       throw new BadRequestException('start_date cannot be after the end_date');
     }
     const appoinment = await this.appointmentModel.create({
       patient_id: dto.patient_id,
       title: dto.title,
-      start_date: startDate,
-      end_date: endDate,
+      start_date: dto.start_date,
+      end_date: dto.end_date,
       doctor_id,
       status: 'CREATED',
-      paymentInfo: dto.paymentInfo,
     });
     this.logger.log(`Appointment ${appoinment._id} created by ${doctor_id}`);
 

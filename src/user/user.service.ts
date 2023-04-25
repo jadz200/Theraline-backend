@@ -66,7 +66,7 @@ export class UserService {
     if (!doctor) {
       throw new NotFoundException('Doctor Not Found');
     }
-    const newimage = (await this.cloudinaryService.upload(dto.image)).url;
+    const newimage = (await this.cloudinaryService.uploadImage(dto.image)).url;
 
     await this.userModel.updateOne(
       { _id: doctorId },

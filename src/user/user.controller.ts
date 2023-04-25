@@ -20,7 +20,7 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import mongoose from 'mongoose';
-import { User } from 'src/auth/schema/user.schema';
+import { User } from '../auth/schema/user.schema';
 import {
   SwaggerForbiddenResponse,
   SwaggerResponseSuccessfulWithMessage,
@@ -61,7 +61,7 @@ export class UserController {
   async create_doctor(@Body() dto: CreateDoctorDto) {
     const dtoCopy = { ...dto };
     if (dto.image) {
-      dtoCopy.image = (await this.cloudinaryService.upload(dto.image)).url;
+      dtoCopy.image = (await this.cloudinaryService.uploadImage(dto.image)).url;
     }
     return this.userService.createDoctor(dtoCopy);
   }

@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Patch,
+  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -22,13 +23,14 @@ import { Roles } from '../common/decorators';
 import { RolesGuard } from '../common/guards';
 import {
   SwaggerForbiddenResponse,
+  SwaggerGetArticlesResp,
   SwaggerResponseSuccessfulWithMessage,
   SwaggerUnauthorizedResponse,
 } from '../common/swagger';
 import { ArticlesService } from './articles.service';
 import { ArticleDto } from './dto/article.dto';
-import { ArticleListDto } from './dto/articleList.dto';
 import { CreateArticleDto } from './dto/createArticle.dto';
+import { PaginationParams } from '../common/dto/paginationParams.dto';
 
 @ApiTags('Articles')
 @Controller('articles')
@@ -36,12 +38,14 @@ export class ArticlesController {
   constructor(private readonly articleService: ArticlesService) {}
 
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
-  @ApiOkResponse({ type: ArticleListDto })
+  @ApiOkResponse({ schema: { example: SwaggerGetArticlesResp } })
   @ApiOperation({ summary: 'gets all the article in a paginated responses' })
   @ApiBearerAuth()
   @Get('get_articles')
-  async get_atricles(): Promise<PaginateResult<ArticleDto>> {
-    return this.articleService.get_articles();
+  async get_atricles(
+    @Query() { page }: PaginationParams,
+  ): Promise<PaginateResult<ArticleDto>> {
+    return this.articleService.get_articles(page);
   }
 
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { PaymentMethod, PaymentStatus } from '../schema';
 
 export class PaymentInfoDto {
@@ -12,5 +13,6 @@ export class PaymentInfoDto {
   method: PaymentMethod;
 
   @ApiProperty()
-  date: string;
+  @Type(() => Date)
+  date: Date;
 }

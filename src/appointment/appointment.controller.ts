@@ -20,6 +20,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import mongoose, { PaginateResult } from 'mongoose';
+import { trasnformPipe } from 'src/common/pipes/validation.pipes';
 import { PaginationParams } from '../common/dto/paginationParams.dto';
 import { GetCurrentUserId } from '../common/decorators/get-current-user-id.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -59,17 +60,6 @@ export class AppointementController {
   @ApiOperation({ summary: 'Doctor creates appointment' })
   @ApiBody({
     type: CreateAppointmentDto,
-    examples: {
-      example1: {
-        value: {
-          title: 'Cool appointment',
-          patient_id: '1234',
-          start_date: '2023-11-07T12:30:00',
-          end_date: '2023-11-07T13:30:00',
-        },
-        summary: 'An example appointment request ',
-      },
-    },
   })
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
@@ -90,7 +80,7 @@ export class AppointementController {
       },
     },
   })
-  @UsePipes(ValidationPipe)
+  @UsePipes(trasnformPipe)
   async create_appointment(
     @Body() dto: CreateAppointmentDto,
     @GetCurrentUserId() doctorId: mongoose.Types.ObjectId,
@@ -216,7 +206,7 @@ export class AppointementController {
   @ApiOperation({
     summary: 'Marks the appointment completed and adds Payment Info',
   })
-  @UsePipes(ValidationPipe)
+  @UsePipes(trasnformPipe)
   async complete_appointment(
     @GetCurrentUserId() doctor_id,
     @Param('appointment_id') appointment_id: string,

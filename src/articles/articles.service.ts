@@ -14,10 +14,15 @@ export class ArticlesService {
     private readonly articleModel: PaginateModel<ArticleDocument>,
   ) {}
 
-  async get_articles(): Promise<PaginateResult<ArticleDto>> {
-    const resp: PaginateResult<ArticleDto> = await this.articleModel.paginate(
-      {},
-    );
+  async get_articles(page: number): Promise<PaginateResult<ArticleDto>> {
+    const options = {
+      page,
+      limit: 25,
+      sort: { createdAt: -1 },
+    };
+    const resp: PaginateResult<ArticleDto> = await this.articleModel.paginate({
+      options,
+    });
 
     this.logger.debug(`Fetched all of the articles`);
     return resp;

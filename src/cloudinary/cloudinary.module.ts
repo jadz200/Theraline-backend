@@ -3,10 +3,12 @@ import { v2 as cloudinary } from 'cloudinary';
 import { ConfigService } from '@nestjs/config';
 import { CloudinaryProvider } from './cloudinary.provider';
 import { CloudinaryService } from './cloudinary.service';
+import { UploadController } from './cloudinary.controller';
 
 @Module({
   providers: [CloudinaryProvider, CloudinaryService],
   exports: [CloudinaryProvider],
+  controllers: [UploadController],
 })
 export class CloudinaryModule {
   constructor(configService: ConfigService) {

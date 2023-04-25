@@ -105,7 +105,7 @@ export class GroupsController {
 
     const copyDto = { ...dto };
     if (dto.image) {
-      copyDto.image = (await this.cloudinaryService.upload(dto.image)).url;
+      copyDto.image = (await this.cloudinaryService.uploadImage(dto.image)).url;
     }
 
     return this.groupService.create_group(copyDto);

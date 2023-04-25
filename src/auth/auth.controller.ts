@@ -73,7 +73,7 @@ export class AuthController {
   async signupLocal(@Body() dto: CreateUserDto) {
     const dtoCopy = { ...dto };
     if (dto.image) {
-      dtoCopy.image = (await this.cloudinaryService.upload(dto.image)).url;
+      dtoCopy.image = (await this.cloudinaryService.uploadImage(dto.image)).url;
     }
     return this.authService.signupLocal(dtoCopy);
   }
