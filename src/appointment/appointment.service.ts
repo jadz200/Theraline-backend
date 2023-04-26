@@ -447,7 +447,10 @@ export class AppointmentService {
         dateKey = (appointment) =>
           appointment.start_date.toLocaleString('default', { weekday: 'long' });
       } else if (period.type === 'MONTH') {
-        dateKey = (appointment) => appointment.start_date.getDate();
+        dateKey = (appointment) =>
+          `Day ${appointment.start_date.toLocaleString('default', {
+            day: 'numeric',
+          })}`;
       } else {
         dateKey = (appointment) =>
           appointment.start_date.toLocaleString('default', { month: 'long' });
