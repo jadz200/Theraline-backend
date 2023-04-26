@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsObject, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 import { Appointment } from '../../appointment/schema';
 
 export class PatientInfo {
@@ -16,7 +17,7 @@ export class PatientInfo {
   lastName: string;
 
   @ApiProperty()
-  @IsString()
+  @IsEmail()
   email: string;
 
   @ApiPropertyOptional()
@@ -26,16 +27,16 @@ export class PatientInfo {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
+  @IsPhoneNumber()
   phone?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsObject()
+  @Type(() => Appointment)
   nextAppointment?: Appointment;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsObject()
+  @Type(() => Appointment)
   lastAppointment?: Appointment;
 }

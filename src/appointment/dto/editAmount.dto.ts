@@ -10,7 +10,10 @@ export class EditAmountDto {
   amount: number;
 
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({
+    enum: ['PENDING', 'AWAITING', 'PAID'],
+    enumName: 'PaymentStatus',
+  })
   @Type()
   status: PaymentStatus;
 }

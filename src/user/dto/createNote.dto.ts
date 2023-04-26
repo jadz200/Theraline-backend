@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsMongoId, IsString } from 'class-validator';
 
 export class CreateNotesDto {
   @ApiProperty()
@@ -11,6 +11,6 @@ export class CreateNotesDto {
   body: string;
 
   @ApiProperty()
-  @IsString()
+  @IsMongoId()
   user_id: string;
 }

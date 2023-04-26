@@ -2,11 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class AppointmentStatsDto {
   @ApiProperty()
-  week: { done: number; canceled: number };
+  week: { label: string[]; done: number; canceled: number };
 
   @ApiProperty()
-  month: { done: number; canceled: number };
+  month: { label: string[]; done: number; canceled: number };
 
   @ApiProperty()
-  year: { done: number; canceled: number };
+  year: { label: string[]; done: number; canceled: number };
 }

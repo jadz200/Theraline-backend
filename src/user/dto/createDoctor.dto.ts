@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsNotEmpty,
   IsOptional,
+  IsPhoneNumber,
   IsString,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -31,7 +32,10 @@ export class CreateDoctorDto {
   @IsString()
   password: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: ['MALE', 'FEMALE', 'OTHER'],
+    enumName: 'Gender',
+  })
   @Allow()
   gender: Gender;
 
@@ -44,8 +48,9 @@ export class CreateDoctorDto {
   @ApiProperty()
   image: string;
 
+  @ApiProperty()
   @IsNotEmpty()
-  @IsOptional()
+  @IsPhoneNumber()
   phone: string;
 
   @ApiProperty({

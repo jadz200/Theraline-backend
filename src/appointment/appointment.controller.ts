@@ -20,7 +20,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import mongoose, { PaginateResult } from 'mongoose';
-import { trasnformPipe } from 'src/common/pipes/validation.pipes';
+import { trasnformPipe } from '../common/pipes/validation.pipes';
 import { PaginationParams } from '../common/dto/paginationParams.dto';
 import { GetCurrentUserId } from '../common/decorators/get-current-user-id.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -44,6 +44,7 @@ import {
 import { Appointment } from './schema';
 import { PaymentStatsDto } from './dto/paymentStats.dto';
 import { AppointmentStatsDto } from './dto/appointmentsStats.dto';
+import { IsMongoId } from 'class-validator';
 
 @ApiTags('Appointment')
 @Controller('appointment')

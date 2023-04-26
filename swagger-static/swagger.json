@@ -2942,6 +2942,14 @@
       }
     },
     "schemas": {
+      "Gender": {
+        "type": "string",
+        "enum": [
+          "MALE",
+          "FEMALE",
+          "OTHER"
+        ]
+      },
       "CreateUserDto": {
         "type": "object",
         "properties": {
@@ -2964,7 +2972,7 @@
             "type": "string"
           },
           "gender": {
-            "type": "string"
+            "$ref": "#/components/schemas/Gender"
           },
           "expoToken": {
             "type": "string"
@@ -3086,6 +3094,22 @@
           "end_date"
         ]
       },
+      "PaymentStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "AWAITING",
+          "PAID"
+        ]
+      },
+      "PaymentMethod": {
+        "type": "string",
+        "enum": [
+          "CASH",
+          "CHECK",
+          "CREDIT CARD"
+        ]
+      },
       "PaymentInfoDto": {
         "type": "object",
         "properties": {
@@ -3093,10 +3117,10 @@
             "type": "number"
           },
           "status": {
-            "type": "string"
+            "$ref": "#/components/schemas/PaymentStatus"
           },
           "method": {
-            "type": "string"
+            "$ref": "#/components/schemas/PaymentMethod"
           },
           "date": {
             "format": "date-time",
@@ -3117,7 +3141,7 @@
             "type": "number"
           },
           "status": {
-            "type": "string"
+            "$ref": "#/components/schemas/PaymentStatus"
           }
         },
         "required": [
@@ -3198,13 +3222,16 @@
             "type": "string"
           },
           "gender": {
-            "type": "string"
+            "$ref": "#/components/schemas/Gender"
           },
           "birthday": {
             "format": "date-time",
             "type": "string"
           },
           "image": {
+            "type": "string"
+          },
+          "phone": {
             "type": "string"
           },
           "clinicInfo": {
@@ -3219,6 +3246,7 @@
           "gender",
           "birthday",
           "image",
+          "phone",
           "clinicInfo"
         ]
       },
