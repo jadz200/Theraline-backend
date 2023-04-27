@@ -154,17 +154,7 @@ export class UserController {
     return this.userService.get_all_patients();
   }
 
-  @ApiOkResponse({
-    schema: {
-      example: {
-        _id: 'string',
-        firstName: 'string',
-        lastName: 'string',
-        email: 'string@gmail.com',
-        doctors_id: ['string'],
-      },
-    },
-  })
+  @ApiOkResponse({ type: PatientDetail })
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @UseGuards(RolesGuard)
@@ -245,21 +235,5 @@ export class UserController {
     @Param('note_id') noteId: string,
   ) {
     return this.userService.update_note(doctorId, noteId);
-  }
-
-  @ApiForbiddenResponse(SwaggerForbiddenResponse)
-  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
-  // @ApiOkResponse({
-  // schema: {
-  // example: SwaggerGetMonthlyPaymentCountResp,
-  // },
-  // })
-  @ApiOperation({ summary: 'Gets the number of Appointments for a patient' })
-  @Roles('DOCTOR')
-  @UseGuards(RolesGuard)
-  @ApiBearerAuth()
-  @Get('/patient_appointment_count/:patient_id')
-  async getPatientAppointmentCount(@Param('patient_id') patientId: string) {
-    return this.userService.getPatientAppointmentCount(patientId);
   }
 }

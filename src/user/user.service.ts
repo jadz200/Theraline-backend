@@ -157,6 +157,9 @@ export class UserService {
         patient_id: user._id,
       },
     );
+    const patientAppointmentCount = await this.getPatientAppointmentCount(
+      user._id,
+    );
     const resp: PatientDetail = {
       _id: user._id.toString(),
       firstName: user.firstName,
@@ -168,6 +171,8 @@ export class UserService {
       birthday: user.birthday,
       groups: user.groups,
       doctors: doctorsId,
+      previous: patientAppointmentCount.previousAppoitnments,
+      next: patientAppointmentCount.nextAppointments,
     };
 
     return resp;
@@ -186,6 +191,9 @@ export class UserService {
     const filteredNotes: Notes[] = user.notes.filter(
       (note) => note.author === doctorId,
     );
+    const patientAppointmentCount = await this.getPatientAppointmentCount(
+      patientId,
+    );
     const resp: PatientDetail = {
       _id: user._id.toString(),
       firstName: user.firstName,
@@ -198,6 +206,8 @@ export class UserService {
       groups: user.groups,
       doctors: doctorsId,
       notes: filteredNotes,
+      previous: patientAppointmentCount.previousAppoitnments,
+      next: patientAppointmentCount.nextAppointments,
     };
 
     return resp;
@@ -266,7 +276,7 @@ export class UserService {
         .count(),
     ]);
 
-    return { previous: previousAppoitnments, next: nextAppointments };
+    return { previousAppoitnments, nextAppointments };
   }
 
   async find_by_email(email: string): Promise<User> {

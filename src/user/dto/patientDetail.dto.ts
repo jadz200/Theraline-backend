@@ -31,4 +31,10 @@ export class PatientDetail {
   doctors?: string[];
 
   notes?: Notes[];
+
+  @ApiProperty()
+  next: number;
+
+  @ApiProperty()
+  previous: number;
 }
