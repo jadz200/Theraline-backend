@@ -246,4 +246,20 @@ export class UserController {
   ) {
     return this.userService.update_note(doctorId, noteId);
   }
+
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
+  // @ApiOkResponse({
+  // schema: {
+  // example: SwaggerGetMonthlyPaymentCountResp,
+  // },
+  // })
+  @ApiOperation({ summary: 'Gets the number of Appointments for a patient' })
+  @Roles('DOCTOR')
+  @UseGuards(RolesGuard)
+  @ApiBearerAuth()
+  @Get('/patient_appointment_count/:patient_id')
+  async getPatientAppointmentCount(@Param('patient_id') patientId: string) {
+    return this.userService.getPatientAppointmentCount(patientId);
+  }
 }

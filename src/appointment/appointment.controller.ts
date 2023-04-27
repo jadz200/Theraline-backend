@@ -44,7 +44,6 @@ import {
 import { Appointment } from './schema';
 import { PaymentStatsDto } from './dto/paymentStats.dto';
 import { AppointmentStatsDto } from './dto/appointmentsStats.dto';
-import { IsMongoId } from 'class-validator';
 
 @ApiTags('Appointment')
 @Controller('appointment')

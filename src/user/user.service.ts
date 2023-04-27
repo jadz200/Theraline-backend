@@ -247,6 +247,28 @@ export class UserService {
     return { msg: 'note updated' };
   }
 
+  async getPatientAppointmentCount(patientId) {
+    const today = new Date();
+    const [previousAppoitnments, nextAppointments] = await Promise.all([
+      this.appointmentModel
+        .find({
+          patient_id: patientId,
+          start_date: { $lt: today },
+          status: 'DONE',
+        })
+        .count(),
+      this.appointmentModel
+        .find({
+          patient_id: patientId,
+          end_date: { $gt: today },
+          status: 'CONFIRMED',
+        })
+        .count(),
+    ]);
+
+    return { previous: previousAppoitnments, next: nextAppointments };
+  }
+
   async find_by_email(email: string): Promise<User> {
     return this.userModel.findOne({ email });
   }

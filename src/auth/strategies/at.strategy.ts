@@ -13,6 +13,7 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   validate(payload: JwtPayload) {
     return payload;
   }
