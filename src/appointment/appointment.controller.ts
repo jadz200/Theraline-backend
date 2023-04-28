@@ -44,6 +44,7 @@ import {
 import { Appointment } from './schema';
 import { PaymentStatsDto } from './dto/paymentStats.dto';
 import { AppointmentStatsDto } from './dto/appointmentsStats.dto';
+import { GetAppointmentDto } from './dto/getAppointmentsDto';
 
 @ApiTags('Appointment')
 @Controller('appointment')
@@ -222,9 +223,7 @@ export class AppointementController {
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)
   @ApiForbiddenResponse(SwaggerForbiddenResponse)
   @ApiOkResponse({
-    schema: {
-      example: SwaggerGetAppointmentResp,
-    },
+    type: GetAppointmentDto,
   })
   @UseGuards(RolesGuard)
   @Roles('DOCTOR')
@@ -236,7 +235,7 @@ export class AppointementController {
   async get_doctor_appointment(
     @GetCurrentUserId() doctor_id,
     @Query() { page }: PaginationParams,
-  ): Promise<PaginateResult<Appointment>> {
+  ): Promise<PaginateResult<GetAppointmentDto>> {
     return this.appointmentService.get_doctor_appointment(doctor_id, page);
   }
 

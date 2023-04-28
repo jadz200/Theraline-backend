@@ -1,16 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { IsEnum, IsNotEmpty, IsPositive } from 'class-validator';
 import { PaymentMethod, PaymentStatus } from '../schema';
-import { IsEnum } from 'class-validator';
 
 export class PaymentInfoDto {
   @ApiProperty()
+  @IsPositive()
   amount: number;
 
   @ApiProperty({
     enum: ['PENDING', 'AWAITING', 'PAID'],
     enumName: 'PaymentStatus',
   })
+  @IsEnum(['PENDING', 'AWAITING', 'PAID'])
   status: PaymentStatus;
 
   @ApiProperty({
@@ -21,6 +23,7 @@ export class PaymentInfoDto {
   method: PaymentMethod;
 
   @ApiProperty()
+  @IsNotEmpty()
   @Type(() => Date)
   date: Date;
 }

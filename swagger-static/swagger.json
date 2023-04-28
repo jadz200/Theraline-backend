@@ -1522,54 +1522,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "example": {
-                    "docs": [
-                      {
-                        "_id": "string",
-                        "patient_id": "string",
-                        "doctor_id": "string",
-                        "start_date": "2023-12-07T12:30:00.000Z",
-                        "end_date": "2023-12-07T12:50:00.000Z",
-                        "status": [
-                          "CREATED"
-                        ],
-                        "__v": 0
-                      },
-                      {
-                        "_id": "string",
-                        "patient_id": "string",
-                        "title": "Cool appointment",
-                        "doctor_id": "string",
-                        "start_date": "2023-11-07T10:30:00.000Z",
-                        "end_date": "2023-11-07T10:40:00.000Z",
-                        "status": [
-                          "CREATED"
-                        ],
-                        "__v": 0
-                      },
-                      {
-                        "_id": "string",
-                        "patient_id": "string",
-                        "title": "title",
-                        "doctor_id": "string",
-                        "start_date": "2023-11-07T10:30:00.000Z",
-                        "end_date": "2023-11-07T11:30:00.000Z",
-                        "status": [
-                          "CONFIRMED"
-                        ],
-                        "__v": 0
-                      }
-                    ],
-                    "totalDocs": 3,
-                    "limit": 25,
-                    "totalPages": 1,
-                    "page": 1,
-                    "pagingCounter": 1,
-                    "hasPrevPage": false,
-                    "hasNextPage": false,
-                    "prevPage": null,
-                    "nextPage": null
-                  }
+                  "$ref": "#/components/schemas/GetAppointmentDto"
                 }
               }
             }
@@ -2458,15 +2411,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "example": {
-                    "_id": "string",
-                    "firstName": "string",
-                    "lastName": "string",
-                    "email": "string@gmail.com",
-                    "doctors_id": [
-                      "string"
-                    ]
-                  }
+                  "$ref": "#/components/schemas/PatientDetail"
                 }
               }
             }
@@ -3134,6 +3079,77 @@
           "date"
         ]
       },
+      "AppointmentStatus": {
+        "type": "string",
+        "enum": [
+          "CREATED",
+          "CONFIRMED",
+          "CANCELED",
+          "DONE"
+        ]
+      },
+      "GetAppointmentDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "patient": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string"
+              },
+              "fullName": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "doctor": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string"
+              },
+              "fullName": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            }
+          },
+          "start_date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "end_date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AppointmentStatus"
+          },
+          "paymentInfo": {
+            "$ref": "#/components/schemas/PaymentInfoDto"
+          }
+        },
+        "required": [
+          "_id",
+          "patient",
+          "title",
+          "doctor",
+          "start_date",
+          "end_date",
+          "status"
+        ]
+      },
       "EditAmountDto": {
         "type": "object",
         "properties": {
@@ -3310,6 +3326,48 @@
           "lastName",
           "image",
           "phone"
+        ]
+      },
+      "PatientDetail": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "birthday": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "next": {
+            "type": "number"
+          },
+          "previous": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "gender",
+          "birthday",
+          "next",
+          "previous"
         ]
       },
       "CreateNotesDto": {

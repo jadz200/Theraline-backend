@@ -16,6 +16,7 @@ import {
 } from './dto/index';
 import { Appointment, AppointmentDocument } from './schema/index';
 import { getDaysInMonth } from '../common/util/getDaysInMonth';
+import { GetAppointmentDto } from './dto/getAppointmentsDto';
 
 @Injectable()
 export class AppointmentService {
@@ -276,16 +277,42 @@ export class AppointmentService {
   async get_doctor_appointment(
     doctor_id,
     page,
-  ): Promise<PaginateResult<Appointment>> {
+  ): Promise<PaginateResult<GetAppointmentDto>> {
     const options = {
       page,
       limit: 25,
       sort: { createdAt: -1 },
     };
     const resp = await this.appointmentModel.paginate({ doctor_id }, options);
+    const appointments: GetAppointmentDto[] = await Promise.all(
+      resp.docs.map(async (appointment) => {
+        const [patientInfo, doctorInfo] = await Promise.all([
+          await this.authService.getPatientProfile(appointment.patient_id),
+          await this.authService.getPatientProfile(appointment.patient_id),
+        ]);
+        return {
+          _id: appointment._id,
+          title: appointment.title,
+          doctor: {
+            _id: appointment.doctor_id,
+            fullName: `${doctorInfo.firstName} ${doctorInfo.lastName}`,
+            email: doctorInfo.email,
+          },
+          patient: {
+            _id: appointment.patient_id,
+            fullName: `${patientInfo.firstName} ${patientInfo.lastName}`,
+            email: patientInfo.email,
+          },
+          status: appointment.status,
+          start_date: appointment.start_date,
+          end_date: appointment.end_date,
+          paymentInfo: appointment.paymentInfo,
+        };
+      }),
+    );
     this.logger.log(`Appointments for ${doctor_id} retrieved`);
 
-    return resp;
+    return { ...resp, docs: appointments };
   }
 
   async get_payment_stats(doctorId) {
