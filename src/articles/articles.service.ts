@@ -24,19 +24,19 @@ export class ArticlesService {
       options,
     });
 
-    this.logger.debug(`Fetched all of the articles`);
+    this.logger.log(`Fetched all of the articles`);
     return resp;
   }
 
-  async get_article(article_id: string): Promise<ArticleDto> {
-    if (!mongoose.Types.ObjectId.isValid(article_id)) {
+  async get_article(articleId: string): Promise<ArticleDto> {
+    if (!mongoose.Types.ObjectId.isValid(articleId)) {
       throw new BadRequestException('Id is not in valid format');
     }
     const resp: ArticleDto = await this.articleModel.findOne({
-      _id: article_id,
+      _id: articleId,
     });
 
-    this.logger.debug(`Fetched article ${resp._id}`);
+    this.logger.log(`Fetched article ${resp._id}`);
     return resp;
   }
 
@@ -48,7 +48,7 @@ export class ArticlesService {
       date,
     });
 
-    this.logger.debug(`Posted article ${article._id}`);
+    this.logger.log(`Posted article ${article._id}`);
     return { msg: 'Created Article' };
   }
 }

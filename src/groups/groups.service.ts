@@ -20,13 +20,13 @@ export class GroupsService {
     private appointmentModel: Model<AppointmentDocument>,
   ) {}
 
-  async get_groups_id(user_id): Promise<string[]> {
-    const user = await this.userModel.findOne({ _id: user_id });
+  async get_groups_id(userId): Promise<string[]> {
+    const user = await this.userModel.findOne({ _id: userId });
     return user.groups;
   }
 
-  async get_all_chats(user_id): Promise<Chat[]> {
-    const user = await this.userModel.findOne({ _id: user_id });
+  async get_all_chats(userId): Promise<Chat[]> {
+    const user = await this.userModel.findOne({ _id: userId });
     const userGroups = user.groups;
     const resp = Promise.all(
       userGroups.map(async (group) => {
@@ -34,7 +34,7 @@ export class GroupsService {
         let fullName = temp.name;
         let { image } = temp;
         if (temp.groupType.toString() === 'PRIVATE') {
-          const otherId = temp.users.find((id) => id !== user_id);
+          const otherId = temp.users.find((id) => id !== userId);
           const temp2 = await this.userModel
             .findOne({ _id: otherId })
             .select('firstName lastName image');
@@ -74,7 +74,7 @@ export class GroupsService {
         });
       }),
     );
-    this.logger.log(`Got all chats for ${user_id}`);
+    this.logger.log(`Got all chats for ${userId}`);
     return resp;
   }
 
@@ -165,18 +165,18 @@ export class GroupsService {
     return { msg: 'Created Group' };
   }
 
-  async check_users(users_id): Promise<boolean> {
+  async check_users(usersId): Promise<boolean> {
     await Promise.all(
-      users_id.map(async (user_id) => {
-        if (!mongoose.Types.ObjectId.isValid(user_id)) {
+      usersId.map(async (userId) => {
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
           throw new BadRequestException('Id is not in valid format');
         }
 
-        const userMongooseId = new mongoose.Types.ObjectId(user_id);
+        const userMongooseId = new mongoose.Types.ObjectId(userId);
         const user = await this.userModel.exists({ _id: userMongooseId });
 
         if (!user) {
-          this.logger.log(`${user_id} does not exist`);
+          this.logger.log(`${userId} does not exist`);
           return false;
         }
         return true;
@@ -185,15 +185,15 @@ export class GroupsService {
     return true;
   }
 
-  async get_users_to_create_chat(user_id) {
-    const user = await this.userModel.findOne({ _id: user_id });
+  async get_users_to_create_chat(userId) {
+    const user = await this.userModel.findOne({ _id: userId });
     const groupIds = user.groups;
     const users = await Promise.all(
       groupIds.map((groupId) => this.groupModel.findOne({ _id: groupId })),
     )
       .then((groups) => groups.flatMap((group) => group.users))
       .then((contactIds) =>
-        contactIds.filter((contactId) => contactId !== user_id),
+        contactIds.filter((contactId) => contactId !== userId),
       )
       .then((contactIds) =>
         this.userModel
@@ -233,21 +233,21 @@ export class GroupsService {
   }
 
   async check_user_group_socket(
-    user_id: string,
-    group_id: string,
+    userId: string,
+    groupId: string,
   ): Promise<boolean> {
-    const group = await this.groupModel.findOne({ _id: group_id });
+    const group = await this.groupModel.findOne({ _id: groupId });
     if (group.users.length === 0) {
       return false;
     }
-    return group.users.includes(user_id);
+    return group.users.includes(userId);
   }
 
-  async check_group_valid(group_id: string) {
-    if (!mongoose.Types.ObjectId.isValid(group_id)) {
+  async check_group_valid(groupId: string) {
+    if (!mongoose.Types.ObjectId.isValid(groupId)) {
       throw new BadRequestException('Id is not in valid format');
     }
-    if (!(await this.groupModel.exists({ _id: group_id }))) {
+    if (!(await this.groupModel.exists({ _id: groupId }))) {
       throw new BadRequestException("Group doesn't exist");
     }
   }

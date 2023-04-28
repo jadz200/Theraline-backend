@@ -209,7 +209,7 @@ export class UserService {
       previous: patientAppointmentCount.previousAppoitnments,
       next: patientAppointmentCount.nextAppointments,
     };
-
+    this.logger.log(`Retrieved Patient detail of ${patientId}`);
     return resp;
   }
 

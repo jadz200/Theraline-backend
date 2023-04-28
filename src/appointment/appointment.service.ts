@@ -30,7 +30,7 @@ export class AppointmentService {
 
   async create_appointment(
     dto: CreateAppointmentDto,
-    doctor_id,
+    doctorId,
   ): Promise<{ msg: string }> {
     const userFound = await this.authService.findById(dto.patient_id);
 
@@ -54,24 +54,24 @@ export class AppointmentService {
       title: dto.title,
       start_date: dto.start_date,
       end_date: dto.end_date,
-      doctor_id,
+      doctor_id: doctorId,
       status: 'CREATED',
     });
-    this.logger.log(`Appointment ${appoinment._id} created by ${doctor_id}`);
+    this.logger.log(`Appointment ${appoinment._id} created by ${doctorId}`);
 
     return { msg: 'Created Appointment' };
   }
 
   async confirm_appointment(
-    appointment_id: string,
-    patient_id,
+    appointmentId: string,
+    patientId,
   ): Promise<{ msg: string }> {
-    if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
+    if (!mongoose.Types.ObjectId.isValid(appointmentId)) {
       throw new BadRequestException('Id is not in valid format');
     }
     const appointment: Appointment = await this.appointmentModel.findOne({
-      _id: appointment_id,
-      patient_id,
+      _id: appointmentId,
+      patien_id: patientId,
     });
     if (!appointment) {
       throw new BadRequestException('No appointment for this patient');
@@ -83,30 +83,30 @@ export class AppointmentService {
     }
 
     await this.appointmentModel.findByIdAndUpdate(
-      { _id: appointment_id },
+      { _id: appointmentId },
       { status: 'CONFIRMED' },
     );
-    this.logger.log(`Appointment ${appointment_id} confirmed by ${patient_id}`);
+    this.logger.log(`Appointment ${appointmentId} confirmed by ${patientId}`);
 
     return { msg: 'Appointment confirmed' };
   }
 
   async cancel_appointment(
-    appointment_id: string,
-    user_id,
+    appointmentId: string,
+    userId,
   ): Promise<{ msg: string }> {
-    if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
+    if (!mongoose.Types.ObjectId.isValid(appointmentId)) {
       throw new BadRequestException('Id is not in valid format');
     }
     const appointment: Appointment = await this.appointmentModel.findOne({
       $or: [
         {
-          _id: appointment_id,
-          patient_id: user_id,
+          _id: appointmentId,
+          patient_id: userId,
         },
         {
-          _id: appointment_id,
-          doctor_id: user_id,
+          _id: appointmentId,
+          doctor_id: userId,
         },
       ],
     });
@@ -123,25 +123,25 @@ export class AppointmentService {
     }
 
     await this.appointmentModel.findByIdAndUpdate(
-      { _id: appointment_id },
+      { _id: appointmentId },
       { status: 'CANCELED' },
     );
-    this.logger.log(`Appointment ${appointment_id} canceled by ${user_id}`);
+    this.logger.log(`Appointment ${appointmentId} canceled by ${userId}`);
 
     return { msg: 'Appointment canceled' };
   }
 
   async complete_appointment(
-    doctor_id: string,
-    appointment_id: string,
+    doctorId: string,
+    appoinmentId: string,
     dto: PaymentInfoDto,
   ): Promise<{ msg: string }> {
-    if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
+    if (!mongoose.Types.ObjectId.isValid(appoinmentId)) {
       throw new BadRequestException('Id is not in valid format');
     }
     const appointment: Appointment = await this.appointmentModel.findOne({
-      _id: appointment_id,
-      doctor_id,
+      _id: appoinmentId,
+      doctor_id: doctorId,
     });
     if (!appointment) {
       throw new BadRequestException('No appointment for this doctor');
@@ -157,7 +157,7 @@ export class AppointmentService {
     }
 
     await this.appointmentModel.findByIdAndUpdate(
-      { _id: appointment_id },
+      { _id: appoinmentId },
       { status: 'DONE', paymentInfo: dto },
     );
 
@@ -165,13 +165,13 @@ export class AppointmentService {
     return { msg: 'Appointment complete with payment info' };
   }
 
-  async confirm_payment(appointment_id, doctor_id): Promise<{ msg: string }> {
-    if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
+  async confirm_payment(appoinmentId, doctorId): Promise<{ msg: string }> {
+    if (!mongoose.Types.ObjectId.isValid(appoinmentId)) {
       throw new BadRequestException('Id is not in valid format');
     }
     const appointment: Appointment = await this.appointmentModel.findOne({
-      _id: appointment_id,
-      doctor_id,
+      _id: appoinmentId,
+      doctor_id: doctorId,
     });
     if (!appointment) {
       throw new NotFoundException('Appointment Not Found');
@@ -193,7 +193,7 @@ export class AppointmentService {
   }
 
   async get_all_paymentInfo(
-    doctor_id,
+    doctorId,
     page,
   ): Promise<PaginateResult<GetpaymentInfoDto>> {
     const options = {
@@ -204,7 +204,7 @@ export class AppointmentService {
     };
     const paymentInfo: PaginateResult<GetpaymentInfoDto> =
       await this.appointmentModel.paginate(
-        { doctor_id, status: 'DONE' },
+        { doctor_id: doctorId, status: 'DONE' },
         options,
       );
     const resp = await Promise.all(
@@ -225,6 +225,7 @@ export class AppointmentService {
       }),
     );
 
+    this.logger.log(`Payment Info retrieved fro ${doctorId}`);
     return {
       ...paymentInfo,
       docs: resp,
@@ -232,16 +233,16 @@ export class AppointmentService {
   }
 
   async edit_payment_info(
-    appointment_id,
-    doctor_id,
+    appointmentId,
+    doctorId,
     dto: EditAmountDto,
   ): Promise<{ msg: string }> {
-    if (!mongoose.Types.ObjectId.isValid(appointment_id)) {
+    if (!mongoose.Types.ObjectId.isValid(appointmentId)) {
       throw new BadRequestException('Id is not in valid format');
     }
     const appointment: Appointment = await this.appointmentModel.findOne({
-      _id: appointment_id,
-      doctor_id,
+      _id: appointmentId,
+      doctor_id: doctorId,
     });
     if (!appointment) {
       throw new NotFoundException('Appointment Not Found');
@@ -259,7 +260,7 @@ export class AppointmentService {
   }
 
   async get_patient_appointment(
-    patient_id,
+    patientId,
     page,
   ): Promise<PaginateResult<Appointment>> {
     const options = {
@@ -268,14 +269,14 @@ export class AppointmentService {
       sort: { createdAt: -1 },
     };
     const resp: PaginateResult<Appointment> =
-      await this.appointmentModel.paginate({ patient_id }, options);
-    this.logger.log(`Appointments for ${patient_id} retrieved`);
+      await this.appointmentModel.paginate({ patient_id: patientId }, options);
+    this.logger.log(`Appointments for ${patientId} retrieved`);
 
     return resp;
   }
 
   async get_doctor_appointment(
-    doctor_id,
+    doctorId,
     page,
   ): Promise<PaginateResult<GetAppointmentDto>> {
     const options = {
@@ -283,7 +284,10 @@ export class AppointmentService {
       limit: 25,
       sort: { createdAt: -1 },
     };
-    const resp = await this.appointmentModel.paginate({ doctor_id }, options);
+    const resp = await this.appointmentModel.paginate(
+      { doctor_id: doctorId },
+      options,
+    );
     const appointments: GetAppointmentDto[] = await Promise.all(
       resp.docs.map(async (appointment) => {
         const [patientInfo, doctorInfo] = await Promise.all([
@@ -310,7 +314,7 @@ export class AppointmentService {
         };
       }),
     );
-    this.logger.log(`Appointments for ${doctor_id} retrieved`);
+    this.logger.log(`Appointments for ${doctorId} retrieved`);
 
     return { ...resp, docs: appointments };
   }
@@ -388,6 +392,7 @@ export class AppointmentService {
       (sum, appoinment) => sum + appoinment.paymentInfo.amount,
       0,
     );
+    this.logger.log(`Got Payment amount for ${doctorId}`);
 
     return { week: weeklyAmount, month: monthlyAmount, all: allAmount };
   }
@@ -520,6 +525,7 @@ export class AppointmentService {
       yearlyAppointmentsCanceled,
       { type: 'YEAR' },
     );
+    this.logger.log(`Got Appointment Bar Chart for ${doctorId}`);
 
     return {
       week: {
@@ -605,6 +611,7 @@ export class AppointmentService {
       .sort({ start_date: 1 });
 
     const payments = divideAppointmentsByPeriod(appointments);
+    this.logger.log(`Got Monthly Payment Count Bar Chart for ${doctorId}`);
     return payments;
   }
 }
