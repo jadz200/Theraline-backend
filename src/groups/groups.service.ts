@@ -41,11 +41,10 @@ export class GroupsService {
           fullName = `${temp2.firstName} ${temp2.lastName}`;
           image = temp2.image;
         }
-        const latestMessagePromise = this.messageModel.findOne(
-          { group_id: temp._id },
-          {},
-          { created_at: -1 },
-        );
+        const latestMessagePromise = this.messageModel
+          .findOne({ group_id: temp._id })
+          .sort({ send_at: -1 })
+          .limit(1);
         return Promise.all([latestMessagePromise]).then(([latestMessage]) => {
           let chat;
           if (latestMessage) {
