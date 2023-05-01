@@ -53,6 +53,7 @@ export class GroupsService {
               name: fullName,
               groupType: temp.groupType,
               groupImage: image,
+              created_at: temp.created_at,
               latestMessage: {
                 _id: latestMessage._id,
                 send_at: latestMessage.send_at,
@@ -66,6 +67,7 @@ export class GroupsService {
               name: fullName,
               groupImage: image,
               groupType: temp.groupType,
+              created_at: temp.created_at,
               latestMessage: null,
             };
           }
@@ -74,6 +76,23 @@ export class GroupsService {
       }),
     );
     this.logger.log(`Got all chats for ${userId}`);
+    (await resp).sort(function (a, b) {
+      // First, handle pinned chats
+
+      // If both have same pinned and unread, compare by 'send_at' within 'latestMessage'
+      if (a.latestMessage && b.latestMessage) {
+        if (a.latestMessage.send_at < b.latestMessage.send_at) {
+          return 1; // sort by most recent message timestamp
+          // eslint-disable-next-line no-else-return
+        } else if (a.latestMessage.send_at > b.latestMessage.send_at) {
+          return -1;
+        }
+      }
+
+      // If both 'created_at', 'send_at' and 'name' are equal, return 0
+      return 0;
+    });
+
     return resp;
   }
 
