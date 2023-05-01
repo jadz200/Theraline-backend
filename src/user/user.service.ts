@@ -98,6 +98,7 @@ export class UserService {
   }
 
   async getPatientList(id: string): Promise<PatientInfo[]> {
+    const today = new Date();
     const patientIds = await this.appointmentModel.distinct('patient_id', {
       doctor_id: id,
     });
@@ -106,33 +107,33 @@ export class UserService {
         const patient = await this.userModel
           .findOne({ _id: patient_id })
           .select('_id firstName lastName email image phone');
+        const [previousAppoitnment, nextAppointment] = await Promise.all([
+          this.appointmentModel
+            .findOne({
+              patient_id: patient_id,
+              status: 'DONE',
+              start_date: { $lte: today },
+            })
+            .select('start_date'),
+          this.appointmentModel
+            .findOne({
+              patient_id: patient_id,
+              status: { $in: ['CREATED', 'CONFIRMED'] },
+              start_date: { $gte: today },
+            })
+            .select('start_date'),
+        ]);
 
-        const latestAppoinments = await this.appointmentModel
-          .find({ patient_id })
-          .sort({ start_date: -1 })
-          .limit(2);
-        let patientInfo: PatientInfo;
-        if (latestAppoinments[0].status === 'DONE') {
-          patientInfo = {
-            _id: patient._id,
-            firstName: patient.firstName,
-            lastName: patient.lastName,
-            email: patient.email,
-            image: patient.image,
-            phone: patient.phone,
-            lastAppointment: latestAppoinments[0],
-          };
-        } else {
-          patientInfo = {
-            _id: patient._id,
-            firstName: patient.firstName,
-            lastName: patient.lastName,
-            email: patient.email,
-            image: patient.image,
-            nextAppointment: latestAppoinments[0],
-            lastAppointment: latestAppoinments[1],
-          };
-        }
+        const patientInfo: PatientInfo = {
+          _id: patient._id,
+          firstName: patient.firstName,
+          lastName: patient.lastName,
+          email: patient.email,
+          image: patient.image,
+          nextAppointment: previousAppoitnment,
+          lastAppointment: nextAppointment,
+        };
+
         return patientInfo;
       }),
     );
