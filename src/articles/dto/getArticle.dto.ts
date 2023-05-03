@@ -5,7 +5,7 @@ export class GetArticleDto {
 
   title: string;
 
-  date: string | Date;
+  date: Date;
 
   content: string;
 

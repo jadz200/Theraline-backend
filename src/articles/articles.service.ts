@@ -30,7 +30,7 @@ export class ArticlesService {
       resp.docs.map(async (article) => {
         const author = await this.userModel
           .findOne({ _id: article.author_id })
-          .select('fullName image');
+          .select('firstName lastName image');
         return {
           _id: article._id,
           title: article.title,
