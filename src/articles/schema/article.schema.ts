@@ -20,6 +20,9 @@ export class Article {
 
   @Prop({ required: true })
   content: string;
+
+  @Prop({ required: true })
+  author_id: string;
 }
 
 export const ArticleSchema =

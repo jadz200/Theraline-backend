@@ -103,21 +103,21 @@ export class UserService {
       doctor_id: id,
     });
     const patientList: PatientInfo[] = await Promise.all(
-      patientIds.map(async (patient_id) => {
+      patientIds.map(async (patientId) => {
         const patient = await this.userModel
-          .findOne({ _id: patient_id })
+          .findOne({ _id: patientId })
           .select('_id firstName lastName email image phone');
         const [previousAppoitnment, nextAppointment] = await Promise.all([
           this.appointmentModel
             .findOne({
-              patient_id: patient_id,
+              patient_id: patientId,
               status: 'DONE',
               start_date: { $lte: today },
             })
             .select('start_date'),
           this.appointmentModel
             .findOne({
-              patient_id: patient_id,
+              patient_id: patientId,
               status: { $in: ['CREATED', 'CONFIRMED'] },
               start_date: { $gte: today },
             })

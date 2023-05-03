@@ -19,7 +19,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { PaginateResult } from 'mongoose';
-import { Roles } from '../common/decorators';
+import { GetCurrentUserId, Roles } from '../common/decorators';
 import { RolesGuard } from '../common/guards';
 import {
   SwaggerForbiddenResponse,
@@ -31,6 +31,7 @@ import { ArticlesService } from './articles.service';
 import { ArticleDto } from './dto/article.dto';
 import { CreateArticleDto } from './dto/createArticle.dto';
 import { PaginationParams } from '../common/dto/paginationParams.dto';
+import { GetArticleDto } from './dto/getArticle.dto';
 
 @ApiTags('Articles')
 @Controller('articles')
@@ -44,7 +45,7 @@ export class ArticlesController {
   @Get('get_articles')
   async get_atricles(
     @Query() { page }: PaginationParams,
-  ): Promise<PaginateResult<ArticleDto>> {
+  ): Promise<PaginateResult<GetArticleDto>> {
     return this.articleService.get_articles(page);
   }
 
@@ -66,7 +67,10 @@ export class ArticlesController {
   @Roles('DOCTOR')
   @ApiBearerAuth()
   @Post('post')
-  async post_article(@Body() dto: CreateArticleDto): Promise<{ msg: string }> {
-    return this.articleService.post_article(dto);
+  async post_article(
+    @Body() dto: CreateArticleDto,
+    @GetCurrentUserId() doctorId,
+  ): Promise<{ msg: string }> {
+    return this.articleService.post_article(dto, doctorId);
   }
 }

@@ -276,7 +276,7 @@ export class AppointmentService {
   }
 
   async get_doctor_appointment(
-    doctorId,
+    userId,
     page,
   ): Promise<PaginateResult<GetAppointmentDto>> {
     const options = {
@@ -285,7 +285,7 @@ export class AppointmentService {
       sort: { createdAt: -1 },
     };
     const resp = await this.appointmentModel.paginate(
-      { doctor_id: doctorId },
+      { $or: [{ doctor_id: userId }, { patient_id: userId }] },
       options,
     );
     const appointments: GetAppointmentDto[] = await Promise.all(
@@ -314,7 +314,7 @@ export class AppointmentService {
         };
       }),
     );
-    this.logger.log(`Appointments for ${doctorId} retrieved`);
+    this.logger.log(`Appointments for ${userId} retrieved`);
 
     return { ...resp, docs: appointments };
   }

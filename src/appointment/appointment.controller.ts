@@ -226,17 +226,17 @@ export class AppointementController {
     type: GetAppointmentDto,
   })
   @UseGuards(RolesGuard)
-  @Roles('DOCTOR')
+  @Roles('DOCTOR', 'PATIENT')
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Gets all the appointment for a doctor',
   })
   @Get('doctor/appointment')
   async get_doctor_appointment(
-    @GetCurrentUserId() doctor_id,
+    @GetCurrentUserId() userId,
     @Query() { page }: PaginationParams,
   ): Promise<PaginateResult<GetAppointmentDto>> {
-    return this.appointmentService.get_doctor_appointment(doctor_id, page);
+    return this.appointmentService.get_doctor_appointment(userId, page);
   }
 
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)

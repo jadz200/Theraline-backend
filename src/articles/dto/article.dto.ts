@@ -8,4 +8,6 @@ export class ArticleDto {
   date: string | Date;
 
   content: string;
+
+  author_id: string;
 }

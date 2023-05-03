@@ -5,6 +5,7 @@ import { AuthModule } from '../auth/auth.module';
 import { ArticlesService } from './articles.service';
 import { ArticlesController } from './articles.controller';
 import { Article, ArticleSchema } from './schema/article.schema';
+import { User, UserSchema } from '../auth/schema/user.schema';
 
 @Module({
   imports: [
@@ -14,6 +15,10 @@ import { Article, ArticleSchema } from './schema/article.schema';
       {
         name: Article.name,
         schema: ArticleSchema,
+      },
+      {
+        name: User.name,
+        schema: UserSchema,
       },
     ]),
   ],

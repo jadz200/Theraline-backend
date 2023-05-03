@@ -1,9 +1,11 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { PaginateModel, PaginateResult } from 'mongoose';
+import mongoose, { Model, PaginateModel, PaginateResult } from 'mongoose';
+import { User, UserDocument } from '../auth/schema/user.schema';
 import { ArticleDto } from './dto/article.dto';
 import { CreateArticleDto } from './dto/createArticle.dto';
 import { Article, ArticleDocument } from './schema/article.schema';
+import { GetArticleDto } from './dto/getArticle.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -12,20 +14,39 @@ export class ArticlesService {
   constructor(
     @InjectModel(Article.name)
     private readonly articleModel: PaginateModel<ArticleDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  async get_articles(page: number): Promise<PaginateResult<ArticleDto>> {
+  async get_articles(page: number): Promise<PaginateResult<GetArticleDto>> {
     const options = {
       page,
       limit: 25,
       sort: { createdAt: -1 },
     };
-    const resp: PaginateResult<ArticleDto> = await this.articleModel.paginate({
+    const resp: PaginateResult<Article> = await this.articleModel.paginate({
       options,
     });
 
+    const articles: GetArticleDto[] = await Promise.all(
+      resp.docs.map(async (article) => {
+        const author = this.userModel
+          .findOne({ _id: article.author_id })
+          .select('fullName image');
+        return {
+          _id: article._id,
+          title: article.title,
+          date: article.date,
+          content: article.content,
+          author: {
+            name: (await author).fullName,
+            image: (await author).image,
+          },
+        };
+      }),
+    );
+
     this.logger.log(`Fetched all of the articles`);
-    return resp;
+    return { ...resp, docs: articles };
   }
 
   async get_article(articleId: string): Promise<ArticleDto> {
@@ -40,11 +61,15 @@ export class ArticlesService {
     return resp;
   }
 
-  async post_article(dto: CreateArticleDto): Promise<{ msg: string }> {
+  async post_article(
+    dto: CreateArticleDto,
+    doctorId,
+  ): Promise<{ msg: string }> {
     const date = Date.now();
     const article: Article = await this.articleModel.create({
       title: dto.title,
       content: dto.content,
+      author_id: doctorId,
       date,
     });
 
