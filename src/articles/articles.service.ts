@@ -26,10 +26,9 @@ export class ArticlesService {
     const resp: PaginateResult<Article> = await this.articleModel.paginate({
       options,
     });
-
     const articles: GetArticleDto[] = await Promise.all(
       resp.docs.map(async (article) => {
-        const author = this.userModel
+        const author = await this.userModel
           .findOne({ _id: article.author_id })
           .select('fullName image');
         return {
@@ -38,8 +37,8 @@ export class ArticlesService {
           date: article.date,
           content: article.content,
           author: {
-            name: (await author).fullName,
-            image: (await author).image,
+            name: author.fullName,
+            image: author.image,
           },
         };
       }),
