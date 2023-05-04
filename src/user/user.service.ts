@@ -215,15 +215,17 @@ export class UserService {
   }
 
   async add_note(doctorId, dto: CreateNotesDto) {
+    const now = new Date();
     if (!mongoose.Types.ObjectId.isValid(doctorId)) {
       throw new BadRequestException('Id is not in valid format');
     }
     const user: User = await this.userModel.findOne({ _id: dto.user_id });
-    const note = {
+    const note: Notes = {
       _id: new mongoose.Types.ObjectId(),
       title: dto.title,
       body: dto.body,
       author: doctorId,
+      created_at: now,
     };
     await this.userModel.updateOne(
       { _id: user._id },
@@ -241,20 +243,38 @@ export class UserService {
     const filteredNotes = user.notes
       .filter((note) => note.author === doctorId)
       .map((note) => {
-        return { _id: note._id, title: note.title, body: note.body };
+        return {
+          _id: note._id,
+          title: note.title,
+          body: note.body,
+          created_at: note.created_at,
+        };
       });
+
+    this.logger.log(`Retrieved all notes of ${patientId} for ${doctorId} `);
+
     return filteredNotes;
   }
 
-  async update_note(doctorId, notesId) {
+  async update_note(notesId, body) {
     if (!mongoose.Types.ObjectId.isValid(notesId)) {
       throw new BadRequestException('Id is not in valid format');
     }
-    const note = await this.userModel.findOne({
-      notes: { $in: [notesId] },
-    });
-    console.log(note);
+    const id = new mongoose.Types.ObjectId(notesId);
 
+    const note = await this.userModel.findOneAndUpdate(
+      {
+        'notes._id': id,
+      },
+      {
+        $set: { 'notes.$.body': body },
+      },
+    );
+    if (!note) {
+      throw new BadRequestException('No note with this id');
+    }
+
+    this.logger.log(`Updated note ${notesId}`);
     return { msg: 'note updated' };
   }
 

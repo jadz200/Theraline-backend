@@ -13,4 +13,7 @@ export class Notes {
 
   @Prop()
   body: string;
+
+  @Prop()
+  created_at: Date;
 }

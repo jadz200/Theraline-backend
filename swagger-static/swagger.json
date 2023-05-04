@@ -2646,6 +2646,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditNotesDto"
+              }
+            }
+          }
+        },
         "responses": {
           "401": {
             "description": "Unauthorized",
@@ -3387,6 +3397,17 @@
           "title",
           "body",
           "user_id"
+        ]
+      },
+      "EditNotesDto": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "body"
         ]
       },
       "ArticleDto": {

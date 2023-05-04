@@ -36,6 +36,7 @@ import {
   PatientInfo,
   PatientDetail,
   CreateNotesDto,
+  EditNotesDto,
 } from './dto';
 import { ClinicInfoDto } from './dto/clinicInfo.dto';
 
@@ -231,9 +232,9 @@ export class UserController {
   @ApiBearerAuth()
   @Put('update_note/:note_id')
   async update_notes(
-    @GetCurrentUserId() doctorId,
     @Param('note_id') noteId: string,
+    @Body() dto: EditNotesDto,
   ) {
-    return this.userService.update_note(doctorId, noteId);
+    return this.userService.update_note(noteId, dto.body);
   }
 }
