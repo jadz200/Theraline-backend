@@ -539,7 +539,7 @@ export class AppointmentService {
           'Sunday',
         ],
         done: appointmentsByDayOfWeekDone,
-        canceled: appointmentsByDayOfWeekCancelled,
+        cancelled: appointmentsByDayOfWeekCancelled,
       },
       month: {
         label: getDaysInMonth(
@@ -547,7 +547,7 @@ export class AppointmentService {
           currentDate.getMonth() + 1,
         ),
         done: appointmentsByDayOfMonthDone,
-        canceled: appointmentsByDayOfMonthCancelled,
+        cancelled: appointmentsByDayOfMonthCancelled,
       },
       year: {
         label: [
@@ -565,7 +565,7 @@ export class AppointmentService {
           'December',
         ],
         done: appointmentsByMonthOfYearDone,
-        canceled: appointmentsByMonthOfYearCancelled,
+        cancelled: appointmentsByMonthOfYearCancelled,
       },
     };
   }
