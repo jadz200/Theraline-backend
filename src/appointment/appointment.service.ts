@@ -124,11 +124,11 @@ export class AppointmentService {
 
     await this.appointmentModel.findByIdAndUpdate(
       { _id: appointmentId },
-      { status: 'CANCELED' },
+      { status: 'CANCELLED' },
     );
-    this.logger.log(`Appointment ${appointmentId} canceled by ${userId}`);
+    this.logger.log(`Appointment ${appointmentId} cancelled by ${userId}`);
 
-    return { msg: 'Appointment canceled' };
+    return { msg: 'Appointment cancelled' };
   }
 
   async complete_appointment(
@@ -462,13 +462,13 @@ export class AppointmentService {
     ]);
 
     const [
-      monthlyAppointmentsCanceled,
-      weeklyAppointmentsCanceled,
-      yearlyAppointmentsCanceled,
+      monthlyAppointmentsCancelled,
+      weeklyAppointmentsCancelled,
+      yearlyAppointmentsCancelled,
     ] = await Promise.all([
-      getAppointmentsByStatus('CANCELED', startOfMonth, endOfMonth),
-      getAppointmentsByStatus('CANCELED', startOfWeek, endOfWeek),
-      getAppointmentsByStatus('CANCELED', startOfYear, endOfYear),
+      getAppointmentsByStatus('CANCELLED', startOfMonth, endOfMonth),
+      getAppointmentsByStatus('CANCELLED', startOfWeek, endOfWeek),
+      getAppointmentsByStatus('CANCELLED', startOfYear, endOfYear),
     ]);
 
     const divideAppointmentsByPeriod = (appointments, period) => {
@@ -502,8 +502,8 @@ export class AppointmentService {
       weeklyAppointmentsDone,
       { type: 'WEEK' },
     );
-    const appointmentsByDayOfWeekCanceled = divideAppointmentsByPeriod(
-      weeklyAppointmentsCanceled,
+    const appointmentsByDayOfWeekCancelled = divideAppointmentsByPeriod(
+      weeklyAppointmentsCancelled,
       { type: 'WEEK' },
     );
 
@@ -511,8 +511,8 @@ export class AppointmentService {
       monthlyAppointmentsDone,
       { type: 'MONTH' },
     );
-    const appointmentsByDayOfMonthCanceled = divideAppointmentsByPeriod(
-      monthlyAppointmentsCanceled,
+    const appointmentsByDayOfMonthCancelled = divideAppointmentsByPeriod(
+      monthlyAppointmentsCancelled,
       { type: 'MONTH' },
     );
 
@@ -521,8 +521,8 @@ export class AppointmentService {
       { type: 'YEAR' },
     );
 
-    const appointmentsByMonthOfYearCanceled = divideAppointmentsByPeriod(
-      yearlyAppointmentsCanceled,
+    const appointmentsByMonthOfYearCancelled = divideAppointmentsByPeriod(
+      yearlyAppointmentsCancelled,
       { type: 'YEAR' },
     );
     this.logger.log(`Got Appointment Bar Chart for ${doctorId}`);
@@ -539,7 +539,7 @@ export class AppointmentService {
           'Sunday',
         ],
         done: appointmentsByDayOfWeekDone,
-        canceled: appointmentsByDayOfWeekCanceled,
+        canceled: appointmentsByDayOfWeekCancelled,
       },
       month: {
         label: getDaysInMonth(
@@ -547,7 +547,7 @@ export class AppointmentService {
           currentDate.getMonth() + 1,
         ),
         done: appointmentsByDayOfMonthDone,
-        canceled: appointmentsByDayOfMonthCanceled,
+        canceled: appointmentsByDayOfMonthCancelled,
       },
       year: {
         label: [
@@ -565,7 +565,7 @@ export class AppointmentService {
           'December',
         ],
         done: appointmentsByMonthOfYearDone,
-        canceled: appointmentsByMonthOfYearCanceled,
+        canceled: appointmentsByMonthOfYearCancelled,
       },
     };
   }
