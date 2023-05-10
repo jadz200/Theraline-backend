@@ -15,6 +15,7 @@ import { SocketModule } from './socket/socket.module';
 import { UserModule } from './user/user.module';
 import { ArticlesModule } from './articles/articles.module';
 import { AtGuard } from './common/guards';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { AtGuard } from './common/guards';
     SocketModule,
     UserModule,
     ArticlesModule,
+    EmailModule,
   ],
   providers: [
     {

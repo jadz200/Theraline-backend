@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { PaginateModel, PaginateResult } from 'mongoose';
+import ical, { ICalCalendar } from 'ical-generator';
 import { User } from '../auth/schema/user.schema';
 import { AuthService } from '../auth/auth.service';
 import {
@@ -17,6 +18,7 @@ import {
 import { Appointment, AppointmentDocument } from './schema/index';
 import { getDaysInMonth } from '../common/util/getDaysInMonth';
 import { GetAppointmentDto } from './dto/getAppointmentsDto';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class AppointmentService {
@@ -26,6 +28,7 @@ export class AppointmentService {
     @InjectModel(Appointment.name)
     private appointmentModel: PaginateModel<AppointmentDocument>,
     private readonly authService: AuthService,
+    private readonly emailService: EmailService,
   ) {}
 
   async create_appointment(
@@ -37,7 +40,6 @@ export class AppointmentService {
     if (!userFound || userFound.role.toString() !== 'PATIENT') {
       throw new BadRequestException('No patient with this id');
     }
-
     if (
       dto.start_date.toString() === 'Invalid Date' ||
       dto.end_date.toString() === 'Invalid Date'
@@ -49,6 +51,7 @@ export class AppointmentService {
     if (dto.start_date > dto.end_date) {
       throw new BadRequestException('start_date cannot be after the end_date');
     }
+
     const appoinment = await this.appointmentModel.create({
       patient_id: dto.patient_id,
       title: dto.title,
@@ -613,5 +616,40 @@ export class AppointmentService {
     const payments = divideAppointmentsByPeriod(appointments);
     this.logger.log(`Got Monthly Payment Count Bar Chart for ${doctorId}`);
     return payments;
+  }
+
+  async export_appointment(appointmentId, userId) {
+    const appointment = await this.appointmentModel.findOne({
+      _id: appointmentId,
+    });
+
+    const cal = new ICalCalendar({
+      name: 'My test calendar event',
+    });
+    const doctor = await this.authService.getPatientProfile(
+      appointment.doctor_id,
+    );
+    const user = await this.authService.getPatientProfile(userId);
+    const event = cal.events([
+      {
+        start: appointment.start_date,
+        end: appointment.end_date,
+        summary: appointment.title, // 'Summary of your event'
+        organizer: {
+          // 'organizer details'
+          name: doctor.fullName,
+          email: doctor.email,
+        },
+      },
+    ]);
+
+    this.emailService.sendEmail(
+      user.email,
+      appointment.title,
+      'Hello here is your appointment reminder',
+      event,
+    );
+    this.logger.log(`Email sent`);
+    return { msg: 'email sent' };
   }
 }

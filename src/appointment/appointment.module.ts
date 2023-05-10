@@ -5,6 +5,7 @@ import { AuthModule } from '../auth/auth.module';
 import { AppointementController } from './appointment.controller';
 import { AppointmentService } from './appointment.service';
 import { Appointment, AppointmentSchema } from './schema/index';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { Appointment, AppointmentSchema } from './schema/index';
       },
     ]),
     AuthModule,
+    EmailModule,
   ],
   controllers: [AppointementController],
   providers: [AppointmentService],

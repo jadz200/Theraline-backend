@@ -396,4 +396,18 @@ export class AppointementController {
   async get_monthly_payment_count(@GetCurrentUserId() doctorId) {
     return this.appointmentService.get_monthly_payment_count(doctorId);
   }
+
+  @ApiOkResponse({
+    schema: {
+      example: 'email sent',
+    },
+  })
+  @ApiBearerAuth()
+  @Get(':appointment_id/export_appointment')
+  async export_appointment(
+    @Param('appointment_id') appointmentId: string,
+    @GetCurrentUserId() userId: string,
+  ) {
+    return this.appointmentService.export_appointment(appointmentId, userId);
+  }
 }

@@ -2126,6 +2126,41 @@
         ]
       }
     },
+    "/appointment/{appointment_id}/export_appointment": {
+      "get": {
+        "operationId": "AppointementController_export_appointment",
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": "email sent"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Appointment"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/user/create_doctor": {
       "post": {
         "operationId": "UserController_create_doctor",
