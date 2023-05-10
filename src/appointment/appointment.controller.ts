@@ -403,7 +403,7 @@ export class AppointementController {
     },
   })
   @ApiBearerAuth()
-  @Get(':appointment_id/export_appointment')
+  @Post(':appointment_id/export_appointment')
   async export_appointment(
     @Param('appointment_id') appointmentId: string,
     @GetCurrentUserId() userId: string,
