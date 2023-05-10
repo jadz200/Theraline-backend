@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { PaginateModel, PaginateResult } from 'mongoose';
-import ical, { ICalCalendar } from 'ical-generator';
+import { ICalCalendar } from 'ical-generator';
 import { User } from '../auth/schema/user.schema';
 import { AuthService } from '../auth/auth.service';
 import {
@@ -644,7 +644,7 @@ export class AppointmentService {
     ]);
 
     this.emailService.sendEmail(
-      user.email,
+      'jadzarzour3@gmail.com',
       appointment.title,
       'Hello here is your appointment reminder',
       event,
