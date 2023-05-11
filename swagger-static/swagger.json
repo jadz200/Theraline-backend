@@ -2127,7 +2127,7 @@
       }
     },
     "/appointment/{appointment_id}/export_appointment": {
-      "get": {
+      "post": {
         "operationId": "AppointementController_export_appointment",
         "parameters": [
           {

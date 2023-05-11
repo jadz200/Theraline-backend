@@ -225,7 +225,7 @@ export class UserService {
       title: dto.title,
       body: dto.body,
       author: doctorId,
-      created_at: now,
+      lastEdited: now,
     };
     await this.userModel.updateOne(
       { _id: user._id },
@@ -247,8 +247,16 @@ export class UserService {
           _id: note._id,
           title: note.title,
           body: note.body,
-          created_at: note.created_at,
+          lastEdited: note.lastEdited,
         };
+      })
+      .sort((a, b) => {
+        if (a.lastEdited < b.lastEdited) {
+          return 1;
+        } else if (a.lastEdited > b.lastEdited) {
+          return -1;
+        }
+        return 0;
       });
 
     this.logger.log(`Retrieved all notes of ${patientId} for ${doctorId} `);
@@ -261,13 +269,13 @@ export class UserService {
       throw new BadRequestException('Id is not in valid format');
     }
     const id = new mongoose.Types.ObjectId(notesId);
-
+    const now = new Date();
     const note = await this.userModel.findOneAndUpdate(
       {
         'notes._id': id,
       },
       {
-        $set: { 'notes.$.body': body },
+        $set: { 'notes.$.body': body, 'notes.$.lastEdited': now },
       },
     );
     if (!note) {

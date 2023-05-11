@@ -15,5 +15,5 @@ export class Notes {
   body: string;
 
   @Prop()
-  created_at: Date;
+  lastEdited: Date;
 }

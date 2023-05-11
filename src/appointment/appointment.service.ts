@@ -268,7 +268,7 @@ export class AppointmentService {
   ): Promise<PaginateResult<Appointment>> {
     const options = {
       page,
-      limit: 25,
+      limit: 100,
       sort: { createdAt: -1 },
     };
     const resp: PaginateResult<Appointment> =
@@ -284,7 +284,7 @@ export class AppointmentService {
   ): Promise<PaginateResult<GetAppointmentDto>> {
     const options = {
       page,
-      limit: 25,
+      limit: 100,
       sort: { createdAt: -1 },
     };
     const resp = await this.appointmentModel.paginate(
