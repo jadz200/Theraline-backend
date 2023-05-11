@@ -182,7 +182,7 @@ export class UserService {
   async get_patient_details_id(patientId, doctorId): Promise<PatientDetail> {
     const user: User = await this.userModel
       .findOne({ _id: patientId })
-      .select('firstName lastName email gender phone birthday notes');
+      .select('firstName lastName image email gender phone birthday notes');
     const doctorsId: string[] = await this.appointmentModel.distinct(
       'patient_id',
       {
@@ -195,6 +195,7 @@ export class UserService {
     const patientAppointmentCount = await this.getPatientAppointmentCount(
       patientId,
     );
+    console.log(user.image);
     const resp: PatientDetail = {
       _id: user._id.toString(),
       firstName: user.firstName,
