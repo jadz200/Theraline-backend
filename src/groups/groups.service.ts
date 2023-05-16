@@ -123,7 +123,7 @@ export class GroupsService {
     });
 
     if (checkconv) {
-      throw new BadRequestException('Conv already exists');
+      throw new BadRequestException('Conversation already exists');
     } else if (dto.users_id[0] === dto.users_id[1]) {
       throw new BadRequestException(
         "You can't create a conversation with yourself ",
