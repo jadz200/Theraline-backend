@@ -27,7 +27,9 @@ export class GroupsService {
 
   async get_all_chats(userId): Promise<Chat[]> {
     const user = await this.userModel.findOne({ _id: userId });
+
     const userGroups = user.groups;
+    console.log(userGroups);
     const resp = Promise.all(
       userGroups.map(async (group) => {
         const temp = await this.groupModel.findOne({ _id: group });
@@ -137,10 +139,12 @@ export class GroupsService {
 
     await Promise.all(
       dto.users_id.map(async (user_id) => {
-        const user: User = await this.userModel.findOne({ _id: user_id });
-        await this.userModel.updateOne(user, {
-          $push: { groups: newConvo.id },
-        });
+        await this.userModel.updateOne(
+          { _id: user_id },
+          {
+            $push: { groups: newConvo._id },
+          },
+        );
       }),
     );
     this.logger.log(`Added users to convo ${newConvo.id}`);
@@ -172,10 +176,12 @@ export class GroupsService {
 
     await Promise.all(
       dto.users_id.map(async (user_id) => {
-        const user: User = await this.userModel.findOne({ _id: user_id });
-        await this.userModel.updateOne(user, {
-          $push: { groups: newGroup.id },
-        });
+        await this.userModel.updateOne(
+          { _id: user_id },
+          {
+            $push: { groups: newGroup._id },
+          },
+        );
       }),
     );
     this.logger.log(`Added users to group ${newGroup.id}`);

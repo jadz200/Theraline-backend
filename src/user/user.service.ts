@@ -195,7 +195,6 @@ export class UserService {
     const patientAppointmentCount = await this.getPatientAppointmentCount(
       patientId,
     );
-    console.log(user.image);
     const resp: PatientDetail = {
       _id: user._id.toString(),
       firstName: user.firstName,
@@ -254,7 +253,8 @@ export class UserService {
       .sort((a, b) => {
         if (a.lastEdited < b.lastEdited) {
           return 1;
-        } else if (a.lastEdited > b.lastEdited) {
+        }
+        if (a.lastEdited > b.lastEdited) {
           return -1;
         }
         return 0;
