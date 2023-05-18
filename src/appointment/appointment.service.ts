@@ -295,7 +295,7 @@ export class AppointmentService {
       resp.docs.map(async (appointment) => {
         const [patientInfo, doctorInfo] = await Promise.all([
           await this.authService.getPatientProfile(appointment.patient_id),
-          await this.authService.getPatientProfile(appointment.patient_id),
+          await this.authService.getPatientProfile(appointment.doctor_id),
         ]);
         return {
           _id: appointment._id,
