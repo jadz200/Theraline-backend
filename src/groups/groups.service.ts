@@ -267,6 +267,75 @@ export class GroupsService {
     return group.users.includes(userId);
   }
 
+  async add_user(dto: { groupId: string; userId: string }) {
+    const group = await this.groupModel.findOne({ _id: dto.groupId });
+
+    if (group.groupType !== 'GROUP') {
+      throw new BadRequestException('Not a group');
+    }
+    const groupIdMongo = new mongoose.Types.ObjectId(dto.groupId);
+
+    const user = await this.userModel.findOne({
+      _id: dto.userId,
+      groups: { $in: [groupIdMongo] },
+    });
+
+    if (user) {
+      throw new BadRequestException('User is already in the group');
+    }
+    const userUpdated = await this.userModel.updateOne(
+      { _id: dto.userId },
+      {
+        $push: { groups: groupIdMongo },
+      },
+    );
+    const groupUpdated = await this.groupModel.updateOne(
+      { _id: dto.groupId },
+      {
+        $push: { users: dto.userId },
+      },
+    );
+    console.log(groupUpdated);
+    console.log(userUpdated);
+
+    this.logger.debug(`Added user ${dto.userId} from ${dto.groupId}`);
+    return { msg: 'User added' };
+  }
+
+  async remove_user(dto: { groupId: string; userId: string }) {
+    const group = await this.groupModel.findOne({ _id: dto.groupId });
+
+    const groupIdMongo = new mongoose.Types.ObjectId(dto.userId);
+    const user = await this.userModel.findOne({
+      _id: dto.userId,
+      groups: { $in: [groupIdMongo] },
+    });
+    if (!user) {
+      throw new BadRequestException('User not in this group');
+    }
+
+    if (group.groupType !== 'GROUP') {
+      throw new BadRequestException('Not a group');
+    }
+    if (user.role === 'DOCTOR') {
+      throw new BadRequestException('Cannot remove a doctor');
+    }
+    await this.userModel.updateOne(
+      { _id: dto.userId },
+      {
+        $pop: { groups: groupIdMongo },
+      },
+    );
+    await this.groupModel.updateOne(
+      { _id: dto.groupId },
+      {
+        $pop: { users: dto.userId },
+      },
+    );
+    this.logger.debug(`Removed user ${dto.userId} from ${dto.groupId}`);
+    return { msg: 'User removed' };
+  }
+
   async check_group_valid(groupId: string) {
     if (!mongoose.Types.ObjectId.isValid(groupId)) {
       throw new BadRequestException('Id is not in valid format');

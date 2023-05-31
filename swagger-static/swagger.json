@@ -917,6 +917,92 @@
         ]
       }
     },
+    "/groups/add_user": {
+      "put": {
+        "operationId": "GroupsController_add_users",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateChatDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/groups/remove_user": {
+      "put": {
+        "operationId": "GroupsController_remove_users",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateChatDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "403": {
+            "description": "Forbidden Access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "error": "Forbidden"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/message/{chat_id}/chat": {
       "get": {
         "operationId": "MessageController_get_chat",
@@ -3046,6 +3132,21 @@
         "required": [
           "users_id",
           "name"
+        ]
+      },
+      "UpdateChatDto": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "groupId",
+          "userId"
         ]
       },
       "SendMessageDto": {

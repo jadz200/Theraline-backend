@@ -7,6 +7,7 @@ import {
   UseGuards,
   UsePipes,
   Param,
+  Put,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -30,7 +31,12 @@ import {
 } from '../common/swagger';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { GetCurrentUserId, Roles } from '../common/decorators/index';
-import { Chat, CreateConvoDto, CreateGroupDto } from './dto/index';
+import {
+  Chat,
+  CreateConvoDto,
+  CreateGroupDto,
+  UpdateChatDto,
+} from './dto/index';
 import { GroupsService } from './groups.service';
 
 @ApiTags('Groups')
@@ -170,5 +176,27 @@ export class GroupsController {
   @Get('/users/:group_id')
   async get_users(@Param('group_id') groupId: string) {
     return this.groupService.get_chat_users(groupId);
+  }
+
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiOkResponse()
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @UsePipes(ValidationPipe)
+  @Roles('DOCTOR')
+  @Put('/add_user')
+  async add_users(@Body() dto: UpdateChatDto) {
+    return this.groupService.add_user(dto);
+  }
+
+  @ApiForbiddenResponse(SwaggerForbiddenResponse)
+  @ApiOkResponse()
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @UsePipes(ValidationPipe)
+  @Roles('DOCTOR')
+  @Put('/remove_user')
+  async remove_users(@Body() dto: UpdateChatDto) {
+    return this.groupService.remove_user(dto);
   }
 }
