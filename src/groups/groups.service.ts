@@ -305,11 +305,12 @@ export class GroupsService {
   async remove_user(dto: { groupId: string; userId: string }) {
     const group = await this.groupModel.findOne({ _id: dto.groupId });
 
-    const groupIdMongo = new mongoose.Types.ObjectId(dto.userId);
+    const groupIdMongo = new mongoose.Types.ObjectId(dto.groupId);
     const user = await this.userModel.findOne({
       _id: dto.userId,
       groups: { $in: [groupIdMongo] },
     });
+
     if (!user) {
       throw new BadRequestException('User not in this group');
     }
@@ -323,13 +324,13 @@ export class GroupsService {
     await this.userModel.updateOne(
       { _id: dto.userId },
       {
-        $pop: { groups: groupIdMongo },
+        $pull: { groups: { $in: [groupIdMongo] } },
       },
     );
     await this.groupModel.updateOne(
       { _id: dto.groupId },
       {
-        $pop: { users: dto.userId },
+        $pull: { users: { $in: [dto.userId] } },
       },
     );
     this.logger.debug(`Removed user ${dto.userId} from ${dto.groupId}`);
