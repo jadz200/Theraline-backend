@@ -147,7 +147,7 @@ export class GroupsController {
   get_users_to_create_convo(
     @GetCurrentUserId() userId: mongoose.Types.ObjectId,
   ) {
-    return this.groupService.get_users_to_create_chat(userId);
+    return this.groupService.get_users_to_create_convo(userId);
   }
 
   @ApiUnauthorizedResponse(SwaggerUnauthorizedResponse)

@@ -209,22 +209,39 @@ export class GroupsService {
     return true;
   }
 
-  async get_users_to_create_chat(userId) {
+  async get_users_to_create_convo(userId) {
     const user = await this.userModel.findOne({ _id: userId });
     const groupIds = user.groups;
+    const allGroups = await Promise.all(
+      groupIds.map((groupId) => this.groupModel.findOne({ _id: groupId })),
+    );
+    const alreadyExists = [];
+
+    Object.values(allGroups).forEach((group) => {
+      if (group.groupType === 'PRIVATE') {
+        const missingElement = group.users.find(
+          (element) => element !== userId,
+        );
+        if (missingElement) {
+          alreadyExists.push(missingElement);
+        }
+      }
+    });
     const users = await Promise.all(
       groupIds.map((groupId) => this.groupModel.findOne({ _id: groupId })),
     )
       .then((groups) => groups.flatMap((group) => group.users))
       .then((contactIds) =>
-        contactIds.filter((contactId) => contactId !== userId),
+        contactIds.filter(
+          (contactId) =>
+            contactId !== userId && !alreadyExists.includes(contactId),
+        ),
       )
       .then((contactIds) =>
         this.userModel
           .find({ _id: { $in: contactIds } })
           .select('_id firstName lastName email image'),
       );
-
     return users;
   }
 
