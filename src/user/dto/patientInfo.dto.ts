@@ -20,6 +20,10 @@ export class PatientInfo {
   @IsEmail()
   email: string;
 
+  @ApiProperty()
+  @IsString()
+  username: string;
+
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()

@@ -44,6 +44,7 @@ export class AuthService {
       gender: dto.gender,
       image: dto.image,
       expoToken: dto.expoToken,
+      username: dto.username,
     });
     this.logger.log(`Created new user ${user.id} as a ${user.role}`);
 

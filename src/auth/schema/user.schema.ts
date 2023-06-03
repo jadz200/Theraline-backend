@@ -38,6 +38,9 @@ export class User {
   @Prop({ required: true })
   role: UserRole;
 
+  @Prop({ unique: true })
+  username: string;
+
   @Prop()
   hashedRt: string;
 

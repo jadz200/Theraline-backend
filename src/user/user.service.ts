@@ -106,7 +106,7 @@ export class UserService {
       patientIds.map(async (patientId) => {
         const patient = await this.userModel
           .findOne({ _id: patientId })
-          .select('_id firstName lastName email image phone');
+          .select('_id firstName lastName username email image phone');
         const [previousAppoitnment, nextAppointment] = await Promise.all([
           this.appointmentModel
             .findOne({
@@ -128,6 +128,7 @@ export class UserService {
           _id: patient._id,
           firstName: patient.firstName,
           lastName: patient.lastName,
+          username: patient.username,
           email: patient.email,
           image: patient.image,
           nextAppointment: previousAppoitnment,

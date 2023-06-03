@@ -3038,6 +3038,9 @@
           "email": {
             "type": "string"
           },
+          "username": {
+            "type": "string"
+          },
           "password": {
             "type": "string"
           },
@@ -3061,6 +3064,7 @@
           "firstName",
           "lastName",
           "email",
+          "username",
           "password",
           "gender",
           "birthday"
@@ -3431,6 +3435,9 @@
           "email": {
             "type": "string"
           },
+          "username": {
+            "type": "string"
+          },
           "image": {
             "type": "string"
           },
@@ -3448,7 +3455,8 @@
           "_id",
           "firstName",
           "lastName",
-          "email"
+          "email",
+          "username"
         ]
       },
       "EditDoctoInfoDto": {
