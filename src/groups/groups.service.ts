@@ -39,8 +39,11 @@ export class GroupsService {
           const otherId = temp.users.find((id) => id !== userId);
           const temp2 = await this.userModel
             .findOne({ _id: otherId })
-            .select('firstName lastName image');
-          fullName = `${temp2.firstName} ${temp2.lastName}`;
+            .select('firstName lastName username image');
+          if (user.role === 'DOCTOR')
+            fullName = `${temp2.firstName} ${temp2.lastName}`;
+          else fullName = temp2.username;
+
           image = temp2.image;
         }
         const latestMessagePromise = this.messageModel
@@ -240,7 +243,7 @@ export class GroupsService {
       .then((contactIds) =>
         this.userModel
           .find({ _id: { $in: contactIds } })
-          .select('_id firstName lastName email image'),
+          .select('_id firstName lastName username email image'),
       );
     return users;
   }
@@ -261,13 +264,23 @@ export class GroupsService {
     return users;
   }
 
-  async get_chat_users(groupId) {
+  async get_chat_users(groupId, userId) {
+    const user = await this.userModel.findOne({ _id: userId });
     const resp = await this.groupModel.findOne({ _id: groupId });
+    console.log(user.role);
     const users = Promise.all(
-      resp.users.map((userId) => {
-        return this.userModel
-          .findOne({ _id: userId })
-          .select('firstName lastName role image');
+      resp.users.map(async (usersId) => {
+        const query = await this.userModel
+          .findOne({ _id: usersId })
+          .select('firstName lastName username role image');
+        let givenName: string;
+        if (user.role === 'DOCTOR' || user.role === 'ADMIN') {
+          givenName = query.fullName;
+        } else if (user.role === 'PATIENT') {
+          if (query.role === 'DOCTOR') givenName = query.fullName;
+          else givenName = query.username;
+        }
+        return { name: givenName, role: query.role, image: query.image };
       }),
     );
     return users;

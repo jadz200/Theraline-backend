@@ -39,9 +39,19 @@ export class MessagesService {
       { group_id },
       options,
     );
+    const user = await this.authService.findById(user_id);
     const messages: MessageDto[] = await Promise.all(
       resp.docs.map(async (message) => {
-        const username = await this.authService.getName(message.user_id);
+        let username;
+        if (user.role === 'DOCTOR')
+          username = await this.authService.getName(message.user_id);
+        else {
+          const messageUser = await this.authService.findById(message.user_id);
+          if (messageUser.role === 'DOCTOR')
+            username = await this.authService.getName(message.user_id);
+          else username = await this.authService.getUsername(message.user_id);
+        }
+
         const sentByMe = message.user_id === user_id;
         const result: MessageDto = {
           _id: message._id,

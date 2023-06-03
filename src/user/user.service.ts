@@ -152,7 +152,7 @@ export class UserService {
   async get_patient_details_email(email: string): Promise<PatientDetail> {
     const user: User = await this.userModel
       .findOne({ email })
-      .select('firstName lastName email gender phone birthday');
+      .select('firstName lastName username email gender phone birthday');
     const doctorsId: string[] = await this.appointmentModel.distinct(
       'patient_id',
       {
@@ -168,6 +168,7 @@ export class UserService {
       lastName: user.lastName,
       email: user.email,
       image: user.image,
+      username: user.username,
       phone: user.phone,
       gender: user.gender,
       birthday: user.birthday,
@@ -183,7 +184,9 @@ export class UserService {
   async get_patient_details_id(patientId, doctorId): Promise<PatientDetail> {
     const user: User = await this.userModel
       .findOne({ _id: patientId })
-      .select('firstName lastName image email gender phone birthday notes');
+      .select(
+        'firstName lastName image username email gender phone birthday notes',
+      );
     const doctorsId: string[] = await this.appointmentModel.distinct(
       'patient_id',
       {
@@ -200,6 +203,7 @@ export class UserService {
       _id: user._id.toString(),
       firstName: user.firstName,
       lastName: user.lastName,
+      username: user.username,
       email: user.email,
       image: user.image,
       phone: user.phone,

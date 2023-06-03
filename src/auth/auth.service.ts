@@ -184,7 +184,7 @@ export class AuthService {
   async getPatientProfile(id: string): Promise<User | undefined> {
     return this.userModel
       .findOne({ _id: id })
-      .select('firstName lastName email image');
+      .select('firstName lastName username email image ');
   }
 
   async getName(id: string) {
@@ -193,5 +193,13 @@ export class AuthService {
     }
     const user = await this.userModel.findOne({ _id: id });
     return user.fullName;
+  }
+
+  async getUsername(id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Id is not in valid format');
+    }
+    const user = await this.userModel.findOne({ _id: id });
+    return user.username;
   }
 }

@@ -174,8 +174,11 @@ export class GroupsController {
   @ApiOkResponse()
   @ApiBearerAuth()
   @Get('/users/:group_id')
-  async get_users(@Param('group_id') groupId: string) {
-    return this.groupService.get_chat_users(groupId);
+  async get_users(
+    @Param('group_id') groupId: string,
+    @GetCurrentUserId() userId,
+  ) {
+    return this.groupService.get_chat_users(groupId, userId);
   }
 
   @ApiForbiddenResponse(SwaggerForbiddenResponse)

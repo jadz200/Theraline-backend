@@ -3494,6 +3494,9 @@
           "email": {
             "type": "string"
           },
+          "username": {
+            "type": "string"
+          },
           "image": {
             "type": "string"
           },
@@ -3518,6 +3521,7 @@
           "firstName",
           "lastName",
           "email",
+          "username",
           "gender",
           "birthday",
           "next",

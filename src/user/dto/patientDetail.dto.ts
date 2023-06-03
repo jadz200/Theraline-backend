@@ -14,6 +14,9 @@ export class PatientDetail {
   @ApiProperty()
   email: string;
 
+  @ApiProperty()
+  username: string;
+
   @ApiPropertyOptional()
   image?: string;
 
