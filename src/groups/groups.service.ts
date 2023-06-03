@@ -243,7 +243,24 @@ export class GroupsService {
       .then((contactIds) =>
         this.userModel
           .find({ _id: { $in: contactIds } })
-          .select('_id firstName lastName username email image'),
+          .select('_id firstName lastName username email image role')
+          .then((users) => {
+            const resp = users.map((chatter) => {
+              let givenName: string;
+              if (user.role === 'PATIENT') {
+                if (chatter.role === 'PATIENT') givenName = chatter.username;
+                else givenName = chatter.fullName;
+              } else {
+                givenName = chatter.fullName;
+              }
+              return {
+                _id: chatter._id,
+                email: chatter.email,
+                name: givenName,
+              };
+            });
+            return resp;
+          }),
       );
     return users;
   }
