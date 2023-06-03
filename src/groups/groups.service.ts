@@ -1,3 +1,4 @@
+/* eslint-disable no-lonely-if */
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
@@ -39,10 +40,16 @@ export class GroupsService {
           const otherId = temp.users.find((id) => id !== userId);
           const temp2 = await this.userModel
             .findOne({ _id: otherId })
-            .select('firstName lastName username image');
+            .select('firstName lastName username image role');
           if (user.role === 'DOCTOR')
             fullName = `${temp2.firstName} ${temp2.lastName}`;
-          else fullName = temp2.username;
+          else {
+            if (temp2.role === 'PATIENT') {
+              fullName = temp2.username;
+            } else {
+              fullName = temp2.fullName;
+            }
+          }
 
           image = temp2.image;
         }
