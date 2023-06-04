@@ -129,6 +129,7 @@ export class UserService {
           firstName: patient.firstName,
           lastName: patient.lastName,
           username: patient.username,
+          phone: patient.phone,
           email: patient.email,
           image: patient.image,
           nextAppointment: previousAppoitnment,
